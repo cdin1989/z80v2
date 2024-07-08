@@ -1,0 +1,41 @@
+Name        z80_flash;
+PartNo      00;
+Date        2024/5/28;
+Revision    01;
+Designer    bitrowz;
+Company     bitrowz;
+Assembly    None;
+Location    ;
+Device      g22v10;
+
+/******************************************************/
+/* Select Compact Flash device.                       */
+/* IO Port:                                           */
+/* 0xF0: Data                                         */
+/* 0xF1: Error[IORD] Feature[IOWR]                    */
+/* 0xF2: Sector Count                                 */
+/* 0xF3: Sector Number               LBA0-LBA7        */
+/* 0xF4: Cylinder Low Byte           LBA8-LBA15       */
+/* 0xF5: Cylinder High Byte          LBA16-LBA23      */
+/* 0xF6: Select Card /Head (HS3-HS0) LBA24-LBA27      */
+/* 0xF7: Status[IORD] Command[IOWR]                   */
+/******************************************************/
+
+/** Inputs **/
+Pin [1..8] = [A0..7];
+Pin [9,10,11,13] = [!IORQ,!WR,!RD,M1];
+
+/** Outputs **/
+Pin [18,19,20,21,22,23] = [!CF_IOWR,!CF_IORD,!CF_CS,CF_A2,CF_A1,CF_A0];
+
+/** Intermediate Variables */
+Field ioaddr = [A7..0];
+ioreq = IORQ & M1;
+
+/** Logical Equations **/
+CF_A0 = A0;
+CF_A1 = A1;
+CF_A2 = A2;
+CF_CS = ioreq & ioaddr:[00F0..00F7];
+CF_IORD = CF_CS & RD;
+CF_IOWR = CF_CS & WR;

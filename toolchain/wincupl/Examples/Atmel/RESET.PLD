@@ -1,0 +1,44 @@
+Name            Reset;
+Partno          ;
+Revision        01;
+Date            8/10/99;
+Designer        PLD Expert;
+Company         Atmel Corp.;
+Location        None;
+Assembly        None;
+Device          F1500a;
+
+/* Example showing reset usage */
+
+$INCLUDE FIT1500.M
+
+GLOBAL(GlobalReset);
+
+pin 1 = GlobalReset;
+pin [28,24,25,26] = [c, w, y, f]; 
+
+pin [34,36] = [r0, r1]; 
+
+/* Equations */
+r0.d   = w & y;
+r0.ck = c;
+r0.ar  = !GlobalReset;  /* The global reset has
+                           a fixed inversion. */
+
+r1.d   = w;
+r1.ck = c;
+r1.ar  = f & !y;        /* This register uses a reset term */
+
+/*
+test_vectors
+([c,GlobalReset,w,y,f] -> [r0,r1]);
+ [0,     1     ,0,0,0] -> [ 0, 0];
+ [C,     1     ,0,0,0] -> [ 0, 0];
+ [C,     1     ,1,0,0] -> [ 0, 1];
+ [C,     1     ,1,1,0] -> [ 1, 1];
+ [C,     1     ,0,1,0] -> [ 0, 0];
+ [C,     1     ,1,1,0] -> [ 1, 1];
+ [0,     0     ,1,1,0] -> [ 0, 1];
+ [0,     1     ,1,1,1] -> [ 0, 1];
+ [0,     1     ,1,0,1] -> [ 0, 0];
+*/

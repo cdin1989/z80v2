@@ -1,0 +1,6 @@
+*.abs
+*.doc
+*.jed
+*.lst
+*.sim
+build

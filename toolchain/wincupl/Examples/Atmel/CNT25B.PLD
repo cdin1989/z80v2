@@ -1,0 +1,330 @@
+Name       Cnt25b;
+Partno     atv2500b;
+Date       12/06/93;
+Revision   01;
+Designer   Joe PLD;
+Company    Atmel Corporation;
+Assembly   U00;
+Location   San Jose;
+Device     V2500B;
+
+/*
+             16-bit counter benchmark for the ATV2500B
+
+    This example implements 3 instances of the 16-bit counter industry
+    standard benchmark.  Below is the configuration of the benchmarks.
+
+                   __A___         __B___         __Q___
+                  |      |A[15:0]|      |B[15:0]|      |
+   DIN[15:0] ====>|      |======>|      |======>|      |====> Q[15:0]
+                  |      |       |      |       |      |
+         -------->|>     | ----->|>     | ----->|>     |
+         |        |      | |     |      | |     |      |
+         | ------>|LD    | | --->|LD    | | --->|LD    |
+         | |      |      | | |   |      | | |   |      |
+         | | ---->|CE    | | | ->|CE    | | | ->|CE    |
+         | | |    |  RST | | | | |  RST | | | | |  RST |
+         | | |     ---^--  | | |  ---^--  | | |  ---^--
+   CLK --@-|-|--------|----@-|-|-----|----| | |     |
+           | |        |      | |     |      | |     |
+   LD  ----@-|--------|------@-|-----|------| |     |
+             |        |        |     |        |     |
+   CE  ------@--------|--------@-----|--------|     |
+                      |              |              |
+   RST ---------------@--------------@--------------|
+
+    All inputs and I/Os except for pins 5 and 6 are used. The counters
+    use the synchronous clock pin option for maximum performance. To
+    reduce product term count, the T-type registers are used.
+*/
+
+
+/* Control inputs */
+PIN    1   = CLK;
+PIN    2   = LD;
+PIN    3   = CE;
+PIN    4   = RST;
+
+/* Counter data inputs */
+PIN    40  = DIN0;
+PIN    39  = DIN1;
+PIN    38  = DIN2;
+PIN    37  = DIN3;
+PIN    23  = DIN4;
+PIN    22  = DIN5;
+PIN    21  = DIN6;
+PIN    20  = DIN7;
+PIN    19  = DIN8;
+PIN    18  = DIN9;
+PIN    17  = DIN10;
+PIN    12  = DIN11;
+PIN    11  = DIN12;
+PIN    9   = DIN13;
+PIN    8   = DIN14;
+PIN    7   = DIN15;
+
+/* 3rd Counter external outputs */
+PIN    36  = Q0;
+PIN    35  = Q1;
+PIN    34  = Q2;
+PIN    33  = Q3;
+PIN    32  = Q4;
+PIN    31  = Q5;
+PIN    29  = Q6;
+PIN    28  = Q7;
+PIN    27  = Q8;
+PIN    26  = Q9;
+PIN    25  = Q10;
+PIN    24  = Q11;
+PIN    16  = Q12;
+PIN    15  = Q13;
+PIN    14  = Q14;
+PIN    13  = Q15;
+
+/* 1st Counter buried nodes */
+PINNODE 41  = A0;
+PINNODE 42  = A1;
+PINNODE 43  = A2;
+PINNODE 44  = A3;
+PINNODE 45  = A4;
+PINNODE 46  = A5;
+PINNODE 47  = A6;
+PINNODE 48  = A7;
+PINNODE 49  = A8;
+PINNODE 50  = A9;
+PINNODE 51  = A10;
+PINNODE 52  = A11;
+PINNODE 53  = A12;
+PINNODE 54  = A13;
+PINNODE 55  = A14;
+PINNODE 56  = A15;
+
+/* 2nd Counter buried nodes */
+PINNODE 57  = B0;
+PINNODE 58  = B1;
+PINNODE 59  = B2;
+PINNODE 60  = B3;
+PINNODE 61  = B4;
+PINNODE 62  = B5;
+PINNODE 63  = B6;
+PINNODE 64  = B7;
+PINNODE 72  = B8;
+PINNODE 71  = B9;
+PINNODE 70  = B10;
+PINNODE 69  = B11;
+PINNODE 68  = B12;
+PINNODE 67  = B13;
+PINNODE 66  = B14;
+PINNODE 65  = B15;
+
+
+/* 1st Counter */
+
+A15.t =  LD & !DIN15 & A15
+       # LD & DIN15 & !A15
+       # CE & A14 & A13 & A12 & A11 & A10 & A9 & A8 & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A14.t =  LD & !DIN14 & A14
+       # LD & DIN14 & !A14
+       # CE & A13 & A12 & A11 & A10 & A9 & A8 & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A13.t =  LD & !DIN13 & A13
+       # LD & DIN13 & !A13
+       # CE & A12 & A11 & A10 & A9 & A8 & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A12.t =  LD & !DIN12 & A12
+       # LD & DIN12 & !A12
+       # CE & A11 & A10 & A9 & A8 & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A11.t =  LD & !DIN11 & A11
+       # LD & DIN11 & !A11
+       # CE & A10 & A9 & A8 & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A10.t =  LD & !DIN10 & A10
+       # LD & DIN10 & !A10
+       # CE & A9 & A8 & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A9.t =  LD & !DIN9 & A9
+       # LD & DIN9 & !A9
+       # CE & A8 & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A8.t =  LD & !DIN8 & A8
+       # LD & DIN8 & !A8
+       # CE & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A7.t =  LD & !DIN7 & A7
+       # LD & DIN7 & !A7
+       # CE & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A6.t =  LD & !DIN6 & A6
+       # LD & DIN6 & !A6
+       # CE & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A5.t =  LD & !DIN5 & A5
+       # LD & DIN5 & !A5
+       # CE & A4 & A3 & A2 & A1 & A0 ;
+
+A4.t =  LD & !DIN4 & A4
+       # LD & DIN4 & !A4
+       # CE & A3 & A2 & A1 & A0 ;
+
+A3.t =  LD & !DIN3 & A3
+       # LD & DIN3 & !A3
+       # CE & A2 & A1 & A0 ;
+
+A2.t =  LD & !DIN2 & A2
+       # LD & DIN2 & !A2
+       # CE & A1 & A0 ;
+
+A1.t =  LD & !DIN1 & A1
+       # LD & DIN1 & !A1
+       # CE & A0 ;
+
+A0.t =  CE
+       # LD & !DIN0 & A0
+       # LD & DIN0 & !A0 ;
+
+[A15..0].sp =  'b'0;
+[A15..0].ce =  'h'FFFF ;
+[A15..0].ar =  RST ;
+
+
+/* 2nd Counter */
+B15.t =  LD & !A15 & B15
+       # LD & A15 & !B15
+       # CE & B14 & B13 & B12 & B11 & B10 & B9 & B8 & B7 & B6 & B5 & B4 & B3 & B2 & B1 & B0 ;
+
+B14.t =  LD & !A14 & B14
+       # LD & A14 & !B14
+       # CE & B13 & B12 & B11 & B10 & B9 & B8 & B7 & B6 & B5 & B4 & B3 & B2 & B1 & B0 ;
+
+B13.t =  LD & !A13 & B13
+       # LD & A13 & !B13
+       # CE & B12 & B11 & B10 & B9 & B8 & B7 & B6 & B5 & B4 & B3 & B2 & B1 & B0 ;
+
+B12.t =  LD & !A12 & B12
+       # LD & A12 & !B12
+       # CE & B11 & B10 & B9 & B8 & B7 & B6 & B5 & B4 & B3 & B2 & B1 & B0 ;
+
+B11.t =  LD & !A11 & B11
+       # LD & A11 & !B11
+       # CE & B10 & B9 & B8 & B7 & B6 & B5 & B4 & B3 & B2 & B1 & B0 ;
+
+B10.t =  LD & !A10 & B10
+       # LD & A10 & !B10
+       # CE & B9 & B8 & B7 & B6 & B5 & B4 & B3 & B2 & B1 & B0 ;
+
+B9.t =  LD & !A9 & B9
+       # LD & A9 & !B9
+       # CE & B8 & B7 & B6 & B5 & B4 & B3 & B2 & B1 & B0 ;
+
+B8.t =  LD & !A8 & B8
+       # LD & A8 & !B8
+       # CE & B7 & B6 & B5 & B4 & B3 & B2 & B1 & B0 ;
+
+B7.t =  LD & !A7 & B7
+       # LD & A7 & !B7
+       # CE & B6 & B5 & B4 & B3 & B2 & B1 & B0 ;
+
+B6.t =  LD & !A6 & B6
+       # LD & A6 & !B6
+       # CE & B5 & B4 & B3 & B2 & B1 & B0 ;
+
+B5.t =  LD & !A5 & B5
+       # LD & A5 & !B5
+       # CE & B4 & B3 & B2 & B1 & B0 ;
+
+B4.t =  LD & !A4 & B4
+       # LD & A4 & !B4
+       # CE & B3 & B2 & B1 & B0 ;
+
+B3.t =  LD & !A3 & B3
+       # LD & A3 & !B3
+       # CE & B2 & B1 & B0 ;
+
+B2.t =  LD & !A2 & B2
+       # LD & A2 & !B2
+       # CE & B1 & B0 ;
+
+B1.t =  LD & !A1 & B1
+       # LD & A1 & !B1
+       # CE & B0 ;
+
+B0.t =  CE
+       # LD & !A0 & B0
+       # LD & A0 & !B0 ;
+
+[B15..0].sp = 'b'0;
+[B15..0].ce =  'h'FFFF ;
+[B15..0].ar =  RST ;
+
+
+/* 3rd Counter */
+Q15.t =  LD & !B15 & Q15
+       # LD & B15 & !Q15
+       # CE & Q14 & Q13 & Q12 & Q11 & Q10 & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q14.t =  LD & !B14 & Q14
+       # LD & B14 & !Q14
+       # CE & Q13 & Q12 & Q11 & Q10 & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q13.t =  LD & !B13 & Q13
+       # LD & B13 & !Q13
+       # CE & Q12 & Q11 & Q10 & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q12.t =  LD & !B12 & Q12
+       # LD & B12 & !Q12
+       # CE & Q11 & Q10 & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q11.t =  LD & !B11 & Q11
+       # LD & B11 & !Q11
+       # CE & Q10 & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q10.t =  LD & !B10 & Q10
+       # LD & B10 & !Q10
+       # CE & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q9.t =  LD & !B9 & Q9
+       # LD & B9 & !Q9
+       # CE & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q8.t =  LD & !B8 & Q8
+       # LD & B8 & !Q8
+       # CE & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q7.t =  LD & !B7 & Q7
+       # LD & B7 & !Q7
+       # CE & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q6.t =  LD & !B6 & Q6
+       # LD & B6 & !Q6
+       # CE & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q5.t =  LD & !B5 & Q5
+       # LD & B5 & !Q5
+       # CE & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q4.t =  LD & !B4 & Q4
+       # LD & B4 & !Q4
+       # CE & Q3 & Q2 & Q1 & Q0 ;
+
+Q3.t =  LD & !B3 & Q3
+       # LD & B3 & !Q3
+       # CE & Q2 & Q1 & Q0 ;
+
+Q2.t =  LD & !B2 & Q2
+       # LD & B2 & !Q2
+       # CE & Q1 & Q0 ;
+
+Q1.t =  LD & !B1 & Q1
+       # LD & B1 & !Q1
+       # CE & Q0 ;
+
+Q0.t =  CE
+       # LD & !B0 & Q0
+       # LD & B0 & !Q0 ;
+
+[Q15..0].sp =  'b'0 ;
+[Q15..0].ce =  'h'FFFF ;
+[Q15..0].ar =  RST ;
+

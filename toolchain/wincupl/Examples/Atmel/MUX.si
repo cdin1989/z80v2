@@ -1,0 +1,21 @@
+Name     MUX;
+PartNo   ;
+Date     8/10/99;
+Revision 01;
+Designer PLD Expert;
+Company  Atmel Corp.;
+Assembly None;
+Location None;
+Device   F1500a;
+
+
+ORDER: a, b, s, y; 
+
+
+VECTORS:
+000*
+100*
+011*
+011*
+010*
+101*

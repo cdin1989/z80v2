@@ -1,0 +1,107 @@
+Name       EX375;
+Partno     Originally targetted V750;
+Date       07/26/00;
+Revision   02;
+Designer   Yad PLD;
+Company    Atmel Corporation;
+Assembly   U00;
+Location   San Jose;
+Device     v750c;
+
+/* 20 Bit Counter for ATMEL ATF750C */
+/* This is a design originally written for the ATV750 device */
+/* Note: This can be targetted to the ATF750C device or the ATV750B design*/
+/* This particular example shows how a PRODUCT TERM clock can be used*/
+
+/* For the ATF750C: To use Pin 1 as Synchronous CLOCK, use the .CKMUX extension*/
+
+
+/**  Inputs  **/
+
+Pin   1  = Clk;
+Pin   2  = COUNT;
+Pin   3  = COUNT10;
+Pin   4  = PRESET;
+Pin   5  = RESET;
+Pin  11  = Q1SEL;
+Pin  13  = OE_EN;
+
+/**  Outputs  **/
+
+Pin [14..23] = [O14..O23];
+
+Pinnode [25..34] = [B14..B23];  /* PINNODE 26..35 for Q1 of pins 14..23 */
+
+
+/** Logic Equations **/
+
+O14.AR  =   O14.DFB & RESET & !Q1SEL;   B14.AR  =   B14 & RESET & Q1SEL;
+O15.AR  =   O15.DFB & RESET & !Q1SEL;   B15.AR  =   B15 & RESET & Q1SEL;
+O16.AR  =   O16.DFB & RESET & !Q1SEL;   B16.AR  =   B16 & RESET & Q1SEL;
+O17.AR  =   O17.DFB & RESET & !Q1SEL;   B17.AR  =   B17 & RESET & Q1SEL;
+O18.AR  =   O18.DFB & RESET & !Q1SEL;   B18.AR  =   B18 & RESET & Q1SEL;
+
+O19.AR  =   O19.DFB & RESET & !Q1SEL;   B19.AR  =   B19 & RESET & Q1SEL;
+O20.AR  =   O20.DFB & RESET & !Q1SEL;   B20.AR  =   B20 & RESET & Q1SEL;
+O21.AR  =   O21.DFB & RESET & !Q1SEL;   B21.AR  =   B21 & RESET & Q1SEL;
+O22.AR  =   O22.DFB & RESET & !Q1SEL;   B22.AR  =   B22 & RESET & Q1SEL;
+O23.AR  =   O23.DFB & RESET & !Q1SEL;   B23.AR  =   B23 & RESET & Q1SEL;
+
+O14.CK  =   Clk & COUNT;     B14.CK  =  Clk & COUNT;    /* Synchronous */
+O15.CK  =   O14.DFB & COUNT;   B15.CK  =  O14.DFB & COUNT;  /*   Asynch.   */
+O16.CK  =   O15.DFB & COUNT;   B16.CK  =  O15.DFB & COUNT;  /*      "      */
+O17.CK  =   O16.DFB & COUNT;   B17.CK  =  O16.DFB & COUNT;  /*      "      */
+O18.CK  =   O17.DFB & COUNT;   B18.CK  =  O17.DFB & COUNT;  /*      "      */
+O19.CK  =   O18.DFB & COUNT;   B19.CK  =  O18.DFB & COUNT;  /*      "      */
+O20.CK  =   O19.DFB & COUNT;   B20.CK  =  O19.DFB & COUNT;  /*      "      */
+O21.CK  =   O20.DFB & COUNT;   B21.CK  =  O20.DFB & COUNT;  /*      "      */
+O22.CK  =   O21.DFB & COUNT;   B22.CK  =  O21.DFB & COUNT;  /*      "      */
+O23.CK  =   O22.DFB & COUNT;   B23.CK  =  O22.DFB & COUNT;  /*      "      */
+
+
+B14.D =  !B14;      !O14.D =     !O14.DFB &  B14 & !COUNT10
+                                # O14.DFB & !B14 & !COUNT10
+                                # !B14 & COUNT10;
+
+B15.D =  !B15;      !O15.D =     !O15.DFB &  B15 & !COUNT10
+                                # O15.DFB & !B15 & !COUNT10
+                                # !B15 & COUNT10;
+
+B16.D =  !B16;      !O16.D =     !O16.DFB &  B16 & !COUNT10
+                                # O16.DFB & !B16 & !COUNT10
+                                # !B16 & COUNT10;
+
+B17.D =  !B17;      !O17.D =     !O17.DFB &  B17 & !COUNT10
+                                # O17.DFB & !B17 & !COUNT10
+                                # !B17 & COUNT10;
+
+B18.D =  !B18;      !O18.D =     !O18.DFB &  B18 & !COUNT10
+                                # O18.DFB & !B18 & !COUNT10
+                                # !B18 & COUNT10;
+
+B19.D =  !B19;      !O19.D =     !O19.DFB &  B19 & !COUNT10
+                                # O19.DFB & !B19 & !COUNT10
+                                # !B19 & COUNT10;
+
+B20.D =  !B20;      !O20.D =     !O20.DFB &  B20 & !COUNT10
+                                # O20.DFB & !B20 & !COUNT10
+                                # !B20 & COUNT10;
+
+B21.D =  !B21;      !O21.D =     !O21.DFB &  B21 & !COUNT10
+                                # O21.DFB & !B21 & !COUNT10
+                                # !B21 & COUNT10;
+
+B22.D =  !B22;      !O22.D =     !O22.DFB &  B22 & !COUNT10
+                                # O22.DFB & !B22 & !COUNT10
+                                # !B22 & COUNT10;
+
+B23.D =  !B23;      !O23.D =     !O23.DFB &  B23 & !COUNT10
+                                # O23.DFB & !B23 & !COUNT10
+                                # !B23 & COUNT10;
+[O23..14].SP = PRESET;
+[B23..14].SP = PRESET;
+[O23..14].OE = !OE_EN;
+
+
+
+

@@ -1,0 +1,249 @@
+Name      LED32ser;
+Partno    ATF1502;
+Date      Feb 2001;
+Revision  02;
+Designer  jmg;
+Company   SPI Bus interfaced ATF1502;
+Assembly  LED driver, Serial BUS CLK.DAT.STR to 32 segment Latched drive;
+Location  Auckland;
+Device    virtual;
+
+/* 
+ Status : Compiled               = YES
+ 
+ Features:
+ ~~~~~~~~~
+ This is a LATCHED Output, 32 stage Shift register for 44 Pin PLDs, eg ATF1502.
+ The advanced macrocell of this part allows both a LATCH and FLIP FLOP to be
+ implemented in one cell, so the disturbance during shifting of simple shift 
+ registers is avoided with a low cost device.
+ 
+ Operation:
+ ~~~~~~~~~~
+ Shift 32 Clocks, on CLK,DATI, and then Strobe CSEL ==\_/==, to latch the
+ most recent 32 Bits, onto the IO Pins.
+ 
+ Applications:
+ ~~~~~~~~~~~~~
+ LED, and RELAY drivers, serial IO expansion.
+
+ This design fits in both ATF1500 and ATF1502.
+*/
+
+/* Structure Table, for Floor Plan, ATF1500 / ATF1502 
+
+PinNo    4   5   6   7   8   9  11  12  13  14  16  17  18  19  20  21
+MCell    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16
+BNode  601 602 603 604 605 606 607 608 609 610 611 612 613 614 615 616 1502
+FoldB  301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 1502
+BNode   77  78  79  80  81  82  83  84  85  86  87  88  89  90  91  92 1500
+FoldB   45  46  47  48  49  50  51  52  53  54  55  56  57  58  59  60 1500
+
+PinNo   41  40  39  38  37  36  34  33  32  31  29  28  27  26  25  24
+MCell   17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32
+BNode  617 618 619 620 621 622 623 624 625 626 627 628 629 630 631 632 1502
+FoldB  317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 1502
+BNode   93  94  95  96  97  98  99 100 101 102 103 104 105 106 107 108 1500
+FoldB   61  62  63  64  65  66  67  68  69  70  71  72  73  74  75  76 1500
+*/
+/* JTAG Pins PLCC44 package
+ TDI  Pin7   MC4
+ TDO  Pin38  MC20
+ TMS  Pin13  MC9
+ TCK  Pin32  MC25
+*/
+
+PROPERTY ATMEL {JTAG=OFF};   /* We are using all the pins */
+
+/* Input only pins */           /* ATF1500   ATF1502      */ 
+PIN     2       =       DATI;   /* OEN      GCLK2/OEN2 /\ */  
+PIN     1       =       CSEL;   /* CLRN     GCLR  /\      */ 
+PIN     44      =       Blank;  /* OEN      OE1.ForceJTAGVpp */  /* Optional BLANK (tristate) pin  */
+PIN     43      =       CLK;    /* CLK      GCLK1 /\      */  
+
+/* IO Blocks  - group in 8's, for simplicity  */
+
+PIN     4       =       IO0;  /* MC1 2 Com Mux Term */
+PIN     5       =       IO1;  /* MC2 2 Com Mux Term */
+PIN     6       =       IO2;  /* MC3 2 Com Mux Term */
+PIN     7       =       IO3;  /* MC4 2 Com Mux Term */
+PIN     8       =       IO4;  /* MC5 2 Com Mux Term */
+PIN     9       =       IO5;  /* MC6 2 Com Mux Term */
+PIN     11      =       IO6;  /* MC7 2 Com Mux Term */
+PIN     12      =       IO7;  /* MC8 2 Com Mux Term */
+
+/*  3,15,23,35 = Vcc   10,22,30,42 = GND  */
+
+PINNODE     77  =   Shift0;  /* MC1 */
+PINNODE     78  =   Shift1;  /* MC2 */
+PINNODE     79  =   Shift2;  /* MC3 */
+PINNODE     80  =   Shift3;  /* MC4 */
+PINNODE     81  =   Shift4;  /* MC5 */
+PINNODE     82  =   Shift5;  /* MC6 */
+PINNODE     83  =   Shift6;  /* MC7 */
+PINNODE     84  =   Shift7;  /* MC8 */
+
+/* Output grouping.. */
+PIN     13  =  IO8;    /* MC9  */
+PIN     14  =  IO9;    /* MC10 */
+PIN     16  =  IO10;   /* MC11 */
+PIN     17  =  IO11;   /* MC12 */
+PIN     18  =  IO12;   /* MC13 */
+PIN     19  =  IO13;   /* MC14 */
+PIN     20  =  IO14;   /* MC15 */
+PIN     21  =  IO15;   /* MC16 */
+
+PINNODE     85  =   Shift8;   /* MC9  */
+PINNODE     86  =   Shift9;   /* MC10 */
+PINNODE     87  =   Shift10;  /* MC11 */
+PINNODE     88  =   Shift11;  /* MC12 */
+PINNODE     89  =   Shift12;  /* MC13 */
+PINNODE     90  =   Shift13;  /* MC14 */
+PINNODE     91  =   Shift14;  /* MC15 */
+PINNODE     92  =   Shift15;  /* MC16 */
+
+PIN     41      =   IO16;      /* MC17*/
+PIN     40      =   IO17;      /* MC18*/
+PIN     39      =   IO18;      /* MC19*/
+PIN     38      =   IO19;      /* MC20*/
+PIN     37      =   IO20;      /* MC21*/
+PIN     36      =   IO21;      /* MC22*/
+PIN     34      =   IO22;      /* MC23*/
+PIN     33      =   IO23;      /* MC24*/
+
+PINNODE     93  =   Shift16;   /* MC17  */
+PINNODE     94  =   Shift17;   /* MC18  */
+PINNODE     95  =   Shift18;   /* MC19  */
+PINNODE     96  =   Shift19;   /* MC20  */
+PINNODE     97  =   Shift20;   /* MC21  */
+PINNODE     98  =   Shift21;   /* MC22  */
+PINNODE     99  =   Shift22;   /* MC23  */
+PINNODE     100 =   Shift23;   /* MC24  */
+
+PIN     32      =       IO24;     /* MC25  */
+PIN     31      =       IO25;     /* MC26  */
+PIN     29      =       IO26;     /* MC27  */
+PIN     28      =       IO27;     /* MC28  */
+PIN     27      =       IO28;     /* MC29  */
+PIN     26      =       IO29;     /* MC30  */
+PIN     25      =       IO30;     /* MC31  */
+PIN     24      =       IO31;     /* MC32  */
+
+PINNODE     101 =   Shift24;      /* MC25 */
+PINNODE     102 =   Shift25;      /* MC26 */
+PINNODE     103 =   Shift26;      /* MC27 */
+PINNODE     104 =   Shift27;      /* MC28 */
+PINNODE     105 =   Shift28;      /* MC29 */
+PINNODE     106 =   Shift29;      /* MC30 */
+PINNODE     107 =   Shift30;      /* MC31 */
+PINNODE     108 =   Shift31;      /* MC32 */   /* Unused */
+
+PINNODE     60  =   FbFollowL;  /* MC16 Foldback */
+PINNODE     61  =   FbFollowU;  /* MC17 Foldback */
+
+/* Tell fitter to Keep&Place -> FBnodes */
+PROPERTY ATMEL {FOLD=FbFollowL,FbFollowU}; 
+
+/* ================   Make a 32 Long Shift Register ================== */
+
+[Shift0..Shift31].ck = CLK;
+
+Shift0.d = DATI;
+[Shift1..Shift31].d =[Shift0..Shift30];
+
+
+/* ================   Use this form for direct LED Drive ================== */
+
+/* 
+ Latch Synth, using Foldback nodes for delays, to ensure overlap.
+ ( ie make before break hand-over of LOGIC )
+
+ CSEL ==========\_________________/================== HOLD
+ fbCSEL _________/==================\________________ Follow
+        Hold----| |---- Follow -----|----- Hold
+ Hold must assert BEFORE Follow is removed 
+
+ During HOLD, can shift in Serial Info, and get disturbance free
+ LED driving. ( or use the CLK and DATA lines for other devices )
+ 
+ A brief LOW pulse on CSEL is all that is needed to latch the last 32 data
+ bits. This allows the CLK and DATI lines to be shared with SPI hardware,
+ as unwanted SPI serial data is simply shuffled thru, and ignored.
+ 
+*/
+
+FbFollowL = !(CSEL);   /* Two foldback gates used for delays */
+FbFollowU = !(CSEL);
+
+
+[IO0..IO15] =  FbFollowL & [Shift0..Shift15]  /* Follow ShiftNodes */
+                # CSEL & [IO0..IO15];         /* == IO Pins = HOLD */
+
+[IO16..IO31] = FbFollowU & [Shift16..Shift31] /* Follow ShiftNodes */
+                # CSEL & [IO16..IO31].io;     /* == IO Pins = HOLD */
+
+[IO0..IO31].oe =  Blank;   /* Blanking Signal on LED, LOW = Off, Hi = ON )  */
+
+/* Note: The Pin Latch will float if OE is activated, so you need to 
+load again, after enable of the Blank signal.
+ A strobe on CSEL is all that's needed for this, as the shifter info is
+unchanged 
+*/
+
+/* =================== END OF DESIGN INFO - NOTES FOLLOW =================  
+Led32Ser.CMD contains
+-i Led32ser.PLA
+-dev P1502C44
+-JTAG OFF  
+-strategy Soft_Buffer = FbFollowL FbFollowU
+-strategy Foldback_Logic = FbFollowL FbFollowU
+
+Atmel ATF1502AS Fitter Version 1.8.2 
+fit1502 -i Led32ser.PLA -dev P1502C44 -JTAG OFF 
+        -Soft_Buffer FbFollowL,FbFollowU -Foldback_Logic FbFollowL,FbFollowU
+
+Led32Ser.FIT
+
+FanIn assignment for block A [34]
+FanIn assignment for block B [34]
+
+    pin_num pin_name output_type feedback    foldback   
+MC1    4     IO0         reg        Shift0       --       
+MC2    5     IO1         reg        Shift1       --       
+MC3    6     IO2         reg        Shift2       --       
+MC4    7     IO3         reg        Shift3       --       
+MC5    8     IO4         reg        Shift4       --       
+MC6    9     IO5         reg        Shift5       --       
+MC7    11    IO6         reg        Shift6       --       
+MC8    12    IO7         reg        Shift7       --       
+MC9    13    IO8         reg        Shift8       --       
+MC10   14    IO9         reg        Shift9       --       
+MC11   16    IO10        reg        Shift10      --       
+MC12   17    IO11        reg        Shift11      --       
+MC13   18    IO12        reg        Shift12      --       
+MC14   19    IO13        reg        Shift13      --       
+MC15   20    IO14        reg        Shift14      --       
+MC16   21    IO15        reg        Shift15      FbFollowL
+MC17   41    IO16        reg        Shift16      --       
+MC18   40    IO17        reg        Shift17      --       
+MC19   39    IO18        reg        Shift18      --       
+MC20   38    IO19        reg        Shift19      --       
+MC21   37    IO20        reg        Shift20      --       
+MC22   36    IO21        reg        Shift21      --       
+MC23   34    IO22        reg        Shift22      --       
+MC24   33    IO23        reg        Shift23      --       
+MC25   32    IO24        reg        Shift24      --       
+MC26   31    IO25        reg        Shift25      --       
+MC27   29    IO26        reg        Shift26      --       
+MC28   28    IO27        reg        Shift27      --       
+MC29   27    IO28        reg        Shift28      --       
+MC30   26    IO29        reg        Shift29      --       
+MC31   25    IO30        reg        Shift30      --       
+MC32   24    IO31        reg        Shift31      FbFollowU
+MC0    2     DATI        --         --           --       
+MC0    1     CSEL        --         --           --       
+MC0    44    Blank       --         --           --       
+MC0    43    CLK         --         --           --       
+
+*/
+

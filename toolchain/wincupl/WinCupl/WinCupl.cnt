@@ -1,0 +1,28 @@
+:Base WinCupl.hlp
+1 WinCUPL
+2 Overview=overview
+2 Features=features
+2 Using WinCUPL=wnd_all
+1 Menus
+2 File menu=menu_file
+2 Edit menu=menu_edit
+2 View menu=menu_view
+2 Options menu=menu_options
+2 Run menu=menu_run
+2 Utilities menu=menu_utility
+2 Window menu=menu_window
+2 Help menu=menu_help
+2 System Menu=menu_system
+1 Windows
+2 WinCUPL IDE=wnd_all
+1 Dialogs
+2 Find=dlg_find
+2 Replace=dlg_replace
+2 Defining CUPL Macros=dlg_macro_def
+2 Referencing CUPL Macros=dlg_macro_ref
+2 Creating CUPL Macros=dlg_macro_create
+2 Binary Table Editor=dlg_table
+2 Compiler Options=dlg_compiler
+2 Simulator Options=dlg_simulator
+2 WinCUPL Options=dlg_wincupl
+2 Error Messages=dlg_error

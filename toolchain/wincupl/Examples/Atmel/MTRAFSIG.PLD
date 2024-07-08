@@ -1,0 +1,96 @@
+Name       mtrafsig;
+Partno     atv750blcc;
+Date       12/09/93;
+Revision   01;
+Designer   Joe PLD;
+Company    Atmel Corporation;
+Assembly   U00;
+Location   San Jose;
+Device     V750BLCC;
+
+/* Traffic Signal Controller */
+
+/** Inputs **/
+
+PIN    2   = Clk;
+PIN    3   = Clr;
+PIN    4   = SenA;
+PIN    5   = SenB;
+
+/** Outputs **/
+
+PIN    24  = GreenA;
+PIN    20  = YellowA;
+PIN    25  = RedA;
+PIN    26  = GreenB;
+PIN    18  = YellowB;
+PIN    27  = RedB;
+PIN    17  = Wait1;
+PIN    19  = Wait0;
+
+
+/** Logic Equations **/
+
+GreenA.ar =  Clr ;
+YellowA.ar =  Clr ;
+RedA.ar =  Clr ;
+GreenA.ckmux =  Clk ;
+YellowA.ckmux =  Clk ;
+RedA.ckmux =  Clk ;
+
+GreenA.sp = 'b'0;
+GreenB.sp = 'b'0;
+RedA.sp =  'b'0 ;
+RedB.sp =  'b'0 ;
+YellowA.sp = 'b'0;
+YellowB.sp = 'b'0;
+
+GreenB.ar =  Clr ;
+YellowB.ar =  Clr ;
+RedB.ar =  Clr ;
+GreenB.ckmux =  Clk ;
+YellowB.ckmux =  Clk ;
+RedB.ckmux =  Clk ;
+
+
+Wait1.ar =  Clr ;
+Wait0.ar =  Clr ;
+Wait1.ckmux =  Clk ;
+Wait0.ckmux =  Clk ;
+[Wait1..0].sp = 'b'0;
+
+Wait0.d =  SenA & SenB & !Wait1 & RedB & !YellowB & !GreenB & !RedA & !YellowA & GreenA
+       # !SenA & !SenB & !Wait1 & RedB & !YellowB & !GreenB & !RedA & !YellowA & GreenA
+       # Wait0 & !Wait1 & RedB & !YellowB & !GreenB & !RedA & !YellowA & GreenA
+       # SenA & SenB & !Wait1 & !RedB & !YellowB & GreenB & RedA & !YellowA & !GreenA
+       # !SenA & !SenB & !Wait1 & !RedB & !YellowB & GreenB & RedA & !YellowA & !GreenA
+       # Wait0 & !Wait1 & !RedB & !YellowB & GreenB & RedA & !YellowA & !GreenA ;
+
+Wait1.d =  Wait0 & RedB & !YellowB & !GreenB & !RedA & !YellowA & GreenA
+       # Wait0 & !RedB & !YellowB & GreenB & RedA & !YellowA & !GreenA ;
+
+RedB.d =  RedB & !YellowB & !GreenB & !RedA & !YellowA & GreenA
+       # !Wait0 & !Wait1 & !RedB & YellowB & !GreenB & RedA & !YellowA & !GreenA
+       # !Wait0 & !Wait1 & !RedB & !YellowB & !GreenB & !RedA & !YellowA & !GreenA ;
+
+YellowB.d =  SenA & !SenB & !Wait0 & !RedB & !YellowB & GreenB & RedA & !YellowA & !GreenA
+       # !Wait0 & Wait1 & !RedB & !YellowB & GreenB & RedA & !YellowA & !GreenA ;
+
+GreenB.d =  !Wait0 & !Wait1 & RedB & !YellowB & !GreenB & !RedA & YellowA & !GreenA
+       # Wait0 & !RedB & !YellowB & GreenB & RedA & !YellowA & !GreenA
+       # !SenA & !Wait1 & !RedB & !YellowB & GreenB & RedA & !YellowA & !GreenA
+       # SenB & !Wait1 & !RedB & !YellowB & GreenB & RedA & !YellowA & !GreenA ;
+
+RedA.d =  !Wait0 & !Wait1 & RedB & !YellowB & !GreenB & !RedA & YellowA & !GreenA
+       # !RedB & !YellowB & GreenB & RedA & !YellowA & !GreenA ;
+
+YellowA.d =  !SenA & SenB & !Wait0 & RedB & !YellowB & !GreenB & !RedA & !YellowA & GreenA
+       # !Wait0 & Wait1 & RedB & !YellowB & !GreenB & !RedA & !YellowA & GreenA ;
+
+GreenA.d =  Wait0 & RedB & !YellowB & !GreenB & !RedA & !YellowA & GreenA
+       # SenA & !Wait1 & RedB & !YellowB & !GreenB & !RedA & !YellowA & GreenA
+       # !SenB & !Wait1 & RedB & !YellowB & !GreenB & !RedA & !YellowA & GreenA
+       # !Wait0 & !Wait1 & !RedB & YellowB & !GreenB & RedA & !YellowA & !GreenA
+       # !Wait0 & !Wait1 & !RedB & !YellowB & !GreenB & !RedA & !YellowA & !GreenA ;
+
+

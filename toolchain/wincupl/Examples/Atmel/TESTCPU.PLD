@@ -1,0 +1,295 @@
+Name            testcpu;
+Partno          ;
+Revision        01;
+Date            12/21/99;
+Designer        ;
+Company         Atmel;
+Assembly        San Jose;
+Location        San Jose;
+Device          f1500a;
+
+PROPERTY ATMEL {preassign keep};
+PROPERTY ATMEL {soft_buffer ON};
+
+/*****************************************************************/
+/*   f1500a  = PLCC package.                                      */
+/*   f1500at = TQFP package.                                      */
+/*****************************************************************/
+
+/*****************************************************************/
+/*                                                               */
+/*     This CPLD is used on a CPU board.               */
+/*                                                               */
+/*     Synchronize rotor sensor with Flash tube and set the      */
+/*     operating mode for the CCD board.                         */
+/*                                                               */
+/*****************************************************************/
+
+
+ 
+/* Control inputs */
+PIN  43  = CLK;
+PIN   1  = !ROTPOS_SNSR;    /* Rotor Position Sensor -- Active Lo */
+
+/* Buffer the rotor position sensor for the 186ES */
+PIN  37  = INT0_ROTPOS_SNSR;
+
+/* Clock select for the counter */
+PIN  34  = HI_FREQ;
+PIN  33  = LO_FREQ;
+PIN   8  = CLK_SEL;
+PIN  36  = CLK_OUT;
+
+/* Counter  */
+/*PINNODE [81,99..107] = [Q0..9];*/
+PINNODE  = [Q0..9];
+
+
+PINNODE  = LOADCOUNT;
+PINNODE  = LOADCOUNT2;
+PINNODE  = LOAD_RST;
+
+/* Data bus inputs */
+PIN  [12..14,16..20]   = [DIN0..7];	  /* Interface to 8 bit bus */
+
+/* Latches to hold the data which is loaded into the counter */
+/*PINNODE [94,92..84] = [LATCH0..9];  */	  /* 10 latches */
+PINNODE  = [LATCH0..9];	  /* 10 latches */
+
+/* Controls for the data latches */
+PIN   2  = COUNTER_LE;      /* active lo */
+PIN  44  = A0;               
+PIN  31  = WR;              /* active lo */
+
+/* Flash trigger generation circuit */
+/* PINNODE 95 = FULLCOUNT;*/
+PINNODE  = FULLCOUNT;
+
+/*PINNODE 108 = SENSOR_TRIG; */
+/*PINNODE  93 = ASYNCH_TRIG; */
+
+PINNODE  = SENSOR_TRIG;
+PINNODE  = ASYNCH_TRIG;
+
+/* output to trigger the flash */
+PIN  39  = FLASH_TRIG;
+
+/* inputs to disable and select the flash mode, synched to rotor or asynchronous */
+PIN  21  = FLASH_DIS;		  /* From CCD controller PLD, active high, disables flashing */
+PIN  41  = FLASH_MODE0;		  /* From 186ES, disables flashes */
+PIN  40  = FLASH_MODE1;		  /* From 186ES, selects source of flash trigger, rotor sensor, or 186ES */
+PIN   6  = ASYN_TRG;		  /* From 186ES, Asynchronous flash trigger source. */
+
+/* DMA control for the LM9801 CCD signal processor */
+PIN  38  = GATEDEOC; /* gated end of conversion, inits DRQs on rising edge */
+PIN   9  = DRQ0;     /* DMA0 request to 186ES */
+PIN  11  = DRQ1;     /* DMA1 request to 186ES */
+PIN   7  = CCDRD;    /* From 186ES (CS or RD) active low, clrs DMA0 request */
+PIN  32  = PGAWR;    /* From 186ES (CS nor WR) active HIGH, clrs DMA0 request */
+
+
+
+/* output to AM186ES INT3 */
+PIN  27    = INT3;
+
+/* input from AM186ES to select source of INT3 */
+PIN  28    = INT3_SELECT;
+
+/* input from PC KEYBOARD, one of 2 sources of INT3 */
+PIN  29    = PC_KBDCLK;
+
+
+
+/*****************************************************************/
+/*                                                               */
+/*                                                               */
+/* Logic Equations                                               */
+/*                                                               */
+/*                                                               */
+/*****************************************************************/
+
+
+
+/*****************************************************************/
+/* Buffer the rotor position sensor for the 186ES                */
+/*                                                               */
+/*****************************************************************/
+
+INT0_ROTPOS_SNSR = !ROTPOS_SNSR;
+/*INT0_ROTPOS_SNSR = ROTPOS_SNSR;*/
+
+
+/*****************************************************************/
+/*                                                               */
+/* DMA request 0 flip-flop implemented 2/21/97                   */
+/*                                                               */
+/* This DMA implementation requests 1 transfer per request.      */
+/* The DMA request must be removed befor a second transfer       */
+/* is initiated.                                                 */
+/*                                                               */
+/* reset the flip-flop when fifo_rd is low (active).             */
+/*                                                               */
+/*****************************************************************/
+
+DRQ0.D  = 'b'1;
+DRQ0.AR = !CCDRD;
+DRQ0.CK = GATEDEOC;
+
+/*****************************************************************/
+/*                                                               */
+/* DMA request 1 flip-flop implemented                  */
+/*                                                               */
+/* This DMA implementation requests 1 transfer per request.      */
+/* The DMA request must be removed befor a second transfer       */
+/* is initiated.                                                 */
+/*                                                               */
+/* reset the flip-flop when pgawr is high (active).              */
+/*                                                               */
+/* DMA request 1 is initiated when DMA transfer 0 completes.     */
+/*                                                               */
+
+DRQ1.D  = 'b'1;
+DRQ1.AR = PGAWR;
+DRQ1.CK = !DRQ0;
+
+
+/*****************************************************************/
+/* Clock Select 2-to-1 Mux                                       */
+/*   0 selects lo frequency clock.                               */
+/*   1 selects hi frequency clock.                               */
+/*****************************************************************/
+
+CLK_OUT =   (LO_FREQ & !CLK_SEL)
+          # (HI_FREQ &  CLK_SEL);
+
+
+/*****************************************************************/
+/* Latch data from the 186ES data bus.                           */
+/*                                                               */
+/*****************************************************************/
+
+[LATCH0..7].l  = [DIN0..7];
+[LATCH0..7].le = !COUNTER_LE & !WR & !A0;  /* lower bits latched A0 = 0 */
+
+[LATCH8..9].l  = [DIN0..1];
+[LATCH8..9].le = !COUNTER_LE & !WR &  A0;  /* upper bits latched A0 = 1 */
+
+
+/*****************************************************************/
+/* 10 - Bit Counter that uses the T-type registers               */
+/*      Counter is loaded from the latches once per rotation     */
+/*                                                               */
+/*****************************************************************/
+
+Q9.t =    LOADCOUNT & !LATCH9 & Q9
+       #  LOADCOUNT &  LATCH9 & !Q9
+       # !LOADCOUNT &  Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q8.t =    LOADCOUNT & !LATCH8 & Q8
+       #  LOADCOUNT &  LATCH8 & !Q8
+       # !LOADCOUNT &  Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q7.t =    LOADCOUNT & !LATCH7 & Q7
+       #  LOADCOUNT &  LATCH7 & !Q7
+       # !LOADCOUNT &  Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q6.t =    LOADCOUNT & !LATCH6 & Q6
+       #  LOADCOUNT &  LATCH6 & !Q6
+       # !LOADCOUNT &  Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q5.t =    LOADCOUNT & !LATCH5 & Q5
+       #  LOADCOUNT &  LATCH5 & !Q5
+       # !LOADCOUNT &  Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q4.t =    LOADCOUNT & !LATCH4 & Q4
+       #  LOADCOUNT &  LATCH4 & !Q4
+       # !LOADCOUNT &  Q3 & Q2 & Q1 & Q0 ;
+
+Q3.t =    LOADCOUNT & !LATCH3 &  Q3
+       #  LOADCOUNT &  LATCH3 & !Q3
+       # !LOADCOUNT &  Q2 & Q1 & Q0;
+  
+Q2.t =    LOADCOUNT & !LATCH2 &  Q2
+       #  LOADCOUNT &  LATCH2 & !Q2
+       # !LOADCOUNT &  Q1 & Q0;
+
+Q1.t =    LOADCOUNT & !LATCH1 &  Q1
+       #  LOADCOUNT &  LATCH1 & !Q1
+       # !LOADCOUNT &  Q0;
+
+Q0.t =    LOADCOUNT & !LATCH0 &  Q0
+       #  LOADCOUNT &  LATCH0 & !Q0
+       # !LOADCOUNT;
+
+[Q9..0].ck =  CLK;
+[Q9..0].ar =  ROTPOS_SNSR /* # FULLCOUNT */;
+
+
+/*****************************************************************/
+/* FULLCOUNT - Counts on falling edge of CLK.                    */
+/*             Becomes Active when counter reaches all '1's.     */
+/*             Resets the counters.                              */
+/*****************************************************************/
+FULLCOUNT.d  =  Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0
+               # FULLCOUNT;
+
+FULLCOUNT.ck = !CLK;
+FULLCOUNT.ar = ROTPOS_SNSR;
+
+
+
+/*****************************************************************/
+/*                                                               */
+/* LOADCOUNT - Loads the counters.                               */
+/*             Delay is the compliment of the load count.        */
+/*             Load is active for 2 CLK rising edges and         */
+/*             then resets itself so counting can begin.         */
+/*                                                               */
+/*****************************************************************/
+
+LOADCOUNT.d   = 'b'1;
+LOADCOUNT.ck  = !ROTPOS_SNSR;        /* rising edge of reset signal */
+LOADCOUNT.ar  = LOAD_RST;
+
+LOADCOUNT2.d  = LOADCOUNT;
+LOADCOUNT2.ck = CLK;
+
+LOAD_RST.d    = LOADCOUNT2;
+LOAD_RST.ck   = CLK;
+
+
+
+/*****************************************************************/
+/*                                                               */
+/* flash_dis   = 1   --- do not allow flashes                    */
+/* flash_dis   = 0   --- allow flashes                           */
+/*                                                               */
+/* flash_mode0 = 1   --- allow flashes                           */
+/* flash_mode0 = 0   --- do not allow flashes                    */
+/*                                                               */
+/* flash_mode1 = 1   --- rotor sensor triggers flashes.          */
+/* flash_mode1 = 0   --- asyn trig(186ES) triggers flashes.      */
+
+SENSOR_TRIG.D  = 'b'1;
+SENSOR_TRIG.AR = FLASH_DIS # !FLASH_MODE0 # !FLASH_MODE1;
+SENSOR_TRIG.CK = FULLCOUNT;
+
+
+ASYNCH_TRIG.D  = 'b'1;
+ASYNCH_TRIG.AR = FLASH_DIS # !FLASH_MODE0 # FLASH_MODE1;
+ASYNCH_TRIG.CK = ASYN_TRG;
+
+
+FLASH_TRIG =   SENSOR_TRIG
+             # ASYNCH_TRIG;
+
+
+/*****************************************************************/
+/*                                                               */
+/*  Select source for AM186ES INT3                               */
+/*                                                               */
+/*****************************************************************/
+INT3 =    INT3_SELECT &  FLASH_TRIG
+       # !INT3_SELECT & !PC_KBDCLK;
+
+

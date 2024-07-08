@@ -1,0 +1,22 @@
+Name     paporp;
+PartNo   XXXXX;
+Date     11/13/95;
+Revision 02;
+Designer JZL;
+Company  Atmel;
+Assembly None;
+Location XXXXX;
+Device   f1500at;
+
+
+ORDER: clk, !reset, mc2, mc3, mc4, mc5, mc6, mc7, mc1fdbk, mc1; 
+
+
+VECTORS:
+C0100011**
+C1011111**
+C1110011**
+C1000001**
+C1101011**
+C1110001**
+C0001011**

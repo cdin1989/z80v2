@@ -1,0 +1,28 @@
+Name       join2500;
+Partno     atv2500lcc;
+Date       12/07/93;
+Revision   01;
+Designer   Joe PLD;
+Company    Atmel Corporation;
+Assembly   U00;
+Location   San Jose;
+Device     v2500lcc;
+
+Order:
+I1,I2,I3,I17,I18,I19,I20,I21,I22,I23,I37,I38,I40,%2,Q04,Q2R04;
+
+Vectors:
+100000000000C  HL
+000000001000C  HH
+000100000000C  HL
+010000100100C  HH
+
+Order:
+I1,I2,I3,I17,I18,I19,I20,I21,I22,I23,I37,I38,I40,%2,Q05,Q1R05,Q2R05;
+
+Vectors:
+100000000000C  HLL
+000010000000C  HHL
+000000001000C  HLH
+000101001000C  HHH
+

@@ -1,0 +1,66 @@
+Name            fitter1;
+Partno		  ;
+Date            11/13/95;
+Rev		  01;
+Designer	  Atmel_D;
+Company         Atmel;
+Assembly	  None;
+Location	  None;
+Device         f1500at;
+
+/* Select ATF1500 Fitter Property list */
+/* 1) Preassign Keep is on - Keep User assigned pins */
+/* 2) Soft_buffer is on - Node Collapsing is Disabled */
+/* Note: all options separated by the <space> character */
+/* 3) Disable Pin Keeper Circuits */
+/* 4) Enable Security Bit */
+
+/* Note: Options 3 and 4 are only available on the ATF1500A */
+/* Device. This device allow programmable control of the pin-keeper */
+/* circuits and the security bit feature. Selecting the f1500at defaults */
+/* to having the security bit disabled and the pin-keeper circuits */
+/* enabled */
+
+PROPERTY ATMEL {preassign keep};
+PROPERTY ATMEL {soft_buffer = mc1};
+PROPERTY ATMEL {security on};
+PROPERTY ATMEL {pin_keep OFF} ; /* Disables pin-keeper circuits */
+
+/****************************************************/
+/* ATF1500 CUPL Test Case Combinatorial Output      */
+/* Buried Register Node, Pin clock, Pin reset       */
+/****************************************************/
+
+/* Inputs */
+
+Pin 37 = clk;    /* Global Clock Signal */
+Pin 39 = !reset;  /* Global Reset Signal */
+
+/* Outputs */
+
+pin 1 = mc1;
+pin 2 = mc2;
+pin 3 = mc3;
+pin 5 = mc4;
+pin 6 = mc5;
+pin 7 = mc6;
+pin 8 = mc7;
+
+pinnode 77 = mc1fdbk;  /* Buried Register Node */
+
+/* Logic Equations */
+
+mc1 = mc3 # mc4 # mc5 # mc6 # mc7 # mc1fdbk;
+
+mc1fdbk.d = mc2;      
+mc1fdbk.ck = clk;
+mc1fdbk.ar = reset;
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,33 @@
+Name        z80_sio;
+PartNo      00;
+Date        2024/5/22;
+Revision    01;
+Designer    bitrowz;
+Company     bitrowz;
+Assembly    None;
+Location    ;
+Device      g22v10;
+
+/********************************************************/
+/* Select SIO device.                                   */
+/* IO Port:                                             */
+/* 0x3E: SIO Control/Status Register(read/write)        */
+/* 0x3F: SIO Transmit/Receive Data Register(read/write) */
+/********************************************************/
+
+/** Inputs **/
+Pin [1..8] = [A0..7];
+Pin [9,10,11,13] = [!IORQ,!WR,!RD,M1];
+
+/** Outputs **/
+Pin [20,21,22,23] = [!SIO_CS,SIO_E,!SIO_WR,SIO_RS];
+
+/** Intermediate Variables */
+Field ioaddr = [A7..0];
+ioreq = IORQ & M1;
+
+/** Logical Equations **/
+SIO_RS = A0;
+SIO_CS = ioreq & ioaddr:[003E,003F];
+SIO_E = SIO_CS;
+SIO_WR = SIO_CS & WR;

@@ -1,0 +1,10 @@
+diskdef z80pack-hd
+  seclen 128
+  tracks 1024
+  sectrk 64
+  blocksize 4096
+  maxdir 512
+  skew 0
+  boottrk 4
+  os 2.2
+end

@@ -1,0 +1,49 @@
+Name     ce_tff2;
+PartNo   AtmelCPLD;
+Date     12/20/99;
+Revision 01;
+Designer Woolhiser;
+Company  Atmel;
+Assembly None;
+Location None;
+Device   f1508plcc84;
+
+
+ORDER: clk, %1, AR, AP, %2, Co, Q4, Q3, Q2, Q1, Q0; 
+
+
+VECTORS:
+000LLLLH*****
+C00LLLLL*****
+C10LLLLH*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLHL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLHLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LHLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00LLLLL*****
+C00HLLLL*****
+C00LLLLL*****

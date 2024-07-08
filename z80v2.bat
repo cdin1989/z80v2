@@ -1,0 +1,11 @@
+@echo off
+set "ROOT=%~dp0"
+set "TOOLCHAIN=%ROOT%toolchain"
+set "Z88DK=%ROOT%toolchain\z88dk\bin"
+set "ZCCCFG=%ROOT%toolchain\z88dk\lib\config"
+set "GNUMAKE=%ROOT%toolchain\gnumake"
+set "CUPL=%ROOT%toolchain\wincupl\Shared\"
+set "LIBCUPL=%CUPL%cupl.dl"
+set "CPMTOOLS=%ROOT%toolchain\cpmtools\"
+set "CPMTOOLS_DEFS=%ROOT%toolchain\cpmtools\diskdefs"
+set "PATH=%PATH%;%Z88DK%;%CUPL%;%LIBCUPL%;%ZCCCFG%;%GNUMAKE%;%CPMTOOLS%;%TOOLCHAIN%"

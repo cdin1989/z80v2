@@ -1,0 +1,37 @@
+Name            Expander;
+Partno          ;
+Revision        01;
+Date            8/10/99;
+Designer        PLD Expert;
+Company         Atmel Corp.;
+Location        None;
+Assembly        None;
+Device          F1500a;
+
+/* Example assigning expander terms */
+
+$INCLUDE fit1500.m
+
+EXP(X0);    /* Declare Expander terms */
+EXP(X1);    /* Declare Expander terms */
+EXP(X2);    /* Declare Expander terms */
+
+pin [24..27] = [I3..0];    /* inputs */
+
+pin [33..34] = [out1..2];  /* outputs */
+
+/* expander nodes */
+pinnode = [X0..2];     
+
+/* equations  */
+
+/* Implement SOP using expander terms by DeMorgan's inversion,
+   X2 = X0 # X1. */
+
+X0 = (!I1 & I0);
+X1 = (!I3 & I2 & !I0);
+X2 = (X0 & X1);
+
+out1  =   X2 # !I3 & !I1;
+out2  =   X2;
+

@@ -1,0 +1,44 @@
+Name     Count10;
+PartNo   CA0018;
+Date     12/19/99;
+Revision 02;
+Designer Kahl;
+Company  Logical Devices, Inc.;
+Assembly None;
+Location None;
+Device   g16v8a;
+
+/****************************************************************/
+/*                                                              */
+/* Decade Counter                                               */
+/*                                                              */
+/****************************************************************/
+
+ORDER: clk, clr, dir, !oe, %2, Q3..Q0, %1, carry; 
+
+
+VECTORS:
+C100 "0" L  /* synchronous clear to state 0 */
+C000 "1" L  /* count up to state 1          */
+C000 "2" L  /* count up to state 2          */
+C000 "3" L  /* count up to state 3          */
+C000 "4" L  /* count up to state 4          */
+C000 "5" L  /* count up to state 5          */
+C000 "6" L  /* count up to state 6          */
+C000 "7" L  /* count up to state 7          */
+C000 "8" L  /* count up to state 8          */
+C000 "9" H  /* count up to state 9 - carry  */
+C000 "0" L  /* count up to state 0          */
+C010 "9" L  /* count down to state 9        */
+C010 "8" L  /* count down to state 8        */
+C010 "7" L  /* count down to state 7        */
+C010 "6" L  /* count down to state 6        */
+C010 "5" L  /* count down to state 5        */
+C010 "4" L  /* count down to state 4        */
+C010 "3" L  /* count down to state 3        */
+C010 "2" L  /* count down to state 2        */
+C010 "1" L  /* count down to state 1        */
+C010 "0" H  /* count down to state 0 - carry*/
+C001ZZZZL  /* test tri-state               */
+C000 "2" L  /* count up to state 2          */
+C100 "0" L  /* synchronous clear to state 0 */

@@ -1,0 +1,151 @@
+Name       gcount_0;
+Partno     XXXXX;
+Date       08/10/99;
+Revision   01;
+Designer   Anonymous;
+Company    XXXXX;
+Assembly   XXXXX;
+Location   XXXXX;
+Device     V750c;
+
+/**************************************************************************/
+/*              8-Bit Pseudo Grey Code Counter and decode                 */
+/*                                                                        */
+/*  This example is of a Mealy state machine - in other words,            */
+/*  combinatorial outputs are generated from the machine states and the   */
+/*  combinatorial inputs.  This is actually a very common design -        */
+/*  decoding the state machine's outputs into combinatorial outputs.      */
+/*  Problems can arise when pure binary counters are used, as many bits   */
+/*  are changing simulataneously.  Race conditions can result and         */
+/*  glitches appear on combinatorial outputs when many inputs change      */
+/*  simulataneously.  We recommend using a grey coded counter.  However,  */
+/*  it is easier to define a large counter with Boolean equations than    */
+/*  with a state machine diagram.  This example is a pseudo grey code     */
+/*  counter for 8 bits.  Smaller counters can be cut down from this one   */
+/*  and larger ones can be built up using the same algorithm.             */
+/**************************************************************************/
+
+/** Inputs **/
+
+PIN     1   = Clk;
+PIN     2   = D0;
+PIN     3   = D1;
+PIN     4   = D2;
+PIN     5   = D3;
+PIN     6   = rest;
+PIN     7   = OEB;
+
+/** Outputs **/
+
+PIN     14  = O64;
+PIN     15  = O128;
+PIN     16  = O63;
+PIN     17  = O127;
+PIN     18  = O16;
+PIN     19  = O32;
+PIN     20  = O15;
+PIN     21  = O31;
+PIN     22  = O7;
+PIN     23  = O8;
+
+PINNODE 25  = Q0;
+PINNODE 34  = Q1;
+PINNODE 26  = Q2;
+PINNODE 33  = Q3;
+PINNODE 27  = Q4;
+PINNODE 32  = Q5;
+PINNODE 29  = Q6;
+PINNODE 30  = Q7;
+
+
+/** Logic Equations **/
+
+[Q7..0].ar =  rest;
+[Q7..0].sp =  'b'0;
+
+[Q7..0].ck =  Clk ;
+
+O128.oe =  !OEB ;
+O127.oe =  !OEB ;
+O64.oe =  !OEB ;
+O63.oe =  !OEB ;
+O32.oe =  !OEB ;
+O31.oe =  !OEB ;
+O16.oe =  !OEB ;
+O15.oe =  !OEB ;
+O8.oe =  !OEB ;
+O7.oe =  !OEB ;
+
+
+Q0.d =  !Q1 ;
+
+Q1.d =  Q0 ;
+
+Q2.d =  !Q0 & Q2
+       # !Q1 & Q2
+       # Q0 & Q1 & !Q3 ;
+
+Q3.d =  Q0 & Q1 & Q2
+       # !Q0 & Q3
+       # !Q1 & Q3 ;
+
+Q4.d =  !Q0 & Q4
+       # !Q1 & Q4
+       # !Q2 & Q4
+       # !Q3 & Q4
+       # Q0 & Q1 & Q2 & Q3 & !Q5 ;
+
+Q5.d =  Q0 & Q1 & Q2 & Q3 & Q4
+       # !Q0 & Q5
+       # !Q1 & Q5
+       # !Q2 & Q5
+       # !Q3 & Q5 ;
+
+Q6.d =  !Q0 & Q6
+       # !Q1 & Q6
+       # !Q2 & Q6
+       # !Q3 & Q6
+       # !Q4 & Q6
+       # !Q5 & Q6
+       # Q0 & Q1 & Q2 & Q3 & Q4 & Q5 & !Q7 ;
+
+Q7.d =  Q0 & Q1 & Q2 & Q3 & Q4 & Q5 & Q6
+       # !Q0 & Q7
+       # !Q1 & Q7
+       # !Q2 & Q7
+       # !Q3 & Q7
+       # !Q4 & Q7
+       # !Q5 & Q7 ;
+
+
+O128 =  !D0 & D1 & !D2 & D3 & !Q0 & !Q1 & !Q2 & !Q3 & !Q4 & !Q5 & Q6 & Q7
+       # D0 & !D1 & !D2 & D3 & !Q0 & !Q1 & !Q2 & !Q3 & !Q4 & !Q5 & Q6 & Q7 ;
+
+O127 =  !D0 & D1 & !D2 & D3 & !Q0 & Q1 & !Q2 & !Q3 & !Q4 & !Q5 & Q6 & Q7
+       # D0 & !D1 & !D2 & D3 & !Q0 & Q1 & !Q2 & !Q3 & !Q4 & !Q5 & Q6 & Q7 ;
+
+O64 =  !D0 & !D1 & !D2 & D3 & !Q0 & !Q1 & !Q2 & !Q3 & !Q4 & !Q5 & Q6 & !Q7
+       # D0 & D1 & D2 & !D3 & !Q0 & !Q1 & !Q2 & !Q3 & !Q4 & !Q5 & Q6 & !Q7 ;
+
+O63 =  !D0 & !D1 & !D2 & D3 & !Q0 & Q1 & !Q2 & !Q3 & !Q4 & !Q5 & Q6 & !Q7
+       # D0 & D1 & D2 & !D3 & !Q0 & Q1 & !Q2 & !Q3 & !Q4 & !Q5 & Q6 & !Q7 ;
+
+O32 =  !D0 & D1 & D2 & !D3 & !Q0 & !Q1 & !Q2 & !Q3 & Q4 & Q5 & !Q6 & !Q7
+       # D0 & !D1 & D2 & !D3 & !Q0 & !Q1 & !Q2 & !Q3 & Q4 & Q5 & !Q6 & !Q7 ;
+
+O31 =  !D0 & D1 & D2 & !D3 & !Q0 & Q1 & !Q2 & !Q3 & Q4 & Q5 & !Q6 & !Q7
+       # D0 & !D1 & D2 & !D3 & !Q0 & Q1 & !Q2 & !Q3 & Q4 & Q5 & !Q6 & !Q7 ;
+
+O16 =  !D0 & !D1 & D2 & !D3 & !Q0 & !Q1 & !Q2 & !Q3 & Q4 & !Q5 & !Q6 & !Q7
+       # D0 & D1 & !D2 & !D3 & !Q0 & !Q1 & !Q2 & !Q3 & Q4 & !Q5 & !Q6 & !Q7 ;
+
+O15 =  !D0 & !D1 & D2 & !D3 & !Q0 & Q1 & !Q2 & !Q3 & Q4 & !Q5 & !Q6 & !Q7
+       # D0 & D1 & !D2 & !D3 & !Q0 & Q1 & !Q2 & !Q3 & Q4 & !Q5 & !Q6 & !Q7 ;
+
+O8 =  !D0 & D1 & !D2 & !D3 & !Q0 & !Q1 & Q2 & Q3 & !Q4 & !Q5 & !Q6 & !Q7
+       # D0 & !D1 & !D2 & !D3 & !Q0 & !Q1 & Q2 & Q3 & !Q4 & !Q5 & !Q6 & !Q7 ;
+
+O7 =  !D0 & D1 & !D2 & !D3 & !Q0 & Q1 & Q2 & Q3 & !Q4 & !Q5 & !Q6 & !Q7
+       # D0 & !D1 & !D2 & !D3 & !Q0 & Q1 & Q2 & Q3 & !Q4 & !Q5 & !Q6 & !Q7 ;
+
+

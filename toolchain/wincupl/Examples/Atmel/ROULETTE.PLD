@@ -1,0 +1,231 @@
+Name       Roulette;
+Partno     XXXXX;
+Date       08/10/99;
+Revision   01;
+Designer   Chip Willman;
+Company    Logical Devices Inc;
+Assembly   XXXXX;
+Location   XXXXX;
+Device     F1500a;
+
+/******************************************************************/
+/*  This is an examples of a game roulette                        */
+/*  In this examples the ATF1500 Controls the Flashing lights of  */
+/*  the balls spinning around.  It also controls the PAYOFF       */
+/*  Amount (7 segment LED Numerial Display).  To simulate the    */
+/* clock slowing down we implimented                              */
+/* A non-linear clock with a reset button (start the game) and    */
+/* spins the wheel.  It should look kinda cool.   ;)              */
+/*                                                                */
+/*                                                                */
+/******************************************************************/
+/* 
+/******************************************************************/
+
+/**  
+     Inputs:
+		The following inputs are needed.
+			Clock
+			Start
+			Done
+**/
+
+
+Pin   43     =   CLK     ;      /*  Global Clock for all registers  */
+Pin    2     =   DONE    ;      /*  Signal to tell the Chip to stop
+				    Spinning around                 */
+Pin    1     =   !START   ;      /*  Start the Simulation            */
+Pin   44     =   !DEMO    ;      /*  Demo Option                     */
+
+/**  
+     Outputs:
+		The following outputs are needed.
+			7 bit segment LED display
+				  0
+				-----
+				|   |
+			      1 |   | 2 
+				-----
+				| 3 |
+			      4 |   | 5 
+				-----
+				  6
+
+			20 bit wheel (20 LED displays)
+
+					1  2  3
+					*  *  *
+				    20*         * 4
+				  19*                   
+				 18*               * 5
+				17*                 *  6
+				16*                 *  7
+				15 *               *  8
+						  *  9
+				  14  *         *  10
+					*  *  * 
+					13 12 11
+
+
+			RUN
+			DEMOOUT
+**/
+
+Pin [12,40..36]   = ![L0..5]   ;      /*  LED's 1-6                     */
+Pin [34,33,5,13] = ![L6..9]   ;      /*  LED's 7-10                    */
+Pin [14,32,31,29,28,27] = ![L10..15] ;      /*  LED's 11-16                   */
+Pin [26..24,16] = ![L16..19] ;      /*  LED's 17-20                   */
+Pin [41,21] = [P0..1]   ;      /*  Segment Display               */
+Pin [20,19,18,11] = [P2..5]   ;      /*  Segment Display               */
+Pin 17       = P6        ;      /*  Segment Display               */
+Pin 7        = !RUN       ;      /*  Run Simulation                */
+Pin 6        = FLASH;
+/** nodes **/
+
+pinnode 81 = DEMOOUT   ;      /*  Flash everthing Cool like     */
+pinnode 82 = roll;
+
+/** Declarations and Intermediate Variable Definitions **/
+
+FIELD Wheel = [L0..19];
+FIELD Payoff = [P0..6];
+
+
+/**  Logic Equations  **/
+
+$DEFINE S0 'h'00001
+$DEFINE S1 'h'00002
+$DEFINE S2 'h'00004
+$DEFINE S3 'h'00008
+$DEFINE S4 'h'00010
+$define S5 'h'00020
+$define S6 'h'00040
+$define S7 'h'00080
+$define S8 'h'00100
+$define S9 'h'00200
+$define S10 'h'00400
+$define S11 'h'00800
+$define S12 'h'01000
+$define S13 'h'02000
+$define S14 'h'04000
+$define S15 'h'08000
+$define S16 'h'10000
+$define S17 'h'20000
+$define S18 'h'40000
+$define S19 'h'80000
+
+
+Sequence Wheel {
+	PRESENT 'h'00000 
+		NEXT S1;
+	PRESENT S0
+		If roll NEXT S1;
+		IF !RUN & !DEMOOUT NEXT S0;
+		IF DEMOOUT & !roll NEXT S7;
+	Present S1
+		IF roll NEXT S2;
+		IF !roll & !DEMOOUT NEXT S1;
+		IF DEMOOUT & !roll NEXT S8;
+	Present S2
+		IF roll NEXT S3;
+		IF !roll & !DEMOOUT NEXT S2;
+		IF DEMOOUT & !roll NEXT S9;
+	       
+	Present S3
+		IF roll NEXT S4;
+		IF !roll & !DEMOOUT NEXT S3;
+		IF DEMOOUT & !roll NEXT S10;
+	Present S4
+		IF roll NEXT S5;
+		IF !roll & !DEMOOUT NEXT S4;
+		IF DEMOOUT & !roll NEXT S11;
+	Present S5
+		IF roll NEXT S6;
+		IF !roll & !DEMOOUT NEXT S5;
+		IF DEMOOUT & !roll NEXT S12;
+	Present S6
+		IF !roll & !DEMOOUT NEXT S6;
+		IF DEMOOUT & !roll NEXT S13;
+		IF roll NEXT S7;
+	Present S7
+		IF !roll & !DEMOOUT NEXT S7;
+		IF DEMOOUT & !roll NEXT S14;
+		IF roll NEXT S8;
+	Present S8
+		IF !roll & !DEMOOUT NEXT S8;
+		IF DEMOOUT & !roll NEXT S15;
+		IF roll NEXT S9;
+	Present S9
+		IF !roll & !DEMOOUT NEXT S9;
+		IF DEMOOUT & !roll NEXT S16;
+		IF roll NEXT S10;
+	Present S10
+		IF !roll & !DEMOOUT NEXT S10;
+		IF DEMOOUT & !roll NEXT S17;
+		IF roll NEXT S11;
+	Present S11
+		IF !roll & !DEMOOUT NEXT S12;
+		IF DEMOOUT & !roll NEXT S18;
+		IF roll NEXT S12;
+	Present S12
+		IF !roll & !DEMOOUT NEXT S12;
+		IF DEMOOUT & !roll NEXT S19;
+		IF roll NEXT S13;
+	Present S13
+		IF !roll & !DEMOOUT NEXT S13;
+		IF DEMOOUT & !roll NEXT S0;
+		IF roll NEXT S14;
+	Present S14
+		IF !roll & !DEMOOUT NEXT S14;
+		IF DEMOOUT & !roll NEXT S1;
+		IF roll NEXT S15;
+	Present S15
+		IF !roll & !DEMOOUT NEXT S15;
+		IF DEMOOUT & !roll NEXT S2;
+		IF roll NEXT S16;
+	Present S16
+		IF !roll & !DEMOOUT NEXT S16;
+		IF DEMOOUT & !roll NEXT S3;
+		IF roll NEXT S17;
+	Present S17
+		IF !roll & !DEMOOUT NEXT S17;
+		IF DEMOOUT & !roll NEXT S4;
+		IF roll NEXT S18;
+	Present S18
+		IF !roll & !DEMOOUT NEXT S18;
+		IF DEMOOUT & !roll NEXT S5;
+		IF roll NEXT S19;
+	Present S19
+		IF !roll & !DEMOOUT NEXT S19;
+		IF DEMOOUT & !roll NEXT S6;
+		IF roll NEXT S0;
+	 
+}
+
+P0.d = (L2 # L8 # L12 # L16 # L6 # L18 # L4)&!DEMOOUT
+	# (DEMOOUT & L0)
+	# (DEMOOUT & L8);
+P1.d = (L0 # L10 # L14 # L6 # L18 #  L4)&!DEMOOUT
+	# (DEMOOUT & L7);
+P2.d = (!L6 & !L18 & !DEMOOUT)
+	# (DEMOOUT & L1)
+	# (DEMOOUT & L9);
+P3.d = (L2 # L8 # L12 # L16 # L0 # L10 # L14 # L6 # L18 # L4)&!DEMOOUT
+	# (DEMOOUT & L2)
+	# (DEMOOUT & L6);
+P4.d = (L2 # L8 # L12 # L16 # L6 # L18)&!DEMOOUT
+	# (DEMOOUT & L3);
+P5.d = (!L2 & !L8 & !L12 & !L16 & !DEMOOUT)
+	# (DEMOOUT & L5);
+P6.d = (L2 # L8 # L12 # L16 # L6 # L18 # L4)& !DEMOOUT
+	# (DEMOOUT & L4);
+
+roll = START # roll & !DONE;
+
+Wheel.ck = CLK;
+Payoff.ck = CLK;
+DEMOOUT.ck = CLK;
+DEMOOUT.d = DEMO # DEMOOUT & !START & !roll # Wheel:'h'00000;
+RUN = !START & roll # RUN & !DONE;
+FLASH.d = !FLASH & !DEMOOUT & !roll;
+FLASH.ck = CLK;

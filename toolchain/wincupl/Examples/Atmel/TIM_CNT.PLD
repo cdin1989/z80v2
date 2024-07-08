@@ -1,0 +1,254 @@
+Name      tim_cnt;
+Partno	   AtmelCPLD;
+Date      12/20/99;
+Rev       01;
+Designer  Atmel_D;
+Company   Atmel;
+Assembly  None;
+Location  None;
+Device    f1508plcc84;
+
+/*                       16-Bit Timer/Counter Schematic  		*/
+/*                       -----------------------------			*/
+/*									*/
+/*                                 2-to1 MUX     COUNTER		*/
+/*                                     ---        --------		*/
+/*                                    |   |      |        |		*/
+/* I[15:0] >------------------------->|   |      |        |		*/
+/*                DATA REGISTER       |   |----->|D[15:0] |		*/
+/*                  --------     /--->|   |M15:0 |        |		*/
+/*                 |        |    |    |   |      | Q[15:0]|---*------> O[15:0]  */
+/* D[15:0] >----*->|D[15:0] |    |    | S |      |        |   |		*/
+/*              |  |        |    |     ---    /->|LD      |   |		*/
+/*              |  | Q[15:0]|----/      |     |  |        |   |		*/
+/*              |  |        |DReg15:0   |  /--|->|CLK     |   |		*/
+/* LoadP >------|->|LD      |           |  |  |  |        |   |		*/
+/*              |  |        |           |  |  |  |  RST   |   |		*/
+/*           /--|->|CLK     |           |  |  |   --------    |		*/
+/*           |  |  |        |           |  |  |      |        |  	*/
+/*           |  |  |  RST   |           |  |  |      |        |		*/
+/*           |  |   --------            |  |  |      |        |		*/
+/*           |  |      |                |  |  |      |        | 	*/
+/* SEL >-----|--|------|----------------/  |  \------|------- |--\	*/
+/*           |  |      |                   |         |        |  |	*/
+/* RST >-----|--|------*--------*----------|---------/        |  |	*/
+/*           |  |               |          |                  |  |  	*/
+/* CLK >-----*--|---------------|----------/  /---------------/  |	*/
+/*           |  |   COMPARE     |             |                  |	*/
+/*           |  |   REGISTER    |             |  COMPARATOR      |	*/
+/*           |  |   --------    |             |   --------       |	*/
+/*           |  |  |        |   |             |  |        |      |	*/
+/*           |  \->|D[15:0] |   |             \->|A[15:0] |      | A=B	*/
+/*           |     |        |   |                |        |------/	*/
+/*           |     | Q[15:0]|---|--------------->|B[15:0] | LD_COUNT 	*/
+/*           |     |        |   |  CReg15:0      |        |        	*/
+/* LoadC >---|---->|LD      |   |                 --------		*/
+/*           |     |        |   |					*/
+/*           \---->|CLK     |   |					*/
+/*                 |        |   |					*/
+/*                 |  RST   |   |					*/
+/*                  --------    |					*/
+/*                     |        |					*/
+/*                     |        |					*/
+/*                     |        |					*/
+/*                     \--------/					*/
+/*									*/
+/* This is a 16-Bit Timer/Counter design example which is typically used */
+/* in a microprocessor-based system. Please refer to the above schematic */
+/* for the operation of the design.					*/	
+
+
+
+/************************** External Pins *************************************/
+/* the 16-bit design is broken						      */		
+/* up into 4 parts, each a 4-bit design. Except for the COUNTER module, all   */
+/* modules can easily be seprated into 4 parts. As for the COUNTER design,    */
+/* CARRY-OUT functions are created to cascade the four 4-bit counters. We will */
+/* be using synchronous carry-out functions which looks ahead so to improve   */
+/* the performance of the design.					      */	
+
+/* Unlatched I inputs */
+Pin 81 = I0;
+pin 6 = I1;
+pin 21 = I2;
+pin 24 = I3;                                      
+Pin 55 = I4;
+pin 69 = I5;
+pin 73 = I6;
+pin 5 = I7;                                  
+Pin 20 = I8;
+pin 30 = I9;
+pin 61 = I10;
+pin 70 = I11;                                 
+Pin 74 = I12;
+pin  4  = I13;
+pin 18 = I14;
+pin 29 = I15;                                 
+
+/* Data latched D inputs */
+Pin 17 = D0;
+pin 27 = D1;
+pin 54 = D2;
+pin 77 = D3;                                   
+Pin 12 = D4;
+pin 11 = D5;
+pin 8 = D6;
+pin 22 = D7;                                  
+Pin 25 = D8;
+pin 58 = D9;
+pin 80 = D10;
+pin 10 = D11;                                 
+Pin 16 = D12; 
+pin 31 = D13;
+pin 60 = D14;
+pin 64 = D15;                                 
+
+
+Pin 2 = LoadP;
+Pin 56 = SEL;
+Pin 1 = RST ;
+Pin 83 = CLK ;
+Pin 84 = LoadC ;
+
+/* Outputs of the COUNTER module */
+pin [48,52,51,46] = [O0,O1,O2,O3] ;           
+Pin [45,50,49,44] = [O4,O5,O6,O7]  ;            
+Pin [37,33,34,39] = [O8,O9,O10,O11];           
+Pin [40,35,36,41] = [O12,O13,O14,O15];            
+
+/*************************** Internal Nodes ************************************/
+
+/* DATA REGISTER nodes */
+pinnode [647,644,639,643] = [DReg0,DReg1,DReg2,DReg3]   ; 
+pinnode [636,642,634,641] = [DReg4,DReg5,DReg6,DReg7]  ; 
+pinnode [633,625,618,723] = [DReg8,DReg9,DReg10,DReg11]; 
+pinnode [714,722,713,721] = [DReg12,DReg13,DReg14,DReg15] ; 
+
+/* COMPARE REGISTER nodes */
+pinnode [696,695,692,690] = [CReg0,CReg1,CReg2,CReg3] ; 
+pinnode [689,687,684,682] = [CReg4,CReg5,CReg6,CReg7]  ; 
+pinnode [681,631,630,628] = [CReg8,CReg9,CReg10,CReg11]; 
+pinnode [626,623, 622,620] = [CReg12,CReg13,CReg14,CReg15]   ; 
+
+/* 2-TO-1 MUX nodes */
+pinnode = M0,M1,M2,M3   ;  
+pinnode = M4,M5,M6,M7  ;   
+pinnode = M8,M9,M10,M11 ;   
+pinnode = M12,M13,M14,M15 ;   
+
+/* COMPARATOR - These are the intermediate outputs for comparing one bit. The  */
+/* comparator outputs LD_COUNTn where n = 1..4 quadrant ANDed all these intermediate */
+/* outputs.									*/
+pinnode = C0,C1,C2;
+pinnode 683 = C3  ;   
+pinnode [698,700,702,703]= [C4,C5,C6,C7]  ;   
+pinnode [706,632,708,716]= [C8,C9,C10,C11]  ;   
+pinnode [710,719,604,711]= C12,C13,C14,C15;   
+
+
+pinnode 602 = LD_COUNT ;               
+/* pinnode = LD_COUNT2 ; */              
+/* pinnode = LD_COUNT3 ; */              
+/* pinnode = LD_COUNT4 ; */              
+
+/* Synchronous Carry-out nodes for cascading the four 4-bit counters to form */
+/* the COUNTER module. 	
+						     */
+pin 68 = CarryQ1 ; 
+pin 63 = CarryQ2 ; 
+pin 79 = CarryQ3 ;
+
+/*******************Field Variable Declarations ************************/
+Field I    = [I15..I0];
+Field Data    = [D15..D0];
+Field DReg = [DReg15..DReg0];
+Field CReg = [CReg15..CReg0];
+Field O    = [O15..O0];
+
+/* O_FB = [O15.FB,O14.FB,O13.FB,O12.FB,O11.FB,O10.FB,O9.FB,O8.FB,
+        O7.FB,O6.FB,O5.FB,O4.FB,O3.FB,O2.FB,O1.FB,O0.FB]; */
+
+/* Field O_Q1 = [O3..O0]; */
+/* Field O_Q2 = [O7..O4]; */
+/* Field O_Q3 = [O11..O8]; */
+/* Field O_Q4 = [O15..O12]; */
+
+Field Comp = [C15..C0];
+
+Field M    = [M15..M0];
+Field M_Q1 = [M3..M0];
+Field M_Q2 = [M7..M4];
+Field M_Q3 = [M11..M8];
+Field M_Q4 = [M15..M12];
+
+		
+/******************************* Macro *****************************************/
+
+$MACRO FOUR_BIT_COUNTER CNT0,CNT1,CNT2,CNT3,LD,CARRY1,CARRY2,CARRY3,IN0,IN1,IN2,IN3;
+	CNT0.T = !LD & CARRY1 & CARRY2 & CARRY3  
+		 # ((IN0 $ CNT0) & LD);
+	CNT1.T = CNT0 & !LD & CARRY1 & CARRY2 & CARRY3 
+		 # ((IN1 $ CNT1) & LD);
+	CNT2.T = CNT0 & CNT1 & !LD & CARRY1 & CARRY2 & CARRY3 
+		 # ((IN2 $ CNT2) & LD);
+	CNT3.T = CNT0 & CNT1 & CNT2 & !LD & CARRY1 & CARRY2 & CARRY3 
+		 # ((IN3 $ CNT3) & LD);
+
+	CNT0.Ck = CLK;
+	CNT0.AR = RST;
+
+   	CNT1.Ck = CLK;
+	CNT1.AR = RST;
+
+   	CNT2.Ck = CLK;
+	CNT2.AR = RST;
+
+   	CNT3.Ck = CLK;
+	CNT3.AR = RST;	
+
+$MEND
+
+CarryQ1.d = O3 & O2 & O1 & !O0;
+CarryQ2.d = O7 & O6 & O5 & O4;
+CarryQ3.d = O11 & O10 & O9 & O8;
+CarryQ1.ck = CLK;
+CarryQ2.ck = CLK;
+CarryQ3.ck = CLK;
+
+/*******************************************************************************/
+
+
+/* DATA REGISTER */
+DReg.D = !LoadP & DReg  #   /* Hold or latch data */
+          LoadP & Data;          /* Load data  */
+DReg.CK = CLK;
+DReg.AR = RST;
+
+/* 2-to-1 MUX */
+M = !SEL & I #              /* Select I inputs when SEL is false */
+     SEL & DReg ;         /* Select latched data DReg when SEL is true */
+
+/* Compare Register */
+CReg.D = !LoadC & CReg  #   /* Hold or latch data */
+          LoadC & Data;          /* Load data */
+CReg.CK = CLK;
+CReg.AR = RST;
+
+/* Comparator */
+Comp = !(O $ CReg) ;             
+
+/* Regionalized the LD_COUNT signal */
+
+LD_COUNT = C0 & C1 & C2 & C3 &          /* Quadrant 1 */
+            C4 & C5 & C6 & C7 &
+            C8 & C9 & C10 & C11 &
+            C12 & C13 & C14 & C15;
+
+/* COUNTER */
+
+/* COUNTER(O_Q1,O_Q2,O_Q3,O_Q4,CarryQ1,CarryQ2,CarryQ3,M_Q1,M_Q2,M_Q3,M_Q4); */
+FOUR_BIT_COUNTER(O0,O1,O2,O3,LD_COUNT,'h'1,'h'1,'h'1,M0,M1,M2,M3);
+FOUR_BIT_COUNTER(O4,O5,O6,O7,LD_COUNT,CarryQ1,'h'1,'h'1,M4,M5,M6,M7);
+FOUR_BIT_COUNTER(O8,O9,O10,O11,LD_COUNT,CarryQ1,CarryQ2,'h'1,M8,M9,M10,M11);
+FOUR_BIT_COUNTER(O12,O13,O14,O15,LD_COUNT,CarryQ1,CarryQ2,CarryQ3,M12,M13,M14,M15);
+

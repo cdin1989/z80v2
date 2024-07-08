@@ -1,0 +1,115 @@
+%check 0 <= %1 <= 255
+	ld	hl,%1	;const
+	add	hl,sp
+	call	l_gint	;
+	pop	de
+=
+	ld	de,sp + %1
+	ld	hl,(de)
+	pop	de
+
+	ld	hl,_%1
+	push	hl
+	call	l_gint	;
+	%2c	hl
+	pop	de
+	ld	(de),hl
+=
+	ld	de,_%1
+	ld	hl,(de)
+	%2c	hl
+	ld	(de),hl
+
+%check 0 <= %1 <= 255
+	ld	hl,%1	;const
+	add	hl,sp
+	push	hl
+	call	l_gint	;
+	%2c	hl
+	pop	de
+	ld	(de),hl
+=
+	ld	de,sp + %1
+	ld	hl,(de)
+	%2c	hl
+	ld	(de),hl
+
+	call	l_pint
+=
+	ld	(de),hl
+
+%check 0 <= %1 <= 255
+	ld	hl,%1	;const
+	add	hl,sp
+	ld	de,%2	;const
+	ex	de,hl
+	ld	(de),hl
+=
+	ld	de,sp + %1
+	ld	hl,%2	;const
+	ld	(de),hl
+
+%check 0 <= %1 <= 255
+	ld	hl,%1	;const
+	add	hl,sp
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	push	de
+	ld	hl,%2
+=
+	ld	de,sp + %1
+	ld	hl,(de)
+	push	hl
+	ld	hl,%2
+
+	pop	bc
+	pop	hl
+	push	hl
+	push	bc
+	pop	de
+=
+	ld	de,sp+2
+	ld	hl,(de)
+	pop	de
+
+%check 0 <= %1 <= 255
+	ld	hl,%1	;const
+	call	l_gintspsp	;
+	ld	de,%2
+=
+	ld	de,sp+%1
+	ld	hl,(de)
+	push	hl
+	ld	de,%2
+
+%check 0 <= %1 <= 255
+	ld	hl,%1	;const
+	add	hl,sp
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	inc	hl
+=
+	ld	de,sp+%1
+	ex	de,hl
+	ld	e,(hl)
+	inc	hl
+	ld	d,(hl)
+	inc	hl
+
+	ld	de,sp+%1
+	ld	hl,(de)
+	ex	de,hl
+	ld	hl,%2	;const
+	add	hl,sp
+	call	l_gint	;%3
+	ld	c,e
+	ld	b,d
+=
+	ld	de,sp+%1
+	ld	hl,(de)
+	ld	c,e
+	ld	b,d
+	ld	de,sp+%2
+	ld	hl,(de)

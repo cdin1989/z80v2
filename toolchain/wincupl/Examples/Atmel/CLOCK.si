@@ -1,0 +1,26 @@
+Name     Clock;
+PartNo   CPLD;
+Date     8/10/99;
+Revision 01;
+Designer PLD Expert;
+Company  Atmel Corp.;
+Assembly None;
+Location None;
+Device   F1500a;
+
+
+ORDER: clk, clken, a, b, c, y0, y1, y2; 
+
+
+VECTORS:
+C0100***
+C1101***
+C1010***
+C1100***
+C1001***
+C0101***
+C0111***
+C1111***
+C1111***
+C1011***
+C0101***

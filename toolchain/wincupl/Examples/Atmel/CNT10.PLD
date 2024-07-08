@@ -1,0 +1,151 @@
+Name       CNT10;
+Partno     atf750c;
+Date       07/21/00;
+Revision   01;
+Designer   Yad PLD;
+Company    Atmel Corporation;
+Assembly   U00;
+Location   San Jose;
+Device     v750c;
+
+
+/*****************************************************************/
+/*          Two 10-bit Counter example for ATV750B               */
+/*                                                               */
+/*  This example has 2 10-bit counters which can load or count.  */
+/*  The first counter is loaded from the inputs, and the second  */
+/*  counter is loaded from the output of the first.              */
+/*****************************************************************/
+/* Allowable Target Device Types:  ATV750B                       */
+/*****************************************************************/
+
+/** Inputs **/
+
+PIN     1   = CLK;       /* Synchronous clock pin using .CKMUX */
+PIN     2   = LD;
+PIN     3   = D0;
+PIN     4   = D1;
+PIN     5   = D2;
+PIN     6   = D3;
+PIN     7   = D4;
+PIN     8   = D5;
+PIN     9   = D6;
+PIN    10   = D7;
+PIN    11   = D8;
+PIN    13   = D9;
+
+/** Outputs **/
+
+PIN    14   = Q0;
+PIN    15   = Q1;
+PIN    16   = Q2;
+PIN    17   = Q3;
+PIN    18   = Q4;
+PIN    19   = Q5;
+PIN    20   = Q6;
+PIN    21   = Q7;
+PIN    22   = Q8;
+PIN    23   = Q9;
+PINNODE 25  = A0;
+PINNODE 26  = A1;
+PINNODE 27  = A2;
+PINNODE 28  = A3;
+PINNODE 29  = A4;
+PINNODE 30  = A5;
+PINNODE 31  = A6;
+PINNODE 32  = A7;
+PINNODE 33  = A8;
+PINNODE 34  = A9;
+
+
+/** Logic Equations **/
+
+A9.t =  LD & !D9 & A9
+       # LD & D9 & !A9
+       # !LD & A8 & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A8.t =  LD & !D8 & A8
+       # LD & D8 & !A8
+       # !LD & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A7.t =  LD & !D7 & A7
+       # LD & D7 & !A7
+       # !LD & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A6.t =  LD & !D6 & A6
+       # LD & D6 & !A6
+       # !LD & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A5.t =  LD & !D5 & A5
+       # LD & D5 & !A5
+       # !LD & A4 & A3 & A2 & A1 & A0 ;
+
+A4.t =  LD & !D4 & A4
+       # LD & D4 & !A4
+       # !LD & A3 & A2 & A1 & A0 ;
+
+A3.t =  LD & !D3 & A3
+       # LD & D3 & !A3
+       # !LD & A2 & A1 & A0 ;
+
+A2.t =  LD & !D2 & A2
+       # LD & D2 & !A2
+       # !LD & A1 & A0 ;
+
+A1.t =  LD & !D1 & A1
+       # LD & D1 & !A1
+       # !LD & A0 ;
+
+A0.t =  !LD
+       # !D0 & A0
+       # D0 & !A0 ;
+
+[A9..0].ckmux = CLK;
+[A9..0].sp = 'b'0;
+
+Q9.t =  LD & !A9 & Q9
+       # LD & A9 & !Q9
+       # !LD & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q8.t =  LD & !A8 & Q8
+       # LD & A8 & !Q8
+       # !LD & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q7.t =  LD & !A7 & Q7
+       # LD & A7 & !Q7
+       # !LD & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q6.t =  LD & !A6 & Q6
+       # LD & A6 & !Q6
+       # !LD & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q5.t =  LD & !A5 & Q5
+       # LD & A5 & !Q5
+       # !LD & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q4.t =  LD & !A4 & Q4
+       # LD & A4 & !Q4
+       # !LD & Q3 & Q2 & Q1 & Q0 ;
+
+Q3.t =  LD & !A3 & Q3
+       # LD & A3 & !Q3
+       # !LD & Q2 & Q1 & Q0 ;
+
+Q2.t =  LD & !A2 & Q2
+       # LD & A2 & !Q2
+       # !LD & Q1 & Q0 ;
+
+Q1.t =  LD & !A1 & Q1
+       # LD & A1 & !Q1
+       # !LD & Q0 ;
+
+Q0.t =  !LD
+       # !A0 & Q0
+       # A0 & !Q0 ;
+
+[Q9..0].ckmux = CLK;
+[Q9..0].sp = 'b'0;
+
+
+
+

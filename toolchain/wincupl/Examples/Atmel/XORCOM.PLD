@@ -1,0 +1,45 @@
+Name     xorcom;
+PartNo   ;
+Date     12/06/99;
+Revision ;
+Designer Atmel-Yad;
+Company  ;
+Assembly ;
+Location ;
+Device	  f1504plcc44;
+
+/*****************************************************/
+/* ATF1504 CUPL Test Case - XOR Combinatorial Output */
+/* Buried register feedback , Product term clock     */
+/* and Reset, shared expander                        */
+/*****************************************************/
+
+/* Inputs */
+
+/* pin  2 = clk; */
+/* pin  1 = reset; */
+
+pin 37 = prodclk;
+/* Outputs */
+pin 4 = mc1;
+pin 11 = mc2;
+pin 12 = mc3;
+
+pin 16 = mc6;
+
+pin 1 = prodrst;
+
+pinnode 316 = mc1exp;
+pinnode 616 = mc1fdbk;
+
+/* Logic Equations */
+
+mc1 = mc1fdbk $ mc1exp;
+
+mc1exp = mc2 # mc3;
+
+mc1fdbk.d = mc6;
+mc1fdbk.ck = prodclk;
+mc1fdbk.ar = prodrst;
+
+

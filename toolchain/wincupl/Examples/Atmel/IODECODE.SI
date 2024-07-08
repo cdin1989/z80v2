@@ -1,0 +1,88 @@
+Name     Iodecode;
+PartNo   CA0010;
+Date     9/22/84;
+Revision 02;
+Designer Osann/Kahl;
+Company  Assisted Technology, Inc.;
+Assembly PC Multi-Function;
+Location U12;
+Device   G20V8ALCC;
+
+/************************************************************************/
+/* This device generates the chip select signals for the I/O functions. */
+/* It also enables the data bus transceiver for both memory and I/O     */
+/* write cycles.                                                        */
+/************************************************************************/
+
+ORDER: a9, %1, a8, %1, a7, %1, a6, %1, a5, %1, a4, %1, a3, %1, a2, %2, !memw, %1, !iow, %1, !ioacc_in, %1, !memacc, %2, !parport, %1, !rtclk, %1, !serport1, %1, !serport2, %1, !ioacc, %1, !wrbuff; 
+
+
+VECTORS:
+$MSG  "                           !        ! !";
+$MSG  "                           i    !   s s";
+$MSG  "                           o !  p   e e   !";
+$MSG  "                           a m  a ! r r ! w";
+$MSG  "                       !   c e  r r p p i r";
+$MSG  "                       m ! c m  p t o o o b";
+$MSG  "                       e i | a  o c r r a u";
+$MSG  "      a a a a a a a a  m o i c  r l t t c f";
+$MSG  "      9 8 7 6 5 4 3 2  w w n c  t k 1 2 c f";
+$MSG  "     ---------------------------------------";
+010000001001HLHHLL  /* real-time clock wr 100-103   */
+010000011001HLHHLL  /* real-time clock wr 104-107   */
+010000101001HLHHLL  /* real-time clock wr 108-10B   */
+010000111001HLHHLL  /* real-time clock wr 10C-10F   */
+010001001001HLHHLL  /* real-time clock wr 110-113   */
+010001011001HLHHLL  /* real-time clock wr 114-117   */
+010001101001HLHHLL  /* real-time clock wr 118-11B   */
+010001111001HLHHLL  /* real-time clock wr 11C-11F   */
+010000001101HLHHLH  /* real-time clock rd 100-103   */
+010000011101HLHHLH  /* real-time clock rd 104-107   */
+010000101101HLHHLH  /* real-time clock rd 108-10B   */
+010000111101HLHHLH  /* real-time clock rd 10C-10F   */
+010001001101HLHHLH  /* real-time clock rd 110-113   */
+010001011101HLHHLH  /* real-time clock rd 114-117   */
+010001101101HLHHLH  /* real-time clock rd 118-11B   */
+010001111101HLHHLH  /* real-time clock rd 11C-11F   */
+011111011001LHHHLL  /* parallel port   wr 1F4-1F7   */
+011111011101LHHHLH  /* parallel port   rd 1F4-1F7   */
+101111101001HHLHLL  /* serial port #1  wr 2F8-2FB   */
+101111111001HHLHLL  /* serial port #1  wr 2FC-2FF   */
+101111101101HHLHLH  /* serial port #1  rd 2F8-2FB   */
+101111111101HHLHLH  /* serial port #1  rd 2FC-2FF   */
+111111101001HHHLLL  /* serial port #2  wr 3F8-3FB   */
+111111111001HHHLLL  /* serial port #2  wr 3FC-3FF   */
+111111101101HHHLLH  /* serial port #2  rd 3F8-3FB   */
+111111111101HHHLLH  /* serial port #2  rd 3FC-3FF   */
+000000010110HHHHHL  /* memory access   wr 004-007   */
+000000100110HHHHHL  /* memory access   wr 008-00B   */
+000001000110HHHHHL  /* memory access   wr 010-013   */
+000010000110HHHHHL  /* memory access   wr 020-023   */
+000100000110HHHHHL  /* memory access   wr 040-043   */
+001000000110HHHHHL  /* memory access   wr 080-083   */
+010000000110HLHHLL  /* memory access   wr 100-103   */
+100000000110HHHHHL  /* memory access   wr 200-203   */
+111111100110HHHLLL  /* memory access   wr 3F8-3FB   */
+111111010110HHHHHL  /* memory access   wr 3F4-3F7   */
+111110110110HHHHHL  /* memory access   wr 3EC-3EF   */
+111101110110HHHHHL  /* memory access   wr 3DC-3DF   */
+111011110110HHHHHL  /* memory access   wr 3BC-3BF   */
+110111110110HHHHHL  /* memory access   wr 37C-37F   */
+101111110110HHLHLL  /* memory access   wr 2FC-2FF   */
+011111110110HHHHHL  /* memory access   wr 1FC-1FF   */
+000000011110HHHHHH  /* memory access   rd 004-007   */
+000000101110HHHHHH  /* memory access   rd 008-00B   */
+000001001110HHHHHH  /* memory access   rd 010-013   */
+000010001110HHHHHH  /* memory access   rd 020-023   */
+000100001110HHHHHH  /* memory access   rd 040-043   */
+001000001110HHHHHH  /* memory access   rd 080-083   */
+010000001110HLHHLH  /* memory access   rd 100-103   */
+100000001110HHHHHH  /* memory access   rd 200-203   */
+111111101110HHHLLH  /* memory access   rd 3F8-3FB   */
+111111011110HHHHHH  /* memory access   rd 3F4-3F7   */
+111110111110HHHHHH  /* memory access   rd 3EC-3EF   */
+111101111110HHHHHH  /* memory access   rd 3DC-3DF   */
+111011111110HHHHHH  /* memory access   rd 3BC-3BF   */
+110111111110HHHHHH  /* memory access   rd 37C-37F   */
+101111111110HHLHLH  /* memory access   rd 2FC-2FF   */
+011111111110HHHHHH  /* memory access   rd 1FC-1FF   */

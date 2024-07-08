@@ -1,0 +1,37 @@
+Name            Reglatch;
+Partno          ;
+Revision        01;
+Date            8/11/95;
+Designer        PLD Expert;
+Company         Atmel Corp.;
+Location        None;
+Assembly        None;
+Device          F1500a;
+
+/* Example showing register and latch usage */
+
+pin 4 = a;
+pin 5 = b;           /* Data Inputs */
+pin 2 = g;           /* Latch Enable */
+pin 1 = Reset;       /* Reset pin */
+pin 43 = Clk;        /* Global clock pin */
+pin 33 = ClkEn;      /* Clock Enable */
+
+Property Atmel {preassign keep};
+
+/* Outputs */
+pin 41 = OutReg; 
+pin = Lat;    
+
+/* equations */
+
+/* Use NodeLatch to latch input data */
+  
+Lat.l    = a & b;  /* Latch data */
+Lat.le   = g;      /* Latch Enable */
+ 
+OutReg.d   = Lat;
+OutReg.ck  = Clk;     /* Global Clock pin */
+OutReg.ce  = ClkEn;   /* Clock enable */
+OutReg.ar  = !Reset;  /* Use Global Reset pin */
+

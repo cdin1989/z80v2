@@ -1,0 +1,5 @@
+CP/M命令合集：http://www.primrosebank.net/computers/cpm/cpm_commands.htm
+CP/M控制字符：https://techtinkering.com/articles/cpm-standard-console-control-characters/
+ASCII控制字符：https://www3.rocketsoftware.com/bluezone/help/v42/en/bzadmin/APPENDIX_C/ASCII_Character_Set.htm
+CP/M BDOS函数: http://www.gaby.de/cpm/manuals/archive/cpm22htm/ch5.htm
+CP/M BIOS函数：https://www.seasip.info/Cpm/bios.html

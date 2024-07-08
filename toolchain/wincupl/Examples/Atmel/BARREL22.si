@@ -1,0 +1,36 @@
+Name     Barrel22;
+PartNo   CA0006;
+Date     05/11/89;
+Revision 02;
+Designer Kahl;
+Company  Logical Devices, Inc.;
+Assembly None;
+Location None;
+Device   g22V10;
+
+
+ORDER: clock, %3, !out_enable, %3, preset, %2, shift, %1, input, %2, output; 
+
+
+VECTORS:
+00XXXXXXXXXLLL "00"   /* power-on reset state */
+C00000 '80'  "80"   /* shift 0              */
+C00001 '80'  "40"   /* shift 1              */
+C00010 '80'  "20"   /* shift 2              */
+C00011 '80'  "10"   /* shift 3              */
+C00100 '80'  "08"   /* shift 4              */
+C00101 '80'  "04"   /* shift 5              */
+C00110 '80'  "02"   /* shift 6              */
+C00111 '80'  "01"   /* shift 7              */
+C00000 '7F'  "7F"   /* shift 0              */
+C00001 '7F'  "BF"   /* shift 1              */
+C00010 '7F'  "DF"   /* shift 2              */
+C00011 '7F'  "EF"   /* shift 3              */
+C00100 '7F'  "F7"   /* shift 4              */
+C00101 '7F'  "FB"   /* shift 5              */
+C00110 '7F'  "FD"   /* shift 6              */
+C00111 '7F'  "FE"   /* shift 7              */
+C00001 '01'  "80"   /* shift 1 with wrap    */
+C00001 'FE'  "7F"   /* shift 1 with wrap    */
+C01XXXXXXXXHHH "FF"   /* preset to ones       */
+C1XXXXXXXXXZZZZZZZZZZZ  /* test hi impedance    */

@@ -1,0 +1,29 @@
+Name        z80_digital_io;
+PartNo      00;
+Date        2024/4/25;
+Revision    01;
+Designer    bitrowz;
+Company     bitrowz;
+Assembly    None;
+Location    ;
+Device      g22v10;
+
+/******************************************************/
+/* Select Digital I/O device.                         */
+/* IO Port:                                           */
+/* 0x02: Write digits to display (write)              */
+/******************************************************/
+
+/** Inputs **/
+Pin [1..8] = [A0..7];
+Pin [9,10,11,13] = [!IORQ,!WR,!RD,M1];
+
+/** Outputs **/
+Pin 23  = !CS;
+
+/** Intermediate Variables */
+Field ioaddr = [A7..0];
+ioreq = IORQ & M1 & WR;
+
+/** Logical Equations **/
+CS = ioreq & ioaddr:[0002];

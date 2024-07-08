@@ -1,0 +1,33 @@
+Name        z80_keyboard;
+PartNo      00;
+Date        2024/5/22;
+Revision    01;
+Designer    bitrowz;
+Company     bitrowz;
+Assembly    None;
+Location    ;
+Device      g22v10;
+
+/******************************************************/
+/* Select Keyboard device.                            */
+/* IO Port:                                           */
+/* 0x2E: Keyboard Data Register(read/write)           */
+/* 0x2F: Keyboard Status/Command Register(read/write) */
+/******************************************************/
+
+/** Inputs **/
+Pin [1..8] = [A0..7];
+Pin [9,10,11,13] = [!IORQ,!WR,!RD,M1];
+
+/** Outputs **/
+Pin [20,21,22,23] = [!KB_WR,!KB_RD,!KB_CS,KB_A0];
+
+/** Intermediate Variables */
+Field ioaddr = [A7..0];
+ioreq = IORQ & M1;
+
+/** Logical Equations **/
+KB_A0 = A0;
+KB_CS = ioreq & ioaddr:[002E,002F];
+KB_RD = KB_CS & RD;
+KB_WR = KB_CS & WR;

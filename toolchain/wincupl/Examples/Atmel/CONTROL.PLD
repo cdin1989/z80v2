@@ -1,0 +1,294 @@
+Name       control;
+Partno     atv2500;
+Date       12/07/93;
+Revision   01;
+Designer   W. PLD;
+Company    Atmel Corporation;
+Assembly   U00;
+Location   San Jose;
+Device     v2500;
+
+/**************************************************************/
+/*     Frame Grabber Controller for the ATV2500 device        */
+/*                                                            */
+/* CLK,MODE:         System clock and mode signal from button */
+/* D0..D7:           Digitized video signal from A/D          */
+/*                                                            */
+/* A0..A17:          RAM address outputs                      */
+/* RAMWE,RAMOE:      RAM control signals                      */
+/* ADOE,INCAD:       Address counter control                  */
+/* VS:               Vertical sync detected                   */
+/*                                                            */
+/* ADCARRY,SYNCARRY: Counter carry signals                    */
+/* ENDFR:            End of frame detected                    */
+/* ST0,ST1:          State bits                               */
+/* SYNC0..SYNC5:     Vertical sync detect counter             */
+/**************************************************************/
+/* Allowable Target Device Types:  ATV2500                    */
+/**************************************************************/
+
+/** Inputs **/
+
+PIN     1  = CLK;
+PIN     2  = MODE;
+PIN     3  = PRELD;
+PIN    17  = D0;
+PIN    18  = D1;
+PIN    19  = D2;
+PIN    20  = D3;
+PIN    21  = D4;
+PIN    22  = D5;
+PIN    23  = D6;
+PIN    37  = D7;
+
+/** Outputs **/
+
+PIN    4   = A0;
+PIN    5   = A1;
+PIN    6   = A2;
+PIN    7   = A3;
+PIN    8   = A4;
+PIN    9   = A5;
+PIN    13  = A6;
+PIN    14  = A7;
+PIN    11  = A8;
+PIN    15  = A9;
+PIN    12  = A10;
+PIN    24  = A11;
+PIN    25  = A12;
+PIN    16  = A13;
+PIN    26  = A14;
+PIN    27  = A15;
+PIN    28  = A16;
+PIN    29  = A17;
+PIN    31  = VS;
+PIN    32  = RAMWE;
+PIN    33  = RAMOE;
+PIN    34  = ADOE;
+PIN    35  = INCAD;
+
+PINNODE 52  = ADCARRY;
+PINNODE 45  = SYNCARRY;
+PINNODE 51  = ENDFR;
+PINNODE 59  = ST0;
+PINNODE 60  = ST1;
+PINNODE 41  = SYNC0;
+PINNODE 42  = SYNC1;
+PINNODE 43  = SYNC2;
+PINNODE 44  = SYNC3;
+PINNODE 46  = SYNC4;
+PINNODE 49  = SYNC5;
+PINNODE 50  = SYNC6;
+
+
+
+/** Logic Equations **/
+
+A8.d =  INCAD & !ENDFR & A8 & !A0
+       # INCAD & !ENDFR & A8 & !A1
+       # INCAD & !ENDFR & A8 & !A2
+       # INCAD & !ENDFR & A8 & !A3
+       # INCAD & !ENDFR & A8 & !A4
+       # INCAD & !ENDFR & A8 & !A5
+       # INCAD & !ENDFR & A8 & !A6
+       # INCAD & !ENDFR & A8 & !A7
+       # INCAD & !ENDFR & !A8 & A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A7.d =  INCAD & !ENDFR & A7 & !A0
+       # INCAD & !ENDFR & A7 & !A1
+       # INCAD & !ENDFR & A7 & !A2
+       # INCAD & !ENDFR & A7 & !A3
+       # INCAD & !ENDFR & A7 & !A4
+       # INCAD & !ENDFR & A7 & !A5
+       # INCAD & !ENDFR & A7 & !A6
+       # INCAD & !ENDFR & !A7 & A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A6.d =  INCAD & !ENDFR & A6 & !A0
+       # INCAD & !ENDFR & A6 & !A1
+       # INCAD & !ENDFR & A6 & !A2
+       # INCAD & !ENDFR & A6 & !A3
+       # INCAD & !ENDFR & A6 & !A4
+       # INCAD & !ENDFR & A6 & !A5
+       # INCAD & !ENDFR & !A6 & A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A5.d =  INCAD & !ENDFR & A5 & !A0
+       # INCAD & !ENDFR & A5 & !A1
+       # INCAD & !ENDFR & A5 & !A2
+       # INCAD & !ENDFR & A5 & !A3
+       # INCAD & !ENDFR & A5 & !A4
+       # INCAD & !ENDFR & !A5 & A4 & A3 & A2 & A1 & A0 ;
+
+A4.d =  INCAD & !ENDFR & A4 & !A0
+       # INCAD & !ENDFR & A4 & !A1
+       # INCAD & !ENDFR & A4 & !A2
+       # INCAD & !ENDFR & A4 & !A3
+       # INCAD & !ENDFR & !A4 & A3 & A2 & A1 & A0 ;
+
+A3.d =  INCAD & !ENDFR & A3 & !A0
+       # INCAD & !ENDFR & A3 & !A1
+       # INCAD & !ENDFR & A3 & !A2
+       # INCAD & !ENDFR & !A3 & A2 & A1 & A0 ;
+
+A2.d =  INCAD & !ENDFR & A2 & !A0
+       # INCAD & !ENDFR & A2 & !A1
+       # INCAD & !ENDFR & !A2 & A1 & A0 ;
+
+A1.d =  INCAD & !ENDFR & A1 & !A0
+       # INCAD & !ENDFR & !A1 & A0 ;
+
+A0.d =  INCAD & !ENDFR & !A0 ;
+
+[A8..0].ck =  CLK ;
+[A7..0].sp =  'b'0 ;
+
+ADCARRY.d =  A8 & A7 & A6 & A5 & A4 & A3 & A2 & A1 & !A0 ;
+ADCARRY.ck =  CLK ;
+ADCARRY.sp = 'b'0;
+
+A17.d =  INCAD & !ADCARRY & !ENDFR & A17
+       # INCAD & !ENDFR & A17 & !A9
+       # INCAD & !ENDFR & A17 & !A10
+       # INCAD & !ENDFR & A17 & !A11
+       # INCAD & !ENDFR & A17 & !A12
+       # INCAD & !ENDFR & A17 & !A13
+       # INCAD & !ENDFR & A17 & !A14
+       # INCAD & !ENDFR & A17 & !A15
+       # INCAD & !ENDFR & A17 & !A16
+       # INCAD & ADCARRY & !ENDFR & !A17 & A16 & A15 & A14 & A13 & A12 & A11 & A10 & A9 ;
+
+A16.d =  INCAD & !ADCARRY & !ENDFR & A16
+       # INCAD & !ENDFR & A16 & !A9
+       # INCAD & !ENDFR & A16 & !A10
+       # INCAD & !ENDFR & A16 & !A11
+       # INCAD & !ENDFR & A16 & !A12
+       # INCAD & !ENDFR & A16 & !A13
+       # INCAD & !ENDFR & A16 & !A14
+       # INCAD & !ENDFR & A16 & !A15
+       # INCAD & ADCARRY & !ENDFR & !A16 & A15 & A14 & A13 & A12 & A11 & A10 & A9 ;
+
+A15.d =  INCAD & !ADCARRY & !ENDFR & A15
+       # INCAD & !ENDFR & A15 & !A9
+       # INCAD & !ENDFR & A15 & !A10
+       # INCAD & !ENDFR & A15 & !A11
+       # INCAD & !ENDFR & A15 & !A12
+       # INCAD & !ENDFR & A15 & !A13
+       # INCAD & !ENDFR & A15 & !A14
+       # INCAD & ADCARRY & !ENDFR & !A15 & A14 & A13 & A12 & A11 & A10 & A9 ;
+
+A14.d =  INCAD & !ADCARRY & !ENDFR & A14
+       # INCAD & !ENDFR & A14 & !A9
+       # INCAD & !ENDFR & A14 & !A10
+       # INCAD & !ENDFR & A14 & !A11
+       # INCAD & !ENDFR & A14 & !A12
+       # INCAD & !ENDFR & A14 & !A13
+       # INCAD & ADCARRY & !ENDFR & !A14 & A13 & A12 & A11 & A10 & A9 ;
+
+A13.d =  INCAD & !ADCARRY & !ENDFR & A13
+       # INCAD & !ENDFR & A13 & !A9
+       # INCAD & !ENDFR & A13 & !A10
+       # INCAD & !ENDFR & A13 & !A11
+       # INCAD & !ENDFR & A13 & !A12
+       # INCAD & ADCARRY & !ENDFR & !A13 & A12 & A11 & A10 & A9 ;
+
+A12.d =  INCAD & !ADCARRY & !ENDFR & A12
+       # INCAD & !ENDFR & A12 & !A9
+       # INCAD & !ENDFR & A12 & !A10
+       # INCAD & !ENDFR & A12 & !A11
+       # INCAD & ADCARRY & !ENDFR & !A12 & A11 & A10 & A9 ;
+
+A11.d =  INCAD & !ADCARRY & !ENDFR & A11
+       # INCAD & !ENDFR & A11 & !A9
+       # INCAD & !ENDFR & A11 & !A10
+       # INCAD & ADCARRY & !ENDFR & !A11 & A10 & A9 ;
+
+A10.d =  INCAD & !ADCARRY & !ENDFR & A10
+       # INCAD & !ENDFR & A10 & !A9
+       # INCAD & ADCARRY & !ENDFR & !A10 & A9 ;
+
+A9.d =  INCAD & !ADCARRY & !ENDFR & A9
+       # INCAD & ADCARRY & !ENDFR & !A9 ;
+
+[A17..9].ck =  CLK ;
+
+[A17..0].ar = 'b'0;
+
+ENDFR.d =  A8 & !A7 & !A6 & A5 & A4 & A3 & !A2 & A1 & A0 & A17 & A16 & A15 & A14 & !A13 & A12 & A11 & A10 & !A9 ;
+ENDFR.ck =  CLK ;
+
+A17.sp =  PRELD ;
+A16.sp =  PRELD ;
+A15.sp =  PRELD ;
+A14.sp =  PRELD ;
+A12.sp =  PRELD ;
+A11.sp =  PRELD ;
+A10.sp =  PRELD ;
+A8.sp  =  PRELD ;
+
+SYNC3.d =  !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNC3 & !SYNC0
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNC3 & !SYNC1
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNC3 & !SYNC2
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & !SYNC3 & SYNC2 & SYNC1 & SYNC0 ;
+
+SYNC2.d =  !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNC2 & !SYNC0
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNC2 & !SYNC1
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & !SYNC2 & SYNC1 & SYNC0 ;
+
+SYNC1.d =  !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNC1 & !SYNC0
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & !SYNC1 & SYNC0 ;
+
+SYNC0.d =  !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & !SYNC0 ;
+[SYNC3..0].ck =  CLK ;
+[SYNC3..0].sp =  'b'0 ;
+[SYNC3..0].ar =  'b'0 ;
+
+
+SYNCARRY.d =  SYNC3 & SYNC2 & SYNC1 & !SYNC0 ;
+SYNCARRY.ck =  CLK ;
+SYNCARRY.sp =  'b'0 ;
+SYNCARRY.ar =  'b'0 ;
+
+
+
+SYNC6.d =  !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & !SYNCARRY & SYNC6
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNC6 & !SYNC4
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNC6 & !SYNC5
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNCARRY & !SYNC6 & SYNC5 & SYNC4 ;
+
+SYNC5.d =  !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & !SYNCARRY & SYNC5
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNC5 & !SYNC4
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNCARRY & !SYNC5 & SYNC4 ;
+
+SYNC4.d =  !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & !SYNCARRY & SYNC4
+       # !D0 & !D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & SYNCARRY & !SYNC4 ;
+
+[SYNC6..4].ck =  CLK ;
+[SYNC6..4].sp =  'b'0 ;
+[SYNC6..4].ar =  'b'0 ;
+
+
+
+VS =  SYNC3 & SYNC2 & SYNC1 & SYNC0 & SYNC6 & SYNC5 & SYNC4 ;
+
+ST1.ck =  CLK ;
+ST0.ck =  CLK ;
+
+RAMWE =  ST0
+       # !ST1 ;
+
+RAMOE =  !ST1
+       # !ST0 ;
+
+ADOE =  ST1 & ST0 ;
+
+INCAD =  ST1 ;
+
+ST0.d =  MODE & ST1 & ST0
+       # ENDFR & ST1 & !ST0
+       # !VS & !ST1 & ST0
+       # MODE & !ST1 & !ST0 ;
+
+ST1.d =  MODE & ST1
+       # ST1 & !ST0
+       # VS & !ST1 & ST0 ;
+
+

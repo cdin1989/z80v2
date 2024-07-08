@@ -1,0 +1,203 @@
+CP/M2 磁盘结构: https://www.idealine.info/sharpmz/dpb.htm
+
+LBA0-LBA7
+8bit
+
+LBA8-LBA23
+16bit
+
+LBA24-LBA27
+4bit
+
+CF卡在8位模式下最多寻址2^28=128G
+512M的卡，最多寻址2^20=512M,只使用LBA0-LBA19
+CP/M每个扇区为: 512B/4 = 128B，所以只能使用1/4的总容量=512M/4=128M
+
+CP/M2最多支持16个磁盘,也就是A-P,所以需要4bit用作DSKNO,每个磁盘大小：128M / 16 = 8M
+DSKNO: 16 DISKS,    LBA19-LBA16 (4bit)
+TRKNO: 1024 TRKS,   LBA15-LBA6  (10bit)
+SECNO: 64 SECS/TRK, LBA5-LBA0   (6bit)
+
+每个磁盘实际容量计算：8192K- 4TRKS*64SECS*128B(4个启动磁道) - 4K*4(512个目录使用4个BLK) = 8144K
+
+CF addressing mode and disk head selection.
+The high 4bits always 1110, the low 4bits are disk header in CHS.
+                         LBA27 LBA26 LBA25 LBA24
++-----+-----+-----+-----+-----+-----+-----+-----+
+|  1  | LBA |  1  | DRV | HS3 | HS2 | HS1 | HS0 |   -> CF REG6
++-----+-----+-----+-----+-----+-----+-----+-----+
+
+CF cylinder high byte, D3-D0 for disk number (4bit)
+ LBA23 LBA22 LBA21 LBA20 LBA19 LBA18 LBA17 LBA16
++-----+-----+-----+-----+-----+-----+-----+-----+
+|  0  |  0  |  0  |  0  |  D3 |  D2 |  D1 |  D0 |   -> CF REG5
++-----+-----+-----+-----+-----+-----+-----+-----+
+
+CF cylinder low byte, T9-T2 for track number high bits (8bit)
+ LBA15 LBA14 LBA13 LBA12 LBA11 LBA10 LBA9  LBA8
++-----+-----+-----+-----+-----+-----+-----+-----+
+| T9  |  T8 |  T7 |  T6 |  T5 |  T4 |  T3 |  T2 |   -> CF REG4
++-----+-----+-----+-----+-----+-----+-----+-----+
+
+CF sector byte, T1-T0 for track number low bits (2bit), S5-S0 for sector number (6bit)
+ LBA7  LBA6  LBA5  LBA4  LBA3  LBA2  LBA1  LBA0
++-----+-----+-----+-----+-----+-----+-----+-----+
+| T1  |  T0 |  S5 |  S4 |  S3 |  S2 |  S1 |  S0 |   -> CF REG3
++-----+-----+-----+-----+-----+-----+-----+-----+
+
+由此得出DPB为(16B)：
+
+DPBASE:
+;Disk parameter header for disk A:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV00  ALV00
+
+;Disk parameter header for disk B:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV01  ALV01
+
+;Disk parameter header for disk C:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV02  ALV02
+
+;Disk parameter header for disk D:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV03  ALV03
+
+;Disk parameter header for disk E:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV04  ALV04
+
+;Disk parameter header for disk F:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV05  ALV05
+
+;Disk parameter header for disk G:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV06  ALV06
+
+;Disk parameter header for disk H:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV07  ALV07
+
+;Disk parameter header for disk I:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV08  ALV08
+
+;Disk parameter header for disk J:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV09  ALV09
+
+;Disk parameter header for disk K:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV10  ALV10
+
+;Disk parameter header for disk L:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV11  ALV11
+
+;Disk parameter header for disk M:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV12  ALV12
+
+;Disk parameter header for disk N:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV13  ALV13
+
+;Disk parameter header for disk O:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV14  ALV14
+
+;Disk parameter header for disk P:
+DW 0000   0000
+DW 0000   0000
+DW DIRBUF DPBHD
+DW CSV15  ALV15
+
+;Disk parameter block for all disk.
+;Capacity = 8M, Tracks = 1024, Sectors/Track = 64, Bytes/Sector = 128
+;BlockSize (BLS) = 4K, Directory Entries = 512
+;Reserved tracks = 4, BootSize = 4 * 128 * 128 = 64K
+DPBHD:
+    DW 64           ;SPT: Sectors per track.
+    DB 5            ;BSH: Block shift factor
+    DB 31           ;BLM: Block mask = 2^BSH-1
+    DB 1            ;EXM: Extent mask
+    DW 2039		    ;DSM: Total storage in blocks - 1, BLK = (8M-32K)/4K - 1 = 2039
+	DW 511		    ;DRM: Dir entries - 1 = 511
+	DB 11110000B	;AL0: Dir BLK bitmap
+	DB 00000000B	;AL1: Dir BLK bitmap
+	DW 0		    ;CKS: Zero for non-removable media
+	DW 4		    ;OFF: Reserved tracks = 4
+
+
+;Scratch pad for bdos use.
+DIRBUF: DEFS 128
+
+;Check sum vector for disk A-P
+CSV00:  DEFS 16
+CSV01:  DEFS 16
+CSV02:  DEFS 16
+CSV03:  DEFS 16
+CSV04:  DEFS 16
+CSV05:  DEFS 16
+CSV06:  DEFS 16
+CSV07:  DEFS 16
+CSV08:  DEFS 16
+CSV09:  DEFS 16
+CSV10:  DEFS 16
+CSV11:  DEFS 16
+CSV12:  DEFS 16
+CSV13:  DEFS 16
+CSV14:  DEFS 16
+CSV15:  DEFS 16
+
+;Allocation vector for disk A-P
+ALV00:  DEFS 32
+ALV01:  DEFS 32
+ALV02:  DEFS 32
+ALV03:  DEFS 32
+ALV04:  DEFS 32
+ALV05:  DEFS 32
+ALV06:  DEFS 32
+ALV07:  DEFS 32
+ALV08:  DEFS 32
+ALV09:  DEFS 32
+ALV10:  DEFS 32
+ALV11:  DEFS 32
+ALV12:  DEFS 32
+ALV13:  DEFS 32
+ALV14:  DEFS 32
+ALV15:  DEFS 32
+
+

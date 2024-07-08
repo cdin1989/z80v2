@@ -1,0 +1,624 @@
+0001ck could not open: "filename"
+Fatal. CUPL cannot continue because of the failure to open the indicated file. Be sure the file exists if it is an input.
+Verify the file "filename" is in the correct location or select another file.
+0002ck could not execute program: "program name"
+Fatal. CUPL is unable to perform the next step in the compilation.
+Be sure that all of the CUPL program files exist on the same directory or disk.
+0003ck could not find PATH in ENVIRONMENT
+Fatal. The PATH assignment has not been made in the ENVIRONMENT.
+SET PATH=<CUPL DIR>;%PATH%
+0004ck could not find LIBCUPL in ENVIRONMENT
+Fatal. The LIBCUPL assignment has not been made in the ENVIRONMENT.
+SET LIBCUPL=<CUPL DIR>\CUPL.DL
+0005ck could not find program: "program name"
+Fatal. CUPL is unable to locate the CUPL programs using the PATH in the ENVIRONMENT.
+Be sure that all of the CUPL program files exist on the same directory or disk.
+0006ck insufficient memory to execute program: "filename"
+Fatal.  Not enough program storage available to load and execute the program.
+Refer to Chapter 1, "Introduction," for the minimum memory requirements for the configuration being used.
+0007ck invalid flag: "option flag"
+Fatal. The option flag specified is not one of the allowable compilation flags.
+Verify proper command line flags and syntax as discussed in Chapter 2, "Using CUPL."
+0008ck out of memory: "condition"
+Fatal. CUPL has used all available RAM memory which has been allocated by the operating system.
+Exit Other Windows Programs and check for the existence of print spoolers, RAM disks, or other memory-resident programs which may decrease the amount of memory available to the CUPL application.
+0009ck file read error, unexpected end of file: "filename"
+Fatal. CUPL encountered an I/O error trying to read the indicated file.
+This error usually occurs when the file is being read from damaged media or the file has been corrupted.  Run Scandisk on the drive.
+0010ck Fitter could not fit design
+Fatal. The external fitter has determined that it cannot fit the specified design.
+Refer to the Fitter Output for more information.
+0011ck Fatal fitter error during processing.
+Fatal. A fatal error occurred while executing the external fitter.
+Refer to the Fitter Output for more information.
+0012ck invalid library access key
+Fatal. This version of CUPL is not compatible with the version of the device library file.
+Reinstall CUPL.  This occurs when either CUPL or the device library, but not both, has been updated.
+0013ck invalid library interface
+Fatal. Either the device library was not created using the CUPL library manager, CBLD, or CUPL and the device library are not compatible.
+Reinstall CUPL.
+0014ck bad library file:  "filename"
+Fatal. Either the device library does not exist or the contents of the device library have been damaged.
+Reinstall CUPL.
+0015ck device not in library:  "device"
+Fatal. Either the specified target device does not exist or an entry has not been made in the device library for the device.
+Select another Device.
+0016ck target device not specified
+Fatal. The user did not specify a target device on the command line and the source file did not contain a DEVICE assignment in the header information.
+Select a Device.
+10xxck program error: "specifics"
+Fatal. An operating system interface problem is suspected.
+Contact Logical Devices, Customer Support.
+0001cx could not open: "filename"
+Fatal. CUPLX cannot continue because of the failure to open the indicated file. Be sure the file exists if it is an input.
+
+0002cx could not execute program: "program name"
+Fatal. CUPLX is unable to perform the next step in the compilation.  Be sure that all of the CUPL program files exist on the same directory or disk.
+
+0003cx no label given for command
+Error. One of the preprocessor commands, $DEFINE, $UNDEF, $IFDEF, or $IFNDEF, was used without a succeeding label.
+
+0004cx already defined: "label"
+Error. The label was previously defined using $DEFINE. To redefine the label, first use $UNDEF to undefine the label, and then use $DEFINE to redefine it.
+
+0005cx string error
+Fatal. All preprocessor label string space has been used.
+
+0006cx $else without $ifdef
+Error. An $ELSE preprocessor command was used without being preceded by an $IFDEF or $IFNDEF command.
+
+0007cx $endif without $ifdef
+Error. An $ENDIF preprocessor command was used without being preceded by an $IFDEF or $IFNDEF command.
+
+0008cx $ifdef nesting too deep
+Error. The level of $IFDEF nesting exceeded twelve.
+
+0009cx missing $endif
+Error. An $IFDEF preprocessor command was used without being succeeded by an $ENDIF command.
+
+0010cx invalid preprocessor command: "$command"
+Error. The preprocessor command is unknown.
+Refer to Preprocessor Commands in Chapter 2 for a list of valid commands.
+0011cx disk write error: "filename"
+Fatal. CUPLX encountered an I/O error trying to write the indicated file. This error usually occurs when there is insufficient disk space.
+
+0012cx out of memory: "condition"
+Fatal. CUPLX has used all the available RAM memory allocated by the operating system.
+
+0013cx illegal character: "hex value"
+Error. CUPLX has encountered an illegal ASCII value in the source file. Make sure the file was created in non-document mode on the word processor. This error can also be caused by files which were created over a serial modem upload/download link.
+
+0014cx unexpected symbol:"symbol"
+Fatal. CUPLX encountered a symbol that it was not expecting. This occurs when certain symbols are expected in a particular order and are either incorrect, misplaced or misspelled.
+
+0015cx Repeat nesting too deep
+Fatal. The level of Repeat nesting exceeded two.
+
+0016cx duplicate Macro function name:"function"
+Error. The Macro function name has already been previously defined. A duplicate Macro name will cause confusion when they are called.
+
+0017cx missing Macro name
+Fatal. A Macro was defined without a name. This macro will never be accessed.
+
+0018cx incorrect number of parameters
+Fatal. The number of parameters defined in the Macro function did not equal the number of parameters in the macro call. All parameters defined in the Macro function must be defined in the Macro call.
+
+0019cx out of range
+Fatal. The index number exceeded 1023. Valid index numbers are 0 - 1023.
+
+0020cx internal stack overflow
+Fatal. A mathematical expression was too complex for CUPLX to handle. The expression can be reduced by eliminating as many parenthetical expressions as possible. Expressions are evaluated from left to right using standard precedence. The user should take advantage of this.
+
+0021cx expression contains undefined symbol: "symbol"
+Fatal. A symbol appearing in the expression has not been defined in the source file or predefined by CUPL.
+
+0022cx invalid library access key
+Fatal. The version of CUPLX is not compatible with the version of the device library file. This occurs when either CUPLX or the device library, but not both, has been updated.
+
+0023cx invalid library interface
+Fatal. Either the device library was not created using the CUPL library manager, CBLD, or CUPLX and the device library are not compatible.
+
+0024cx bad library file: "library"
+Fatal. Either the device library does not exist or the contents of the device library have been damaged.
+
+0025cx unexpected end-of-file
+Fatal. CUPLX has unexpectedly reached  the end-of-file.
+
+0026cx reached end-of-file before ending comment
+Fatal. CUPLX detected that a comment was not terminated before reaching the end-of-file. The beginning of the comment can be found by searching for the last occurrence of /* in the PLD file.
+
+0027cx invalid syntax for preprocessor  command: "$command"
+Fatal. One of the preprocessor commands, $REPEAT or $MACRO, has been used improperly. The command syntax contains unexpected symbols.
+
+10xxcx program error: "specifics"
+Fatal. An operating system interface problem is suspected. Contact Logical Devices customer support.
+Contact Logical Devices, Customer Support.
+0001ca could not open: "filename"
+Fatal. CUPLA cannot continue because of the failure to open the indicated file. Be sure the file exists if it is an input.
+
+0002ca invalid number: "number"
+Error. Either the number is used improperly, or a previous syntax error caused the number to be used improperly.
+
+0003ca invalid library access key
+Fatal. The version of CUPLA is not compatible with the version of the device library file. This occurs when either CUPLA or the device library, but not both, has been updated.
+
+0004ca invalid library interface
+Fatal. Either the device library was not created using the CUPL library manager, CBLD, or CUPLA and the device library are not compatible.
+
+0005ca bad library file: "library"
+Fatal. Either the device library does not exist or the contents of the device library have been damaged.
+
+0006ca device not in library: "device"
+Fatal. Either the specified target device does not exist or an entry has not been made in the device library for the device.
+
+0007ca invalid syntax: "symbol"
+Error. Either the symbol is used improperly, or a previous syntax error caused the symbol to be used improperly.
+
+0008ca too many errors
+Fatal. CUPLA has encountered more than 30 errors.
+
+0009ca missing symbol: "symbol"
+Error. The missing symbol is required to make the specified statement valid.
+
+0010ca vector too wide
+Fatal. A variable list has more than 50 members.
+
+0011ca expression already assigned to: "variable"
+Error. The variable (either an intermediate or output variable) was previously assigned an expression. Use APPEND to make multiple expression assignments for the same variable.
+
+0012ca vector size mismatch
+Error. The number of members in the variable list on the left side of the equation does not match the number of variables on the right side.
+
+0013ca undefined function: "function"
+Error. The variable name used as a function reference has no corresponding function definition. Functions must be defined before they can be referenced.
+
+0014ca variable already declared: "variable"
+Error. The variable which was previously assigned an expression cannot be reassigned.
+
+0015ca out of memory: "condition"
+Fatal. CUPLA has used all available RAM memory which has been allocated by the operating system. Decrease the number of intermediate variables, fields, or numbers in order to reduce the size of the symbol table.
+This error is not a result of insufficient product terms in the device to implement a particular expression.
+0016ca invalid number of function arguments: "number"
+Error. The user has attempted to pass an incorrect number of arguments to the user-defined function. The number of arguments for the function reference does not match the number in the function definition.
+
+0017ca disk write error: "filename"
+Fatal. CUPLA encountered an I/O error trying to write the indicated file. This error usually occurs when there is insufficient disk space.
+
+0018ca intermediate var not assigned an expression: "variable"
+Error. The intermediate variable was used as an input in an expression without having been assigned an expression. This error often occurs when a pin or intermediate variable in a logic expression is misspelled.
+
+0019ca indexed and non-indexed vars in range or match expression
+Warning. A list (or field variable) in a range or match expression contains both indexed (variable names ending in a number) and non-indexed variables. This type of operation cannot produce the expected results because of inability to hold relative bit positions in the field. It is recommended to use all non-indexed variables in a field for portability to future versions of CUPL.
+
+0020ca index too large for range or match operation
+Error. The index of a variable in a list or field exceeds the range or match values.
+
+0021ca header item already declared
+Error. One of the header statements was duplicated.
+
+0022ca missing header item(s)
+Warning. At least one of the header statements is missing.
+
+0023ca invalid range arguments: always true (in range)
+Error. A range has been specified which will always be true and is therefore not an actual range. CUPLA attempts to minimize range functions and does not allow a NULL range such as this. This happens with ranges such as [0000..FFFF] for a 16-bit address. This error can also be given if non-indexed list variables are used in a range expression.
+
+0024ca range or match number larger than variable list
+Warning. The range or match number exceeds the width of the bit field it is being applied to. Values exceeding the width of the bit field will be ignored.
+
+0025ca range minimization error
+Error. The range reduces to always false, that is, none of the bits in the range are active.
+
+0026ca invalid table statement
+Error. Input numbers cannot be mapped into more than one output number.
+
+0027ca invalid present state number
+Error. The present state number specified is not valid. This error can occur whenever the present state has not been properly defined as a number using the $DEFINE command.
+
+0028ca invalid next state number
+Error. The next state number specified is not valid. This error can occur whenever the next state has not been properly defined as a number using the $DEFINE command.
+
+0029ca invalid flip-flop type for sequence statement: "type"
+Error. The flip-flop type for this device cannot be used for building the requested sequential state machine.
+
+0030ca intermediate dependent on itself: "variable"
+Error. The intermediate variable was used in the expression defining the same intermediate variable. This error often occurs when an intermediate variable is misspelled or an output pin expression is being defined using feedback without declaring the output variable as a pin.
+
+0031ca invalid minimization level: "level"
+Error. The minimization level specified is invalid.
+Refer to "Running CUPL" in Chapter 2 for valid minimization levels.
+0032ca invalid next state: "hex number"
+Error. The next state value is invalid. This error can occur whenever the next state has not been properly defined as a number using the $DEFINE command or has not been identified as a present state using the present command.
+
+0033ca multiple asynchronous defaults for state: "hex number"
+Error. By definition, only one asynchronous default expression can be assigned for any one state. The resulting expression is the complement of all previous conditional (if) asynchronous expressions.
+
+0034ca multiple synchronous defaults for state: "hex number"
+Error. By definition, only one synchronous default expression can be assigned for any one state. The resulting expression is the complement of all previous conditional (if) synchronous expressions.
+
+0035ca multiple unconditional statements for state: "hex number"
+Error. By definition, only one unconditional synchronous statement can be given for any one state.
+
+0036ca device does not support synchronous state machines
+Fatal. The device specified for compilation cannot be used with the sequence statement since it does not support registered operations.
+
+0037ca duplicate present state: "hex number"
+Error. The present state number was identified in more than one PRESENT command. This can occur when symbolic state names are used to refer to states, but the $DEFINE command, used to define states, assigned the same number to more than one symbolic name.
+
+0038ca target device not specified
+Fatal. The user did not specify a target device on the command line and the source file did not contain a DEVICE assignment in the header information.
+
+0039ca line exceeds maximum length
+Error. The statement is greater than 256 characters long. Break the line up into shorter statements.
+
+0040ca invalid or duplicate header name: "name"
+Fatal. The NAME field in the header information must not be NULL.  When more than one device is being defined in a logic description file, the NAME field in the header information must be unique.
+
+0041ca don't care(s) not allowed for decimal number, treated as 0
+Warning. "Don't-care" values, "X", are valid only for binary, octal, and hexadecimal numbers.
+
+0042ca range or match list completely don't cared, decoded as 0
+Warning. The variable list in a range or match operation has been completely "don't-cared," leaving an empty variable list.  The empty variable list will be decoded into a 0.
+
+0043ca invalid GROUP name:  "variable name"
+Fatal. The GROUP name must contain the keyword BLOCK_ followed by "variable name". Ex. GROUP BLOCK_A=[X,Y]; where A is the variable name.
+
+0044ca unexpected end-of-file
+Fatal. CUPLA has unexpectedly reached the end-of-file.
+
+0045ca reached end-of-file before ending comment
+Fatal. CUPLA detected that a comment was not terminated before reaching the end-of-file. The beginning of the comment can be found by searching for the last occurrence of /* in the PLD file.
+
+0046ca invalid DeMorgan level: "number"
+Error. The DeMorgan level specified is not within the range of 0 to 2. The level defaults to 0.
+
+0047ca vector size mismatch in comparison vector: "variable"
+Fatal. The number of members in the variable list on the left side of the comparison does not match the number of variables on the right side.
+
+0048ca fixed polarity device, reset DeMorgan level to 0: "variable"
+Warning. The device specified does not have programmable polarity capability. Only devices with this capability can use different DeMorgan levels. The variable will be evaluated to fit the device's capability.
+
+0049ca unknown DECLARE entity: "variable"
+Fatal. Either the manufacturer's ID or the attribute in the DECLARE statement is unknown. DECLARE.DEF contains the information needed for using a DECLARE statement.
+
+10xxca program error: "specifics"
+Fatal. An operating system interface problem is suspected. Contact Logical Devices, customer support.
+Contact Logical Devices, Customer Support.
+0001cb could not open: "filename"
+Fatal. CUPLB cannot continue because of the failure to open the indicated file. Be sure the file exists if it is an input.
+
+0002cb could not execute program: "program name"
+Fatal. CUPLB is unable to perform the next step in the compilation.  Be sure that all of the CUPL program files exist on the same directory or disk.
+
+0003cb invalid file: "filename"
+Warning. The file was not created by the current version of CUPL.
+
+0004cb missing or mismatched parentheses:
+Error. The number of open parentheses [(] and close parentheses [)] in the specified statement does not match.
+
+0005cb invalid library access key
+Fatal. The version of CUPLB is not compatible with the version of the device library file. This occurs when either CUPLB or the device library, but not both, has been updated.
+
+0006cb invalid library interface
+Fatal. Either the device library was not created using the CUPL library manager, CBLD, or CUPLB and the device library are not compatible.
+
+0007cb bad library file: "library"
+Fatal. Either the device library does not exist or the contents of the device library have been damaged.
+
+0008cb device not in library: "device"
+Fatal. Either the specified target device does not exist or an entry has not been made in the device library for the device.
+
+0009cb pin/node "number" redeclared: "variable"
+Error. The same pin number or variable name was used more than once in a pin declaration statement.
+
+0010cb pin/node "number" invalid output: "variable"
+Error. The variable being assigned an output expression was previously declared for an input-only pin.
+
+0011cb unknown extension: "extension"
+Error. The extension is unknown or invalid for the particular device.
+Refer to "Extensions" in Chapter 2 for a list of valid extensions.  Check to make sure the device has the capability required.
+0012cb pin/node "number" invalid usage: "variable"
+Fatal. The pin number assigned to the variable is invalid for the target device specified.
+
+0013cb pin/node "number" invalid output extension or usage: "variable"
+Error. Either the extension is used improperly or it is not valid for the assigned pin/node.
+
+0014cb invalid input: "variable" or pin/node "number"  invalid input: "variable"
+Error. The variable used as an input was previously assigned to an output that is neither bidirectional nor feeds back into the input array.
+
+0015cb device not yet fully supported: "device"
+Fatal. There is an entry for the device in the device library, but the device is not fully supported by the current version of CUPL.
+
+0016cb no expression assigned to: "variable"
+Warning. The variable requires an output expression assignment. This warning message is commonly given when all outputs in a bank have the same capability (reset, preset, and so on) and not all the variables have been assigned the same expression. It is given to remind the user that all outputs will be affected.
+This warning may be suppressed by assigning the variable to 'b'0 or 'b'1 as appropriate.
+0017cb out of memory: "conditions"
+Fatal. CUPLB has used all available RAM memory that has been allocated by the operating system, typically as a result of performing a DeMorgan or expansion operation on a large expression. If using fixed polarity devices, check to make sure that the pin variable declaration matches the polarity of the device. Also check whether an intermediate variable which has been expressed in sum-of-product form is being complemented.
+This error does not result from insufficient product terms in the device to implement a particular expression.
+0018cb missing flip-flop expression for: "variable"
+Error. The matching flip-flop expression for a J-K or S-R type flip-flop is missing. Both inputs must have expressions assigned to them. An input may be assigned to 'b'0 or 'b'1 as appropriate.
+
+0019cb DeMorgan's theorem invoked for: "variable"
+Warning. DeMorgan's Theorem has been applied to the expression assigned to the variable. Unlike D- or T-type flip-flops, meaningful results are not guaranteed when a DeMorgan equivalent expression is applied to the logic input.
+
+0020cb invalid mix of banked outputs: "variable"
+Error. All outputs in a banked group must be used in the same manner.  An attempt was made to mix registered and non-registered output types.
+
+0021cb no expression allowed for: "variable"
+Error. Logic expressions are not allowed for reset and preset nodes when the output has been specified as asynchronous. CUPL will generate the proper defaults.
+
+0022cb pin/node "number" conflicting input architectures: "variable"
+Error. A fuse-assigned input architecture must be used consistently in all expressions. An attempt was made to specify both fuse options in different expressions.
+
+0023cb disk write error: "filename"
+Fatal. CUPLB encountered an I/O error trying to write the indicated file. This error usually occurs when there is insufficient disk space.
+
+0024cb output defined for node which does not exist: "variable"
+Error. Variable is defined for a pin or node number which does not exist.
+
+0025cb output mutually excluded by previous output: "variable"
+Error. Variable usage is mutually excluded by a previous usage or other output. A shared product term or terms has been defined more than once.
+
+0026cb disk read error, unexpected end of file: "filename"
+Fatal. CUPLB encountered an I/O error trying to read the indicated file. This error usually occurs when the file is being read from damaged media.
+
+10xxcb program error: "specifics"
+Fatal. An operating system interface problem is suspected. Contact LDI customer support.
+Contact Logical Devices, Customer Support.
+0001cm could not open: "filename"
+Fatal. CUPLM cannot continue because of the failure to open the indicated file. Be sure the file exists if it is an input.
+
+0002cm could not execute program: "program name"
+Fatal. CUPLM is unable to perform the next step in the compilation.  Be sure that all of the CUPL program files exist on the same directory or disk.
+
+0003cm invalid file: "filename"
+Warning. The file was not created by the current version of CUPL.
+
+0004cm out of memory: "conditions"
+Fatal. CUPLM has used all available RAM memory which has been allocated by the operating system while performing logic reduction.
+This error does not result from insufficient product terms in the device to implement a particular expression.
+0005cm disk write error: "filename"
+Fatal. CUPLM encountered an I/O error trying to write the indicated file. This error usually occurs when there is insufficient disk space.
+
+0006cm invalid library access key
+Fatal. The version of CUPLM is not compatible with the version of the device library. This occurs when either CUPLM or the device library, but not both, has been updated.
+
+0007cm invalid library interface
+Fatal. Either the device library was not created using the CUPL library manager, CBLD or CUPLM and the device library are not compatible.
+
+0008cm bad library file: "library"
+Fatal. Either the device library does not exist or the contents of the device library have been damaged.
+
+0009cm device is not in library: "device"
+Fatal. Either the specified target device does not exist or an entry has not been made in the device library for the device.
+
+0010cm design too complex for this minimization level
+Fatal. CUPLM has exceeded the array size allowed on this machine while reducing a particular expression. Specify a more efficient minimization level.
+
+0011cm disk read error, unexpected end of file: "filename"
+Fatal. CUPLM encountered an I/O error trying to read the indicated file. This error usually occurs when the file is being read from damaged media.
+
+10xxcm program error: "specifics"
+Fatal. An operating system interface problem is suspected. Contact LDI customer support.
+Contact Logical Devices, Customer Support.
+0001cc could not open: "filename"
+Fatal. CUPLC cannot continue because of the failure to open the indicated file. Be sure the file exists if it is an input.
+
+0002cc invalid file: "filename"
+Warning. The file was not created by the current version of CUPL.
+
+0003cc invalid library access key
+Fatal. The version of CUPLC is not compatible with the version of the device library. This occurs when either CUPLC or the device library, but not both, has been updated.
+
+0004cc invalid library interface
+Fatal. Either the device library was not created using the CUPL library manager, CBLD, or CUPLC and the device library are not compatible.
+
+0005cc bad library file: "library"
+Fatal. Either the device library does not exist or the contents of the device library have been damaged.
+
+0006cc excessive number of product terms: "variable"
+Error. The number of product terms needed to implement the logic expression for the given variable exceeds the capacity of the output pin for which it was declared.
+
+0007cc invalid download format(s)
+Warning. At least one of the download formats specified is not available for the target device. For example, the HL download format is not available for PALs or PROMs.
+
+0008cc pin can not be used as input: "variable"
+Error. The pin to which the variable is assigned provides no input or feedback capability.
+
+0009cc header name undefined, using no_name
+Error. The NAME field in the header information is missing. Since CUPLC uses this name to generate download files, the desired file will be created as "no_name" along with the appropriate extension.
+
+0010cc disk write error: "filename"
+Fatal. CUPLC encountered an I/O error trying to write the indicated file. This error usually occurs when there is insufficient disk space.
+
+0011cc out of memory: "conditions"
+Fatal. CUPLC has used all the available RAM memory allocated by the operating system.
+This error does not result from insufficient product terms in the device to implement a particular expression.
+0012cc disk read error, unexpected end of file: "filename"
+Fatal. CUPLC encountered an I/O error trying to read the indicated file. This error usually occurs when the file is being read from damaged media.
+
+0013cc conflicting usage of pinnode:"variable"
+Error. Variable usage is mutually excluded by a previous usage of the pin or pinnode. A shared product term or terms has been defined more than once.
+
+0014cc unknown extension encountered:  "extension"
+Warning. The translation of a CUPL extension into another file format could not be accomplished. The equation is still placed in the new file except the extension has been lost.
+
+0015cc invalid local feedback from "variable name" to "variable name"
+Fatal. The local feedback of a macrocell was used outside the quadrant. This means that the feedback of a local macrocell or the internal feedback of a global macrocell was used as input to another macrocell that is located in another quadrant.
+
+0016cc exceeded number of expander product terms
+Fatal. The number of expander product terms needed to implement the design exceeds the capacity of the target device for which it was declared.
+
+0017cc global feedback in local product term: "variable"
+Error. The feedback from a global variable is being used within a local product term. This is illegal to do when using the V5000 mnemonic. The variable shown is a local variable and it contains the global variable feedback.
+
+0018cc couldn't find XILINX symbol: "symbol"
+Error. The symbol was not found for the specified Xilinx device. This means that either the symbol cannot be used for the specified device or the MAC file for that device is corrupted.
+
+0019cc couldn't map CUPL symbol to XILINX symbol: "symbol"
+Error. An architecture specification in the design file cannot be mapped into the specified device. This means that the MAP file for the device does not contain the CUPL macro translation.
+
+0020cc couldn't find CUPL macro symbol: "symbol"
+Error. An internal CUPL macro was not found in the file CUPL2XIL.MAP. This file may be corrupted or incomplete.
+
+0021cc Error found in XILINX data file
+Fatal. An error has occurred while reading in one of the Xilinx information files. These files are designated by the MAC and MAP extensions.
+
+0022cc unsupported extension: "extension"
+Fatal. The translation of a CUPL extension into another file format could not be accomplished.
+
+0023cc incorrect number of variables in DECLARE statement: "attribute"
+Warning. The number of variables in the DECLARE statement does not match the number of expected variables defined in the DECLARE.DEF file.
+
+0024cc too many XOR gates defined for output: "variable"
+Fatal. The placement of XOR gates into the PLA file cannot be performed due to the device not having the resources to hold the output expression. If this error occurs, do not use the -kx flag when compiling.
+
+10xxcc program error: "specifics"
+Fatal. An operating system interface problem is suspected. Contact Logical Devices customer support.
+Contact Logical Devices, Customer Support.
+0001sk could not open: "filename"
+Fatal. CSIM cannot continue because of the failure to open the indicated file. Be sure the file exists if it is an input.
+
+0002sk could not execute program: "program name"
+Fatal. CSIM is unable to perform the next step in the simulation.  Be sure that all of the CSIM program files exist on the same directory or disk.
+
+0003sk could not find PATH in ENVIRONMENT
+Fatal. The PATH assignment has not been made in the ENVIRONMENT.
+
+0004sk could not find LIBCUPL in ENVIRONMENT
+Fatal. The LIBCUPL assignment has not been made in the ENVIRONMENT.
+
+0005sk could not find program: "program name"
+Fatal.  CSIM is unable to locate the CSIM program using the PATH in the ENVIRONMENT.
+
+0006sk insufficient memory to execute program: "filename"
+Fatal. Not enough program storage available to load and execute the program. Refer to the System Overview for the minimum memory requirements for the configuration being used.
+
+0007sk invalid flag: "flag"
+Fatal. The specified flag is not a valid option flag. Execute CSIM without arguments to get a listing of valid option flags.
+
+0008sk out of memory: "condition"
+Fatal. CSIM has used all the available RAM memory allocated by the operating system. Check for the existence of print spoolers, RAM disks, or other memory-resident programs which may decrease the amount of memory available to the CUPL application program.
+
+0009sk file read error, unexpected end of file: "filename"
+Fatal. CUPL encountered an I/O error trying to read the indicated file. This error usually occurs when the file is being read from damaged media or the file has been corrupted.
+
+0010sk invalid library access key
+Fatal. This version of CUPL is not compatible with the version of the device library file. This occurs when either CUPL or the device library, but not both, has been updated.
+
+0011sk invalid library interface
+Fatal. Either the device library was not created using the CUPL library manager, CBLD, or CUPL and the device library are not compatible.
+
+0012sk bad library file:  "filename"
+Fatal. Either the device library does not exist or the contents of the device library have been damaged.
+
+0013sk device not in library:  "device"
+Fatal. Either the specified target device does not exist or an entry has not been made in the device library for the device.
+
+0014sk target device not specified
+Fatal. The user did not specify a target device on the command line and the source file did not contain a DEVICE assignment in the header information.
+
+10xxsk program error: "specifies"
+Fatal. An operating system interface problem is suspected. Contact LDI customer support.
+Contact Logical Devices, Customer Support.
+0001sa could not open: "filename"
+Fatal. CSIM cannot continue because of the failure to open the indicated file. Be sure the file exists if it is an input.
+
+0002sa invalid number: "number"
+Error. Either the number is used improperly, or a previous syntax error has caused the number to be used improperly.
+
+0003sa invalid file format: "filename"
+Warning. The file was not created by a compatible version of CUPL.
+
+0004sa invalid library access key
+Fatal. The version of CSIMA is not compatible with the version of the device library used in the simulation. This occurs when either CSIMA or the device library, but not both, has been updated.
+
+0005sa invalid library interface
+Fatal. Either the device library was not created using the CUPL library manager, CBLD, or CSIMA and the device library are not compatible.
+
+0006sa bad library file: "library"
+Fatal. Either the device library does not exist or the contents of the device library have been damaged.
+
+0007sa device not in library: "device"
+Fatal. Either the specified target device does not exist or an entry has not been made in the device library for the device.
+
+0008sa invalid output format: "format"
+Warning. The download format is not available for the target device; for example, the JEDEC download format is not available for PROMS.
+
+0009sa invalid syntax: "symbol"
+Error. Either the symbol is used improperly, or a previous syntax error has caused the symbol to be used improperly.
+
+0010sa expecting device: "device"
+Fatal. The target device is not the same as used when CUPL created the absolute file.
+
+0011sa unknown symbol: "symbol"
+Error. The symbol, used in the order statement, was not previously defined in the CSIM or CUPL source files.
+
+0012sa too many symbols:
+Fatal. The number of symbols in the order statement exceeds the number of symbols previously defined in the CSIM and CUPL source files.
+
+0013sa excessive test value "value"
+Error. The test vector value is greater than the maximum possible value defined in the order statement. This error will occur when there are too many test values.
+
+0014sa insufficient test values
+Fatal. The test vector value is less than the minimum possible value defined in the order statement. This error will occur when there are too few test values.
+
+0015sa field already defined: "field"
+Error. The field name was previously used in either the CSIM or CUPL source files.
+
+0016sa too many errors
+Fatal. CSIM has encountered too many errors to continue.
+
+0017sa missing symbol "symbol"
+Error. CSIM expected a keyword.
+
+0018sa out of memory: "condition"
+Fatal. CSIM has used all the available RAM memory allocated by the operating system.
+
+0019sa user expected (value) for: "variable"
+Error. The test value expected by the user in the .SI file did not match the actual value computed by CSIM.
+
+0020sa unstable output: "variable"
+Error.  The output variable did not have the same test value for two continuous evaluation passes after the maximum twenty passes were attempted. Check the logic equation for an untestable design.
+
+0021sa invalid test value: "value"
+Error. Either the test value is an invalid test vector symbol or the test value is used improperly; that is, a test value of 0 is used for an output.
+
+0022sa bad fault id: "JEDEC number"
+Error. The JEDEC number, given as the fault ID, is not the address of the beginning of a product term.
+
+0023sa could not read file: "filename"
+Fatal. CSIM could not read from the specified file. This occurs when the contents of the file have been corrupted.
+
+0024sa could not write file: "filename"
+Fatal. CSIM could not write to the specified file. This occurs when the file is write protected or there is no room left on the disk.
+
+0025sa inconsistent header information
+Warning. The header information in the CSIM source file does not match the header information in the CUPL source file used to create the absolute file.
+
+0026sa missing header item(s)
+Warning. At least one of the header statements is missing.
+
+0027sa old absolute file format for "filename"
+Fatal. The absolute file was created by an incompatible version of CUPL.
+
+0028sa statement too long
+Fatal. The statement exceeds 256 characters.
+
+0029sa invalid trace level: "number"
+Error. The trace level must be a decimal number in the range of 0 through 4.
+
+0030sa invalid character: "hex value"
+Error. CSIMA has encountered an illegal ASCII value in the source file. Make sure the file was created in non-document mode on the word processor. This error can also be caused by files which were created over a serial modem upload/download link.
+
+0031sa disk read error, unexpected end of file: "filename"
+Fatal. CSIMA encountered an I/O error trying to read the indicated file. This error usually occurs when the file is being read from damaged media.
+
+0032sa feedback usage of undefined output:  "variable name"
+Fatal. The variable name does not exist in the ORDER statement and it is being used as input/feedback for another variable. Simulation cannot occur until all relevant variables are defined.
+
+0033sa pin number is undefined for:  "variable name"
+Fatal. When simulating a design in a specified device, CSIM needs to have all the pin numbers defined. The variable name in the PLD file was not assigned a pin number. The PLD file has to be recompiled with all the pin numbers in place.
+
+10xxsa program error: "specifies"
+Fatal. An operating system interface problem is suspected. Contact Logical Devices customer support.
+Contact Logical Devices, Customer Support.

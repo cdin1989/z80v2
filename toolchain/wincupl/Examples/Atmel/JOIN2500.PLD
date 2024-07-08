@@ -1,0 +1,95 @@
+Name       join2500;
+Partno     atv2500lcc;
+Date       12/07/93;
+Revision   01;
+Designer   Joe PLD;
+Company    Atmel Corporation;
+Assembly   U00;
+Location   San Jose;
+Device     v2500lcc;
+
+/* Example of term joining using the ATMEL 2500 */
+
+/** Inputs **/
+
+PIN     1   = I1;
+PIN     2   = I2;
+PIN     3   = I3;
+PIN     19  = I17;
+PIN     20  = I18;
+PIN     21  = I19;
+PIN     22  = I20;
+PIN     23  = I21;
+PIN     24  = I22;
+PIN     25  = I23;
+PIN     41  = I37;
+PIN     42  = I38;
+PIN     43  = I39;
+PIN     44  = I40;
+
+/** Outputs **/
+
+PIN     5   = Q04;
+PIN     6   = Q05;
+PINNODE 47   = Q2R04;
+PINNODE 68   = Q1R05;
+PINNODE 48   = Q2R05;
+
+
+/** Logic Equations **/
+
+Q04.d =  I38
+       # I37
+       # I23
+       # I22
+       # I21
+       # I20
+       # I19
+       # I18
+       # I17
+       # I3
+       # I2
+       # I1 ;
+
+Q2R04.d =  I38
+       # I37
+       # I23
+       # I22 ;
+
+Q04.ck =  I40 ;
+Q04.sp =  'b'0 ;
+
+Q2R04.ck =  I40 ;
+
+Q04.oe =  'b'1 ;
+
+Q05 =  I38
+       # I37
+       # I23
+       # I22
+       # I21
+       # I20
+       # I19
+       # I18
+       # I17
+       # I3
+       # I2
+       # I1 ;
+
+Q1R05.d =  I21
+       # I20
+       # I19
+       # I18 ;
+
+Q2R05.d =  I38
+       # I37
+       # I23
+       # I22 ;
+
+Q1R05.ck =  I40 ;
+
+Q2R05.ck =  I40 ;
+
+Q05.oe =  'b'1 ;
+
+

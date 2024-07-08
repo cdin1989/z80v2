@@ -1,0 +1,31 @@
+Name     mtrafsig;
+PartNo   atv750blcc;
+Date     12/09/93;
+Revision 01;
+Designer Joe PLD;
+Company  Atmel Corporation;
+Assembly U00;
+Location San Jose;
+Device   V750BLCC;
+
+/* Traffic Signal Controller */
+
+ORDER: Clk, Clr, SenA, SenB, %2, GreenA, YellowA, RedA, GreenB, YellowB, RedB, Wait1, Wait0; 
+
+
+VECTORS:
+C110LLLLLLLL
+C110LLLLLLLL
+C010HLLLLHLL
+C010HLLLLHLL
+C010HLLLLHLL
+C011HLLLLHLH
+C011HLLLLHHH
+C011HLLLLHHL
+C011LHLLLHLL
+C010LLHHLLLL
+C010LLHLHLLL
+C010HLLLLHLL
+C010HLLLLHLL
+C011HLLLLHLH
+C011HLLLLHHH

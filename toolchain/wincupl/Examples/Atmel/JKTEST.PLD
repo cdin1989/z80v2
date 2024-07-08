@@ -1,0 +1,35 @@
+Name     JKTest ;
+PartNo   ATF1504 ;
+Date     11/17/99 ;
+Revision 01 ;
+Designer Yad Dhami ;
+Company  Atmel ;
+Assembly None ;
+Location San Jose ;
+Device   f1504plcc44 ;
+
+/* *************** INPUT PINS *********************/
+PIN  9  =  A          ; /*                                 */ 
+PIN  6  =  B          ; /*                                 */ 
+PIN  43 =  CLK        ; /*                                 */ 
+
+/* *************** OUTPUT PINS *********************/
+PIN  11   =   Emulate                      ; 
+
+/*                                 */ 
+ /*                                 */ 
+
+ /* D = (J & !Q) # (J & !K) # (!K & Q); */
+/*  T = (J & K) # (!J & K & Q) # (J & !K & !Q); */
+/* Emulating the JK FLip flop using D Flip Flops available in Device*/
+
+$Macro JK_Flip_Flop Qout Jin Kin;
+   Qout.d = (Jin & !Qout) # (Jin & !Kin) # (!Kin & Qout);
+$Mend
+Emulate.ck =CLK;
+EmulateJ = A & B;
+EmulateK = !(A & B);
+JK_Flip_Flop(Emulate, EmulateJ, EmulateK);/*Implement JK Flip Flop*/
+
+
+

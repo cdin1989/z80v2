@@ -1,0 +1,69 @@
+Name            Lookup;
+Partno          CA0017;
+Revision        01;
+Date            3/10/85;
+Designer        T. Kahl;
+Company         Assisted Technology, Inc.;
+Location        San Jose, CA.;
+Assembly        Example;
+Device          g22v10cplcc;
+
+/****************************************************************/
+/*                                                              */
+/* This is an example of the TABLE format for CUPL.  The lookup */
+/* table input consists of a 6 bit number for the radius of a   */
+/* circle (R0-5) and the output is the value for the perimeter  */
+/* (2 x Pi x Radius) of the circle (P0-7).                      */
+/****************************************************************/
+/*                       */
+/****************************************************************/
+
+/** Inputs **/
+
+/* Pin [2..3,9..12] = [R0..5];         Radius of Circle */
+Pin [2..3] = [R0..R1];
+Pin [9..12] = [R2..R5];
+
+/** Outputs **/
+
+Pin [19..20] = [P4..P5];    /* Perimeter of Circle */
+Pin 21 = P3;
+Pin 23 = P0;
+Pin [24..25] = [P2..P1];
+Pin 26 = P6;
+Pin 18 = P7;
+
+/** Declarations and Intermediate Variable Definitions **/
+
+Field Radius = [R5..0];
+Field Perimeter = [P7..0];
+
+/** Logic Equations **/
+
+Table  Radius => Perimeter {
+
+/* Radius       Perimeter               Radius      Perimeter */
+/* ------       ---------               ------      --------- */
+   'd'00    =>   'd'000;                'd'01   =>   'd'006;
+   'd'02    =>   'd'013;                'd'03   =>   'd'006;
+   'd'04    =>   'd'025;                'd'05   =>   'd'019;
+   'd'06    =>   'd'040;                'd'07   =>   'd'031;
+   'd'08    =>   'd'050;                'd'09   =>   'd'044;
+   'd'10    =>   'd'063;                'd'11   =>   'd'069;
+   'd'12    =>   'd'075;                'd'13   =>   'd'082;
+   'd'14    =>   'd'088;                'd'15   =>   'd'094;
+   'd'16    =>   'd'101;                'd'17   =>   'd'107;
+   'd'18    =>   'd'113;                'd'19   =>   'd'119;
+   'd'20    =>   'd'126;                'd'21   =>   'd'132;
+   'd'22    =>   'd'138;                'd'23   =>   'd'145;
+   'd'24    =>   'd'151;                'd'25   =>   'd'157;
+   'd'26    =>   'd'163;                'd'27   =>   'd'170;
+   'd'28    =>   'd'176;                'd'29   =>   'd'182;
+   'd'30    =>   'd'188;                'd'31   =>   'd'195;
+   'd'32    =>   'd'201;                'd'33   =>   'd'207;
+   'd'34    =>   'd'214;                'd'35   =>   'd'220;
+   'd'36    =>   'd'226;                'd'37   =>   'd'232;
+   'd'38    =>   'd'239;                'd'39   =>   'd'245;
+   'd'40    =>   'd'251;
+}
+

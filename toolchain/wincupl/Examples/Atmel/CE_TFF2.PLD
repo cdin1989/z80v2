@@ -1,0 +1,49 @@
+Name      ce_tff2;
+Partno	   AtmelCPLD;
+Date      12/20/99;
+Rev       01;
+Designer  Woolhiser;
+Company   Atmel;
+Assembly  None;
+Location  None;
+Device    f1508plcc84;
+
+Property Atmel {Preassign = Keep};
+
+ pin 83 = clk;
+ pin 79 = AR;
+ pin 80 = AP;
+
+ pin [8..12] = [C0..C4];
+
+ pinnode = Q0;
+ pinnode = Q1;
+ pinnode = Q2;
+ pinnode = Q3;
+ pinnode = Q4;
+
+$Macro TFF_From_CE Q,T,CK,AR,AP ;
+ Q.D = !Q;
+ Q.ck = CK;
+ Q.ce = T;
+ Q.ar = AR;
+ Q.ap = AP;
+$MEND   /* This command ends the MACRO function body started with $MACRO*/
+Field Qo = [Q4..Q0];
+Field Co = [C4..C0];
+
+C0 = Qo:'d'0;
+C1 = Qo:'d'5;
+C2 = Qo:'d'12;
+C3 = Qo:'d'21;
+C4 = Qo:'d'30;
+
+
+TFF_From_CE(Q0,'h'1,clk,AR,AP);
+TFF_From_CE(Q1,Q0,clk,AR,AP);
+TFF_From_CE(Q2,Q1&Q0,clk,AR,AP);
+TFF_From_CE(Q3,Q2&Q1&Q0,clk,AR,AP);
+TFF_From_CE(Q4,Q3&Q2&Q1&Q0,clk,AR,AP);
+
+
+

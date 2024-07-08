@@ -1,0 +1,67 @@
+Name     Lookup;
+PartNo   CA0017;
+Date     3/10/85;
+Revision 01;
+Designer T. Kahl;
+Company  Assisted Technology, Inc.;
+Assembly Example;
+Location San Jose, CA.;
+Device   g22v10cplcc;
+
+/****************************************************************/
+/*                                                              */
+/* This is an example of the TABLE format for CUPL.  The lookup */
+/* table input consists of a 6 bit number for the radius of a   */
+/* circle (R0-5) and the output is the value for the perimeter  */
+/* of the circle (P0-7).                                        */
+/****************************************************************/
+/* Target Devices: 256 x 8 PROM  (RA8P8)                        */
+/****************************************************************/
+
+ORDER: Radius, %2, Perimeter; 
+
+
+VECTORS:
+/* Radius       Perimeter */
+/* ------       --------- */
+000000 "00" 
+000001 "06" 
+000010 "0D" 
+000011 "06" 
+000100 "19" 
+000101 "13" 
+000110 "28" 
+000111 "1F" 
+001000 "32" 
+001001 "2C" 
+001010 "3F" 
+001011 "45" 
+001100 "4B" 
+001101 "52" 
+001110 "58" 
+001111 "5E" 
+010000 "65" 
+010001 "6B" 
+010010 "71" 
+010011 "77" 
+010100 "7E" 
+010101 "84" 
+010110 "8A" 
+010111 "91" 
+011000 "97" 
+011001 "9D" 
+011010 "A3" 
+011011 "AA" 
+011100 "B0" 
+011101 "B6" 
+011110 "BC" 
+011111 "C3" 
+100000 "C9" 
+100001 "CF" 
+100010 "D6" 
+100011 "DC" 
+100100 "E2" 
+100101 "E8" 
+100110 "EF" 
+100111 "F5" 
+101000 "FB" 

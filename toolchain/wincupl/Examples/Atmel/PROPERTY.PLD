@@ -1,0 +1,43 @@
+/**********************************************************
+  An example to show how to use the PROPERTY statement
+ **********************************************************/
+Name       property;
+Partno     ;
+Date       12/20/99;
+Revision   02;
+Designer   JZL;
+Company    Atmel;
+Assembly   None;
+Location   None;
+Device     f1500at;
+
+/* All fitter option are specified by separate property statements */
+
+PROPERTY ATMEL { preassign = keep }; /* Keep original pin assignments */
+PROPERTY ATMEL { cascade_logic = mc1 }; /* Enable mc1 for Cascade logic output*/
+PROPERTY ATMEL { sleep=ON };  /* Enable the Power Down pin mode to be used */
+
+/* Inputs */
+
+Pin 37  =   clk;        /* Global Clock Signal */
+Pin 39  =   !reset;     /* Global Reset Signal */
+
+Pin 1 =  mc5;  /* TQFP pin assignments */
+Pin 2 =  mc4;
+Pin 3 =  mc3;
+Pin 5 =  mc2;
+Pin 6 =  mc1;
+Pin 44 = mc6;
+Pin 43 = mc7;
+
+Pinnode 77 =   mc1fdbk;  /* Buried registed node */
+
+/* Logic Equations */
+
+mc1 = (mc3 $ mc4) # (mc5 $ mc6) # (mc7 $ mc1fdbk);
+
+mc1fdbk.d = mc2;
+mc1fdbk.ck = clk;
+mc1fdbk.ar = reset;
+
+

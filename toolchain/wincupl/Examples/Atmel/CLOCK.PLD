@@ -1,0 +1,32 @@
+Name            Clock;
+Partno          CPLD;
+Revision        01;
+Date            8/10/99;
+Designer        PLD Expert;
+Company         Atmel Corp.;
+Location        None;
+Assembly        None;
+Device          F1500a;
+
+/* Example showing clock usage */
+
+pin 43 = clk;
+pin [4,5,6]= [a, b, c];
+pin 7 = clken;
+
+pin [41,14,24] = [y0..2];
+
+/* EQUATIONS */
+
+y0.d   = b;
+y0.ck  = clk;      /* Use global synchronous clock */
+
+y1.d   = !b;
+y1.ck  = !a & c;   /* Use local asynchronous
+                      clock product term */
+
+y2.d   = b;
+y2.ce  = clken;    /* Gated Clock Enable */
+y2.ck  = clk;
+y2.ar  = a;
+

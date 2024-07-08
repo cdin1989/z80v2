@@ -1,0 +1,33 @@
+Name        z80_vdp;
+PartNo      00;
+Date        2024/4/25;
+Revision    01;
+Designer    bitrowz;
+Company     bitrowz;
+Assembly    None;
+Location    ;
+Device      g22v10;
+
+/******************************************************/
+/* Select VDP device.                                 */
+/* IO Ports (SG1000 compatible):                      */
+/* 0xBE: VDP Data (read/write)                        */
+/* 0xBF: VDP Address (write)                          */
+/* 0xBF: VDP Status Register (read)                   */
+/******************************************************/
+
+/** Inputs **/
+Pin [1..8] = [A0..7];
+Pin [9,10,11,13] = [!IORQ,!WR,!RD,M1];
+
+/** Outputs **/
+Pin [21,22,23] = [!CSW,!CSR,MODE];
+
+/** Intermediate Variables */
+Field ioaddr = [A7..0];
+ioreq = IORQ & M1;
+
+/** Logical Equations **/
+MODE = A0;
+CSW = ioreq & WR & ioaddr:[00BE,00BF];
+CSR = ioreq & RD & ioaddr:[00BE,00BF];

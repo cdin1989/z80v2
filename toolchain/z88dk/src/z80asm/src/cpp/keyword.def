@@ -1,0 +1,70 @@
+//-----------------------------------------------------------------------------
+// z80asm
+// keywords recognized by the lexer
+// Copyright (C) Paulo Custodio, 2011-2022
+// License: The Artistic License 2.0, http://www.perlfoundation.org/artistic_license_2_0
+//-----------------------------------------------------------------------------
+
+X(None, "")
+
+// preprocessor
+X(ASMPC, "asmpc")
+X(BINARY, "binary")
+X(DEFC, "defc")
+X(DEFINE, "define")
+X(DEFL, "defl")
+X(ELIF, "elif")
+X(ELIFDEF, "elifdef")
+X(ELIFNDEF, "elifndef")
+X(ELSE, "else")
+X(ENDIF, "endif")
+X(ENDM, "endm")
+X(ENDR, "endr")
+X(EXITM, "exitm")
+X(FLOAT, "float")
+X(IF, "if")
+X(IFDEF, "ifdef")
+X(IFNDEF, "ifndef")
+X(INCBIN, "incbin")
+X(INCLUDE, "include")
+X(LOCAL, "local")
+X(MACRO, "macro")
+X(REPT, "rept")
+X(REPTC, "reptc")
+X(REPTI, "repti")
+X(SETFLOAT, "setfloat")
+X(UNDEF, "undef")
+
+// functions for floats
+X(SIN, "sin")
+X(COS, "cos")
+X(TAN, "tan")
+X(ASIN, "asin")
+X(ACOS, "acos")
+X(ATAN, "atan")
+X(ATAN2, "atan2")
+X(SINH, "sinh")
+X(COSH, "cosh")
+X(TANH, "tanh")
+X(ASINH, "asinh")
+X(ACOSH, "acosh")
+X(ATANH, "atanh")
+X(LOG, "log")
+X(LOG10, "log10")
+X(LOG2, "log2")
+X(EXP, "exp")
+X(EXP2, "exp2")
+X(POW, "pow")
+X(SQRT, "sqrt")
+X(CBRT, "cbrt")
+X(CEIL, "ceil")
+X(FLOOR, "floor")
+X(TRUNC, "trunc")
+X(ROUND, "round")
+X(ABS, "abs")
+X(HYPOT, "hypot")
+X(FMOD, "fmod")
+X(PI, "pi")
+X(E, "e")
+
+#undef X

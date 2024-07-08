@@ -1,0 +1,38 @@
+Name      comreg;
+Partno	   AtmelCPLD;
+Date      12/20/99;
+Rev       01;
+Designer  Atmel_D;
+Company   Atmel;
+Assembly  None;
+Location  None;
+Device    f1508plcc84;
+
+PROPERTY Atmel {JTAG=ON};
+PROPERTY Atmel {LOW_POWER=ON};
+
+
+pin 2 = CLK;
+
+pin [12..11] = [O0..O1] ;
+pinnode  = Q0;
+pinnode = Q1;
+
+FIELD Q = [Q1..Q0];
+
+$MACRO TFF_CE Tout,Tin,CLK,AR;
+  Tout.D = !Tout & Tin;
+  Tout.ce = Tin;
+  Tout.ck = CLK;
+  Tout.ar = AR;
+$MEND
+
+/* Instantiate Macros */
+
+TFF_CE(Q0,'h'1,CLK,'h'0);
+TFF_CE(Q1,Q0,CLK,'h'0);
+
+O0 = Q:'h'0;
+O1 = Q:'h'2;
+
+

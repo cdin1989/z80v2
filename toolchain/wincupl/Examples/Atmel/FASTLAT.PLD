@@ -1,0 +1,32 @@
+Name      fastlat;
+Partno	   ;
+Revision  1;
+Date      12/20/99;
+Designer  ;
+Company   Atmel;
+Assembly  None;
+Location  None;
+Device    f1508plcc84;
+
+PROPERTY Atmel {JTAG=ON};
+PROPERTY Atmel {LOW_POWER=ON};
+PROPERTY Atmel {SLOW_INLATCH=ON};
+
+/* This example demonstates the fast input latch feature */
+/* on the ATF1508 */
+
+pin 1 = Enable;
+pin 2 = I;
+pin 4 = Output ;
+
+pinnode 605 = LAT; 
+
+LAT.L = I;
+LAT.LE = Enable;
+
+Output = LAT;
+
+
+
+
+ 

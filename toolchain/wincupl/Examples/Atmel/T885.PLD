@@ -1,0 +1,130 @@
+Name       t885;
+Partno     atv750lcc;
+Date       12/07/93;
+Revision   01;
+Designer   Joe PLD;
+Company    Atmel Corporation;
+Assembly   U00;
+Location   San Jose;
+Device     v750lcc;
+
+/**************************************************************/
+/*  The 74885 is a 8-bit magnitude comparator which can be    */
+/*  cascaded without other circuitry.  The 'P' inputs are     */
+/*  latched into 8 flip-flops to become the 'Q' value.  Until */
+/*  a new value is latched into the 'Q' registers, all values */
+/*  on the 'P' inputs are compared to the current 'Q' values. */
+/*  This design also includes an 'Equal' output and input.    */
+/**************************************************************/
+
+/** Inputs **/
+
+PIN    13  = P0;
+PIN    12  = P1;
+PIN    11  = P2;
+PIN    10  = P3;
+PIN    9   = P4;
+PIN    7   = P5;
+PIN    6   = P6;
+PIN    5   = P7;
+PIN    3   = PLQ;
+PIN    4   = PGQ;
+PIN    16  = PEQ;
+PIN    2   = PLE;
+
+/** Outputs **/
+
+PIN    23  = PGTQ;
+PIN    21  = PLTQ;
+PIN    18  = PETQ;
+PIN    20  = PEQ7;
+PIN    24  = PEQ6;
+PIN    19  = PEQ5;
+PIN    25  = PEQ4;
+PIN    17  = PEQ3;
+PIN    26  = PEQ2;
+PIN    27  = PEQ1;
+
+PINNODE 29  = Q0;
+PINNODE 30  = Q1;
+PINNODE 31  = Q2;
+PINNODE 32  = Q3;
+PINNODE 35  = Q4;
+PINNODE 36  = Q5;
+PINNODE 37  = Q6;
+PINNODE 38  = Q7;
+
+
+/** Logic Equations **/
+
+PETQ =  !P0 & PEQ & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & PEQ2 & PEQ1 & !Q0
+       # P0 & PEQ & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & PEQ2 & PEQ1 & Q0 ;
+
+PLTQ =  !P0 & PLQ & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & PEQ2 & PEQ1
+       # PLQ & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & PEQ2 & PEQ1 & Q0
+       # !P0 & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & PEQ2 & PEQ1 & Q0
+       # !P1 & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & PEQ2 & Q1
+       # !P2 & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & Q2
+       # !P3 & PEQ7 & PEQ6 & PEQ5 & PEQ4 & Q3
+       # !P4 & PEQ7 & PEQ6 & PEQ5 & Q4
+       # !P5 & PEQ7 & PEQ6 & Q5
+       # !P6 & PEQ7 & Q6
+       # !P7 & Q7 ;
+
+PGTQ =  PGQ & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & PEQ2 & PEQ1 & !Q0
+       # P0 & PGQ & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & PEQ2 & PEQ1
+       # P0 & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & PEQ2 & PEQ1 & !Q0
+       # P1 & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & PEQ2 & !Q1
+       # P2 & PEQ7 & PEQ6 & PEQ5 & PEQ4 & PEQ3 & !Q2
+       # P3 & PEQ7 & PEQ6 & PEQ5 & PEQ4 & !Q3
+       # P4 & PEQ7 & PEQ6 & PEQ5 & !Q4
+       # P5 & PEQ7 & PEQ6 & !Q5
+       # P6 & PEQ7 & !Q6
+       # P7 & !Q7 ;
+
+PEQ7 =  !P7 & !Q7
+       # P7 & Q7 ;
+
+PEQ3 =  !P3 & !Q3
+       # P3 & Q3 ;
+
+PEQ6 =  !P6 & !Q6
+       # P6 & Q6 ;
+
+PEQ2 =  !P2 & !Q2
+       # P2 & Q2 ;
+
+PEQ5 =  !P5 & !Q5
+       # P5 & Q5 ;
+
+PEQ1 =  !P1 & !Q1
+       # P1 & Q1 ;
+
+PEQ4 =  !P4 & !Q4
+       # P4 & Q4 ;
+
+[Q7..0].d =  [P7..0] ;
+[Q7..0].sp = 'b'0;
+[Q7..0].ck =  PLE ;
+
+PETQ.oe =  'b'1 ;
+
+PGTQ.oe =  'b'1 ;
+
+PLTQ.oe =  'b'1 ;
+
+PEQ7.oe =  'b'1 ;
+
+PEQ6.oe =  'b'1 ;
+
+PEQ5.oe =  'b'1 ;
+
+PEQ4.oe =  'b'1 ;
+
+PEQ3.oe =  'b'1 ;
+
+PEQ2.oe =  'b'1 ;
+
+PEQ1.oe =  'b'1 ;
+
+

@@ -1,0 +1,57 @@
+Name      Barrel22;
+Partno    CA0006;
+Date      05/11/89;
+Revision  02;
+Designer  Kahl;
+Company   Logical Devices, Inc.;
+Assembly  None;
+Location  None;
+Device    g22V10;
+
+/****************************************************************/
+/*                                                              */
+/* 8-Bit Registered Barrel Shifter                              */
+/*                                                              */
+/* This 8-bit registered barrel shifter takes 8 data inputs     */
+/* and cyclically rotates the data from 0 to 7 places under     */
+/* control of the select ( S0, S1, S2 ) inputs.  A SET input    */
+/* can be used to initialize the outputs to the all ones state  */
+/****************************************************************/
+/* Allowable Target Device Types :  PAL22V10                    */
+/****************************************************************/
+
+/**  Inputs  **/
+
+PIN 1           = clock;        /* Register Clock               */
+PIN [2..9]      = [D7..0];      /* Data Inputs                  */
+PIN [10,11,14]  = [S2..0];      /* Shift Count Select Inputs    */
+PIN 13          = !out_enable;  /* Register Output Enable       */
+PIN 23          = preset;       /* Set to Ones Input            */
+
+/**  Outputs  **/
+
+PIN [15..22] = [Q7..0];         /* Register Outputs             */
+
+/** Declarations and Intermediate Variable Definitions **/
+
+field shift  = [S2..0];         /* Shift Width Field            */
+field input  = [D7..0];         /* Inputs Field                 */
+field output = [Q7..0];         /* Outputs Field                */
+
+/** Logic Equations **/
+
+output.d  =  [D7, D6, D5, D4, D3, D2, D1, D0]  &  shift:0
+          #  [D0, D7, D6, D5, D4, D3, D2, D1]  &  shift:1
+          #  [D1, D0, D7, D6, D5, D4, D3, D2]  &  shift:2
+          #  [D2, D1, D0, D7, D6, D5, D4, D3]  &  shift:3
+          #  [D3, D2, D1, D0, D7, D6, D5, D4]  &  shift:4
+          #  [D4, D3, D2, D1, D0, D7, D6, D5]  &  shift:5
+          #  [D5, D4, D3, D2, D1, D0, D7, D6]  &  shift:6
+          #  [D6, D5, D4, D3, D2, D1, D0, D7]  &  shift:7;
+
+output.sp = preset;             /* synchronous preset           */
+
+output.oe = out_enable;         /* tri-state control            */
+
+output.ar = 'h'00;              /* asynchronous reset not used  */
+

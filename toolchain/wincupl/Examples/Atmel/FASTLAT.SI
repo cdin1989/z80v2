@@ -1,0 +1,23 @@
+Name     fastlat;
+PartNo   	;
+Date     12/20/99;
+Revision 1;
+Designer ;
+Company  Atmel;
+Assembly None;
+Location None;
+Device   f1508plcc84;
+
+
+ORDER: I, %1, Enable, %2, LAT, %1, Output; 
+
+
+VECTORS:
+00LL
+01LL
+11HH
+10HH
+00HH
+01LL
+01LL
+11HH

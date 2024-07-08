@@ -1,0 +1,24 @@
+Name     JKTest;
+PartNo   ATF1504;
+Date     11/17/99;
+Revision 01;
+Designer Yad Dhami;
+Company  Atmel;
+Assembly None;
+Location San Jose;
+Device   f1504plcc44;
+
+
+ORDER: CLK, A, B, Emulate; 
+
+
+VECTORS:
+010*
+C10*
+C00*
+C01*
+C11*
+C00*
+C10*
+C11*
+C00*

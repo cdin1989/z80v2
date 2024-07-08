@@ -1,0 +1,207 @@
+Name      LatchSyn;
+Partno    ATF1502;
+Date      Feb 2001;
+Revision  1.1;
+Designer  jmg;
+Company   c Mandeno Granville, 2001;
+Assembly  Synthesis of Combin Pin LATCH, and LE and D latches;
+Location  Auckland;
+Device    virtual;
+
+
+/*
+ Status : Compiled               = Yes
+
+Purpose:
+~~~~~~~~
+ Shows how to create a LATCH using COMBIN and Foldback logic.
+
+ The ATF1502 family from ATMEL allows logic doubling.  This example shows how 
+ a buried latch can be created with a Pin-latch.
+ 
+*/
+
+/* Structure Table, for Floor Plan, ATF1500 / ATF1502 
+
+PinNo    4   5   6   7   8   9  11  12  13  14  16  17  18  19  20  21
+MCell    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16 
+BNode  601 602 603 604 605 606 607 608 609 610 611 612 613 614 615 616 1502
+FoldB  301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 1502
+BNode   77  78  79  80  81  82  83  84  85  86  87  88  89  90  91  92 1500
+FoldB   45  46  47  48  49  50  51  52  53  54  55  56  57  58  59  60 1500
+
+PinNo   41  40  39  38  37  36  34  33  32  31  29  28  27  26  25  24    
+MCell   17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32 
+BNode  617 618 619 620 621 622 623 624 625 626 627 628 629 630 631 632 1502
+FoldB  317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 1502 
+BNode   93  94  95  96  97  98  99 100 101 102 103 104 105 106 107 108 1500
+FoldB   61  62  63  64  65  66  67  68  69  70  71  72  73  74  75  76 1500
+
+*/
+/* JTAG Pins PLCC44 package
+ TDI  Pin7   MC4
+ TDO  Pin38  MC20
+ TMS  Pin13  MC9
+ TCK  Pin32  MC25
+*/
+
+PROPERTY ATMEL {JTAG=OFF};   /* We are using all the pins */
+
+/* Input only pins */          /* ATF1500   ATF1502      */ 
+PIN     2       =       gCLK2; /* OEN      GCLK2/OEN2 /\ */ 
+PIN     1       =       gCLR;  /* CLRN     GCLR  /\      */ 
+PIN     44      =       RDN;   /* OEN      OE1.ForceJTAGVpp */ 
+PIN     43      =       ALE;   /* CLK      GCLK1 /\      */ 
+
+/* IO Blocks  - group in 8's, for simplicity  */
+
+PIN     4       =       uDB0;    /* MC1  */
+PIN     5       =       uDB1;    /* MC2  */
+PIN     6       =       uDB2;    /* MC3  */
+PIN     7       =       uDB3;    /* MC4  */
+PIN     8       =       uDB4;    /* MC5  */
+PIN     9       =       uDB5;    /* MC6  */
+PIN     11      =       uDB6;    /* MC7  */
+PIN     12      =       uDB7;    /* MC8  Cascade Upwards ^^  */
+
+/* Foldback Expander Nodes 45..52 MC1..MC8 */
+
+/*  3,15,23,35 = Vcc   10,22,30,42 = GND  */
+PINNODE 77  = n77;             /* MC1  1.d 1.ck */
+PINNODE 78  = uAD1;            /* MC2  */
+PINNODE 79  = uAD2;            /* MC3  */
+PINNODE 80  = uAD3;            /* MC4  */
+PINNODE 81  = cPWM4;           /* MC5  1.ce 1.ck 0.!d */
+PINNODE 82  = cPWM5;           /* MC6  */
+PINNODE 83  = cPWM6;           /* MC7  */
+PINNODE 84  = cPWM7;           /* MC8  */
+
+PIN     13      =       PinL0;    /* MC9  2.com */
+PIN     14      =       PinL1;    /* MC10  */
+PIN     16      =       PinL2;    /* MC11  */
+PIN     17      =       PinL3;    /* MC12  */
+PIN     18      =       PinL4;    /* MC13  */
+PIN     19      =       PinL5;    /* MC14  */
+PIN     20      =       PinL6;    /* MC15  */
+PIN     21      =       PinL7;    /* MC16  Cascade Upwards ^^  */
+
+/* Foldback Expander Nodes 53..60 MC9..MC16 */
+
+$DEFINE _FoldBack
+
+$IFDEF Foldback
+PINNODE    45  =   PinLFollowN;   /* Foldback.1502 MC9 */
+/* Tell fitter to Keep&Place -> FBnodes */
+PROPERTY ATMEL {FOLD=PinLFollowN}; 
+$ELSE
+PINNODE    93  =   PinLFollowN;   /* remove  Foldback_Logic line from .cmd */
+/* Tell fitter to Keep */
+PROPERTY ATMEL {SOFT_BUFFER=PinLFollowN}; 
+$ENDIF
+
+
+PINNODE     85  =   LElat0;      /* MC09  */
+PINNODE     86  =   LElat1;      /* MC10  */
+PINNODE     87  =   LElat2;      /* MC11  */
+PINNODE     88  =   LElat3;      /* MC12  */
+PINNODE     89  =   LElat4;      /* MC13  */
+PINNODE     90  =   LElat5;      /* MC14  */
+PINNODE     91  =   LElat6;      /* MC15  */
+PINNODE     92  =   LElat7;      /* MC16  */
+
+PIN     32      =   DLat0;     /* MC25  */
+PIN     31      =   DLat1;     /* MC26  */
+PIN     29      =   DLat2;     /* MC27  */
+PIN     28      =   DLat3;     /* MC28  */
+PIN     27      =   DLat4;     /* MC29  */
+PIN     26      =   DLat5;     /* MC30  */
+PIN     25      =   DLat6;     /* MC31  Cascade Upwards ^^   */
+PIN     24      =   DLat7;     /* MC32  */
+
+PINNODE     101 =   n101;       /* MC25  */
+PINNODE     102 =   n102;       /* MC26  */
+PINNODE     103 =   n103;       /* MC27  */
+PINNODE     104 =   n104;       /* MC28  */
+PINNODE     105 =   n105;       /* MC29  */
+PINNODE     106 =   n106;       /* MC30  */
+PINNODE     107 =   n107;       /* MC31  */
+PINNODE     108 =   n108;       /* MC32  */
+
+
+PIN     41      =       p41;      /* MC17 */
+PIN     40      =       p40;      /* MC18 */
+PIN     39      =       p39;      /* MC19 */
+PIN     38      =       p38;      /* MC20 */
+PIN     37      =       p37;      /* MC21 */
+PIN     36      =       p36;      /* MC22 */
+PIN     34      =       p34;      /* MC23 */
+PIN     33      =       p33;      /* MC24 17, Cascade Upwards ^^ */
+
+PINNODE     93  =   n93;        /* MC17 */
+PINNODE     94  =   n94;        /* MC18 */
+PINNODE     95  =   n95;        /* MC19 */
+PINNODE     96  =   n96;        /* MC20 */
+PINNODE     97  =   n97;        /* MC21 */
+PINNODE     98  =   n98;        /* MC22 */
+PINNODE     99  =   n99;        /* MC23 */
+PINNODE     100 =   n100;       /* MC24 */
+
+
+FIELD uDB    = [uDB7..uDB0];    /* uC DataBUS */
+
+
+$DEFINE MakeDB2Way
+
+$IFDEF MakeDB2Way
+FIELD uDBio  = [uDB7..uDB0].io;    /* uC DataBUS, Pins */
+$ELSE
+FIELD uDBio  = [uDB7..uDB0];       /* uC DataBUS, IP Only  */
+$ENDIF
+
+FIELD DLat   = [DLat7..DLat0];     /* D FF latch Latch = 574 */
+FIELD PinL   = [PinL7..PinL0];     /* Pin Latch */
+FIELD LElat   = [LElat7..LElat0];  /* Std LE Latch = 573 */
+
+/* ============  Bury LE Address Latch =============== */
+/* Transparent 373/573 Latch */
+
+$DEFINE _Clocked 
+
+$IFDEF Clocked 
+LElat.ck = ALE;       
+LElat.D  = uDBio;
+$ELSE
+LElat.LE = ALE;       
+LElat.L  = uDBio;
+$ENDIF
+
+/* ============  Bury D Address Latch =============== */
+/* Clocked 574 Latch, but on falling edge */
+
+DLat.ck = !ALE;       
+DLat.d  = uDBio;
+
+/* ============  2:1 MUX Make Before Break Synth Latch =============== */
+/*
+ALE         ______/=============\__________________   == L = HOLD
+PinLFollow  ========\______________/================  == L = Follow
+                                 ^^ Critical overlap, of Follow and HOLD.
+*/
+PROPERTY ATMEL {SOFT_BUFFER=PinLFollowN};
+
+PinLFollowN = !(ALE);   /* Allows FoldBack node if needed */
+
+Hold = !ALE;
+
+PinL = !PinLFollowN & uDBio
+     # Hold & PinL.io;
+
+
+/* ============  Something on the BUS =============== */
+
+$IFDEF MakeDB2Way
+uDB.oe = !RDN;
+uDB  = DLat;
+$ENDIF
+
+

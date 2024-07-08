@@ -1,0 +1,307 @@
+Name       Bench25b;
+Partno     atv2500blcc;
+Date       12/08/93;
+Revision   01;
+Designer   Joe PLD;
+Company    Atmel Corporation;
+Assembly   U00;
+Location   San Jose;
+Device     v2500blcc;
+
+/* This example implements 4 instances of a typical 3-bit state machine */
+/* design.                                                              */
+
+PIN    1   = CLK;                         /* Synchronous Clock pin */
+PIN    2   = RST;                         /* Reset */
+
+PIN [3,19,20,21,22,23,24,25] = [IN0..7];  /* Inputs */
+
+/* State Machine 1 */
+PIN     15  = SA0;
+PIN     16  = SA1;
+PINNODE 89  = SA2;
+PINNODE 45  = A0;
+PINNODE 46  = A1;
+PIN     17  = A2;
+PINNODE 47  = A3;
+PINNODE 48  = A4;
+PIN     18  = A5;
+PINNODE 49  = A6;
+PINNODE 51  = A7;
+
+/* State Machine 2 */
+PIN     27  = SB0;
+PIN     28  = SB1;
+PINNODE 90  = SB2;
+PINNODE 52  = B0;
+PINNODE 53  = B1;
+PIN     29  = B2;
+PINNODE 54  = B3;
+PINNODE 55  = B4;
+PIN     30  = B5;
+PINNODE 57  = B6;
+PINNODE 58  = B7;
+
+/* State Machine 3 */
+PIN     31  = SC0;
+PIN     32  = SC1;
+PINNODE 67  = SC2;
+PINNODE 59  = C0;
+PINNODE 61  = C1;
+PIN     35  = C2;
+PINNODE 62  = C3;
+PINNODE 63  = C4;
+PIN     36  = C5;
+PINNODE 65  = C6;
+PINNODE 66  = C7;
+
+/* State Machine 4 */
+PIN     39  = SD0;
+PIN     40  = SD1;
+PINNODE 68  = SD2;
+PIN [5,6,7,8,9,10,13,14] = [OUT0..7]; /* Outputs */
+
+[A7..0].ar =  RST ;
+[B7..0].ar =  RST ;
+[C7..0].ar =  RST ;
+[OUT7..0].ar =  RST ;
+
+[A7..0].sp =  'b'0 ;
+[B7..0].sp =  'b'0 ;
+[C7..0].sp =  'b'0 ;
+[OUT7..0].sp =  'b'0 ;
+
+[A7..0].ce =  'h'FF ;
+[B7..0].ce =  'h'FF ;
+[C7..0].ce =  'h'FF ;
+[OUT7..0].ce =  'h'FF ;
+
+[SA2..0].ar =  RST ;
+[SB2..0].ar =  RST ;
+[SC2..0].ar =  RST ;
+[SD2..0].ar =  RST ;
+
+[SA2..0].sp =  'b'0 ;
+[SB2..0].sp =  'b'0 ;
+[SC2..0].sp =  'b'0 ;
+[SD2..0].sp =  'b'0 ;
+
+[SA2..0].ce =  'b'111 ;
+[SB2..0].ce =  'b'111 ;
+[SC2..0].ce =  'b'111 ;
+[SD2..0].ce =  'b'111 ;
+
+/* *********************************************************************** */
+/* State Machine 1 */
+SA0.t =  IN0 & IN1 & IN2 & IN3 & IN4 & !IN5 & !IN6 & !IN7 & SA0
+       # !IN0 & IN1 & !IN2 & IN3 & !IN4 & IN5 & !IN6 & IN7 & SA1
+       # SA0 & SA1
+       # !IN0 & !IN1 & IN2 & IN3 & IN4 & IN5 & !IN6 & !IN7 & !SA0 & !SA1
+       # SA2 ;
+
+SA1.t =  SA0 & SA1
+       # !SA0 & !SA1 & SA2
+       # !IN0 & IN1 & !IN2 & IN3 & !IN4 & IN5 & !IN6 & !IN7 & SA0 & !SA2
+       # IN0 & IN1 & IN2 & IN3 & IN4 & !IN5 & !IN6 & !IN7 & SA0 & !SA2
+       # !IN0 & IN1 & !IN2 & IN3 & !IN4 & IN5 & !IN6 & IN7 & SA1 & !SA2 ;
+
+SA2.t =  SA0 & SA2
+       # SA1 & !SA2 ;
+
+A7.d =  !IN0 & !IN1 & IN2 & IN3 & IN4 & IN5 & !IN6 & !IN7 & !SA0 & !SA1
+       # !SA0 & !SA1 & SA2 ;
+
+A6.d =  !IN0 & IN1 & !IN2 & IN3 & !IN4 & IN5 & !IN6 & !IN7 & SA0 & !SA1
+       # SA0 & !SA1 & SA2 ;
+
+A5.d =  IN0 & !SA0 & SA1 & !SA2
+       # !IN1 & !SA0 & SA1 & !SA2
+       # IN2 & !SA0 & SA1 & !SA2
+       # !IN3 & !SA0 & SA1 & !SA2
+       # IN4 & !SA0 & SA1 & !SA2
+       # !IN5 & !SA0 & SA1 & !SA2
+       # IN6 & !SA0 & SA1 & !SA2
+       # !IN7 & !SA0 & SA1 & !SA2
+       # IN0 & IN1 & IN2 & IN3 & IN4 & !IN5 & !IN6 & !IN7 & SA0 & !SA1 & !SA2 ;
+
+A4.d =  !SA0 & SA1 & !SA2 ;
+
+A3.d =  SA0 & SA1 & !SA2 ;
+
+A2.d =  !IN1 & SA0 & !SA1 & !SA2
+       # !IN0 & IN2 & SA0 & !SA1 & !SA2
+       # !IN3 & SA0 & !SA1 & !SA2
+       # IN0 & !IN4 & SA0 & !SA1 & !SA2
+       # IN4 & IN5 & SA0 & !SA1 & !SA2
+       # !IN2 & !IN5 & SA0 & !SA1 & !SA2
+       # IN6 & SA0 & !SA1 & !SA2
+       # IN7 & SA0 & !SA1 & !SA2 ;
+
+A1.d =  !SA0 & SA1 & SA2
+       # !IN0 & !IN1 & IN2 & IN3 & IN4 & IN5 & !IN6 & !IN7 & !SA0 & !SA1 & !SA2 ;
+
+A0.d =  SA0 & SA1 & SA2
+       # !IN0 & IN1 & !IN2 & IN3 & !IN4 & IN5 & !IN6 & IN7 & !SA0 & SA1 & !SA2 ;
+
+
+
+/* *********************************************************************** */
+/* State Machine 2 */
+SB0.t =  A0 & A1 & A3 & A4 & !A6 & !A7 & !A5 & A2 & SB0
+       # !A0 & A1 & A3 & !A4 & !A6 & A7 & A5 & !A2 & SB1
+       # SB0 & SB1
+       # !A0 & !A1 & A3 & A4 & !A6 & !A7 & A5 & A2 & !SB0 & !SB1
+       # SB2 ;
+
+SB1.t =  SB0 & SB1
+       # !SB0 & !SB1 & SB2
+       # A0 & A1 & A3 & A4 & !A6 & !A7 & !A5 & A2 & SB0 & !SB2
+       # !A0 & A1 & A3 & !A4 & !A6 & !A7 & A5 & !A2 & SB0 & !SB2
+       # !A0 & A1 & A3 & !A4 & !A6 & A7 & A5 & !A2 & SB1 & !SB2 ;
+
+SB2.t =  SB0 & SB2
+       # SB1 & !SB2 ;
+
+B7.d =  !A0 & !A1 & A3 & A4 & !A6 & !A7 & A5 & A2 & !SB0 & !SB1
+       # !SB0 & !SB1 & SB2 ;
+
+B6.d =  !A0 & A1 & A3 & !A4 & !A6 & !A7 & A5 & !A2 & SB0 & !SB1
+       # SB0 & !SB1 & SB2 ;
+
+B5.d =  A0 & !SB0 & SB1 & !SB2
+       # !A1 & !SB0 & SB1 & !SB2
+       # !A3 & !SB0 & SB1 & !SB2
+       # A4 & !SB0 & SB1 & !SB2
+       # A6 & !SB0 & SB1 & !SB2
+       # !A7 & !SB0 & SB1 & !SB2
+       # !A5 & !SB0 & SB1 & !SB2
+       # A2 & !SB0 & SB1 & !SB2
+       # A0 & A1 & A3 & A4 & !A6 & !A7 & !A5 & A2 & SB0 & !SB1 & !SB2 ;
+
+B4.d =  !SB0 & SB1 & !SB2 ;
+
+B3.d =  SB0 & SB1 & !SB2 ;
+
+B2.d =  !A1 & SB0 & !SB1 & !SB2
+       # !A3 & SB0 & !SB1 & !SB2
+       # !A0 & A4 & SB0 & !SB1 & !SB2
+       # A6 & SB0 & !SB1 & !SB2
+       # A7 & SB0 & !SB1 & !SB2
+       # !A4 & !A5 & SB0 & !SB1 & !SB2
+       # A5 & A2 & SB0 & !SB1 & !SB2
+       # A0 & !A2 & SB0 & !SB1 & !SB2 ;
+
+B1.d =  !SB0 & SB1 & SB2
+       # !A0 & !A1 & A3 & A4 & !A6 & !A7 & A5 & A2 & !SB0 & !SB1 & !SB2 ;
+
+B0.d =  SB0 & SB1 & SB2
+       # !A0 & A1 & A3 & !A4 & !A6 & A7 & A5 & !A2 & !SB0 & SB1 & !SB2 ;
+
+
+/* *********************************************************************** */
+/* State Machine 3 */
+SC0.t =  B0 & B1 & B3 & B4 & !B6 & !B7 & !B5 & B2 & SC0
+       # !B0 & B1 & B3 & !B4 & !B6 & B7 & B5 & !B2 & SC1
+       # SC0 & SC1
+       # !B0 & !B1 & B3 & B4 & !B6 & !B7 & B5 & B2 & !SC0 & !SC1
+       # SC2 ;
+
+SC1.t =  SC0 & SC1
+       # !SC0 & !SC1 & SC2
+       # B0 & B1 & B3 & B4 & !B6 & !B7 & !B5 & B2 & SC0 & !SC2
+       # !B0 & B1 & B3 & !B4 & !B6 & !B7 & B5 & !B2 & SC0 & !SC2
+       # !B0 & B1 & B3 & !B4 & !B6 & B7 & B5 & !B2 & SC1 & !SC2 ;
+
+SC2.t =  SC0 & SC2
+       # SC1 & !SC2 ;
+
+C7.d =  !B0 & !B1 & B3 & B4 & !B6 & !B7 & B5 & B2 & !SC0 & !SC1
+       # !SC0 & !SC1 & SC2 ;
+
+C6.d =  !B0 & B1 & B3 & !B4 & !B6 & !B7 & B5 & !B2 & SC0 & !SC1
+       # SC0 & !SC1 & SC2 ;
+
+C5.d =  B0 & !SC0 & SC1 & !SC2
+       # !B1 & !SC0 & SC1 & !SC2
+       # !B3 & !SC0 & SC1 & !SC2
+       # B4 & !SC0 & SC1 & !SC2
+       # B6 & !SC0 & SC1 & !SC2
+       # !B7 & !SC0 & SC1 & !SC2
+       # !B5 & !SC0 & SC1 & !SC2
+       # B2 & !SC0 & SC1 & !SC2
+       # B0 & B1 & B3 & B4 & !B6 & !B7 & !B5 & B2 & SC0 & !SC1 & !SC2 ;
+
+C4.d =  !SC0 & SC1 & !SC2 ;
+
+C3.d =  SC0 & SC1 & !SC2 ;
+
+C2.d =  !B1 & SC0 & !SC1 & !SC2
+       # !B3 & SC0 & !SC1 & !SC2
+       # !B0 & B4 & SC0 & !SC1 & !SC2
+       # B6 & SC0 & !SC1 & !SC2
+       # B7 & SC0 & !SC1 & !SC2
+       # !B4 & !B5 & SC0 & !SC1 & !SC2
+       # B5 & B2 & SC0 & !SC1 & !SC2
+       # B0 & !B2 & SC0 & !SC1 & !SC2 ;
+
+C1.d =  !SC0 & SC1 & SC2
+       # !B0 & !B1 & B3 & B4 & !B6 & !B7 & B5 & B2 & !SC0 & !SC1 & !SC2 ;
+
+C0.d =  SC0 & SC1 & SC2
+       # !B0 & B1 & B3 & !B4 & !B6 & B7 & B5 & !B2 & !SC0 & SC1 & !SC2 ;
+
+
+/* *********************************************************************** */
+/* State Machine 4 */
+SD0.t =  A3 & C0 & C1 & C4 & !C6 & !C7 & !C5 & C2 & SD0
+       # A3 & !C0 & C1 & !C4 & !C6 & C7 & C5 & !C2 & SD1
+       # SD0 & SD1
+       # A3 & !C0 & !C1 & C4 & !C6 & !C7 & C5 & C2 & !SD0 & !SD1
+       # SD2 ;
+
+SD1.t =  SD0 & SD1
+       # !SD0 & !SD1 & SD2
+       # A3 & C0 & C1 & C4 & !C6 & !C7 & !C5 & C2 & SD0 & !SD2
+       # A3 & !C0 & C1 & !C4 & !C6 & !C7 & C5 & !C2 & SD0 & !SD2
+       # A3 & !C0 & C1 & !C4 & !C6 & C7 & C5 & !C2 & SD1 & !SD2 ;
+
+SD2.t =  SD0 & SD2
+       # SD1 & !SD2 ;
+
+OUT7.d =  A3 & !C0 & !C1 & C4 & !C6 & !C7 & C5 & C2 & !SD0 & !SD1
+       # !SD0 & !SD1 & SD2 ;
+
+OUT6.d =  A3 & !C0 & C1 & !C4 & !C6 & !C7 & C5 & !C2 & SD0 & !SD1
+       # SD0 & !SD1 & SD2 ;
+
+OUT5.d =  !A3 & !SD0 & SD1 & !SD2
+       # C0 & !SD0 & SD1 & !SD2
+       # !C1 & !SD0 & SD1 & !SD2
+       # C4 & !SD0 & SD1 & !SD2
+       # C6 & !SD0 & SD1 & !SD2
+       # !C7 & !SD0 & SD1 & !SD2
+       # !C5 & !SD0 & SD1 & !SD2
+       # C2 & !SD0 & SD1 & !SD2
+       # A3 & C0 & C1 & C4 & !C6 & !C7 & !C5 & C2 & SD0 & !SD1 & !SD2 ;
+
+OUT4.d =  !SD0 & SD1 & !SD2 ;
+
+OUT3.d =  SD0 & SD1 & !SD2 ;
+
+OUT2.d =  !A3 & SD0 & !SD1 & !SD2
+       # !C1 & SD0 & !SD1 & !SD2
+       # !C0 & C4 & SD0 & !SD1 & !SD2
+       # C6 & SD0 & !SD1 & !SD2
+       # C7 & SD0 & !SD1 & !SD2
+       # !C4 & !C5 & SD0 & !SD1 & !SD2
+       # C5 & C2 & SD0 & !SD1 & !SD2
+       # C0 & !C2 & SD0 & !SD1 & !SD2 ;
+
+OUT1.d =  !SD0 & SD1 & SD2
+       # A3 & !C0 & !C1 & C4 & !C6 & !C7 & C5 & C2 & !SD0 & !SD1 & !SD2 ;
+
+OUT0.d =  SD0 & SD1 & SD2
+       # A3 & !C0 & C1 & !C4 & !C6 & C7 & C5 & !C2 & !SD0 & SD1 & !SD2 ;
+
+
+

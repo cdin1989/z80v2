@@ -1,0 +1,385 @@
+Name      Pwm8x4;
+Partno    ATF1502;
+Date      Mar 2001;
+Revision  1.1;
+Designer  jg;
+Company   c Mandeno Granville 2001;
+Assembly  Quad 8 BIT PWM DACS, uC 8 Bit Busable, 4 Bytes IO mapped;
+Location  Auckland;
+Device    virtual;
+
+/* Status :
+ Compiles     =  Yes
+
+ Ver 1.1  used 1502 features of buried LE latch
+ Ver 1.0  Ported from 1500
+*/
+
+/*
+ Purpose:
+ ~~~~~~~~
+ This design packs the maximum number of 8 Bit resolution DACS, and PWM 
+ drivers, into a PLCC44 32 MC device.  An ATF1502 can swallow 4 8 bit PWM 
+ generators and their Latches.  The design has an 8 BIT uC BUS interface
+ for Write of the PWM values, can run at full Clock Speed, and has special 
+ trap for SetPoint of 0, so output remains DC low.  Removal of the trap 
+ can force 1/256 to both 0 and 1, if always having a waveform is important.
+ 
+ Typical add ons could be for FAST protect RstN, if Motor Driving, or
+ system RstN Ip, to define PWM at RstN.
+
+DB0..DB7               uC Data BUS
+
+Adr1  Adr0 CEN  WRN     Function
+0     0     L     L    Write PWM SetPoint Byte, Channel A
+0     1     L     L    Write PWM SetPoint Byte, Channel B
+1     0     L     L    Write PWM SetPoint Byte, Channel C
+1     1     L     L    Write PWM SetPoint Byte, Channel D
+
+PWM Comparitor, Min P terms:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ A Binary Counter has special properties, ( you know the count
+direction, which is ones shifting left ), and this can be used for better PWM
+code efficency :-
+
+Ctr   Pwm   Fails
+0000  1101  1101
+0001  1101  1100
+0010  1101  1101
+0011  1101  1100
+0100  1101  1001
+0101  1101  1000
+0110  1101  1001
+0111  1101  1000
+1000  1101  0101
+1001  1101  0100
+1010  1101  0101
+1011  1101  0100
+1100  1101  0001
+1101  1101  0000   << FiRstN Here, No Fails,
+1110  1101  0001
+1111  1101  0000   << alias here, but > aliases can ignore
+
+FailEqA0 =  (PwmA0 & !PwCtr0);  Hi for mismatch
+FailEqA1 =  (PwmA1 & !PwCtr1);  Hi for mismatch
+
+Special Cases Considered:
+~~~~~~~~~~~~~~~~~~~~~~~~~
+Ctr   Pwm   Fails OP
+1111  0000  0000  L
+0000  0000  0000  H >> Special, need to never Clr, or get 0 ==1 = Min PWM
+0001  0000  0000  L
+0010  0000  0000  L
+0011  0000  0000  L
+Ctr   Pwm   Fails
+0000  0001  0001  H >> Sync SET
+0001  0001  0000  L >> Sync CLR
+0010  0001  0001  L
+0011  0001  0000  L
+Ctr   Pwm   Fails
+0000  0011  0011  H >> Sync SET
+0001  0011  0010  H
+0010  0011  0001  H
+0011  0011  0000  L >> Sync CLR
+Ctr   Pwm   Fails
+0000  1111  1111  H >> Sync SET
+0001  1111  1110  H
+1110  1111  0001  H
+1111  1111  0000  L >> Sync SLR
+*/
+
+/* Structure Table, for Floor Plan, ATF1500 / ATF1502 
+
+PinNo    4   5   6   7   8   9  11  12  13  14  16  17  18  19  20  21
+MCell    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16 
+BNode  601 602 603 604 605 606 607 608 609 610 611 612 613 614 615 616 1502
+FoldB  301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 1502
+BNode   77  78  79  80  81  82  83  84  85  86  87  88  89  90  91  92 1500
+FoldB   45  46  47  48  49  50  51  52  53  54  55  56  57  58  59  60 1500
+
+PinNo   41  40  39  38  37  36  34  33  32  31  29  28  27  26  25  24    
+MCell   17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32 
+BNode  617 618 619 620 621 622 623 624 625 626 627 628 629 630 631 632 1502
+FoldB  317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 1502
+BNode   93  94  95  96  97  98  99 100 101 102 103 104 105 106 107 108 1500
+FoldB   61  62  63  64  65  66  67  68  69  70  71  72  73  74  75  76 1500
+*/
+/* JTAG Pins PLCC44 package
+ TDI  Pin7   MC4
+ TDO  Pin38  MC20
+ TMS  Pin13  MC9
+ TCK  Pin32  MC25
+*/
+
+PROPERTY ATMEL {JTAG=OFF};   /* We are using all the pins */
+
+/* Input only pins */           /* ATF1500   ATF1502      */
+PIN     2       =       DB5;    /* OEN      GCLK2/OEN2 /\ */
+PIN     1       =       Reset;  /* CLRN     GCLR  /\      */
+PIN     44      =       Adr0;   /* OEN      OE1.ForceJTAGVpp */
+PIN     43      =       CLK;    /* CLK      GCLK1 /\      */ /* Fast PWM clock */
+
+/* IO Blocks  - group in 8's, for simplicity  */
+
+PIN     4        =       CEN;     /* MC1 i */
+PIN     5        =       WRN;     /* MC2 5 T Term */
+PIN     6        =       DB4;     /* MC3 i */
+PIN     7        =       Adr1;    /* MC4 5 T Term */
+PIN     8        =       PwmD6;   /* MC5 i  */
+PIN     9        =       PwmD7;   /* MC6 5 */
+PIN     11       =       PwmC6;   /* MC7 i */
+PIN     12       =       PwmC7;   /* MC8 5 */
+
+/*  3,15,23,35 = Vcc   10,22,30,42 = GND  */
+
+PINNODE     77   =   PwCtr0;      /* MC1 2 fb.45*/
+PINNODE     78   =   PwCtr1;      /* MC2 - */
+PINNODE     79   =   PwmA6;       /* MC3 2 fb.47*/
+PINNODE     80   =   PwCtr3;      /* MC4 - */
+PINNODE     81   =   PwCtr4;      /* MC5 5 */
+PINNODE     82   =   PwCtr5;      /* MC6 - */
+PINNODE     83   =   PwCtr6;      /* MC7 5 */
+PINNODE     84   =   PwCtr7;      /* MC8 - fb.52 */
+
+/* BUS to Controller  */
+
+PIN     13   =  PwmAOUT;   /* MC9  o */
+PIN     14   =  PwmBOUT;   /* MC10 o */
+PIN     16   =  DB0;       /* MC11 i */
+PIN     17   =  DB1;       /* MC12 i */
+PIN     18   =  Pin18;     /* MC13 i Spare Pin */
+PIN     19   =  Adr2;      /* MC14 i Optional, Allows up to 2 PWM Chips on one BUS*/
+PIN     20   =  DB6;       /* MC15 i */
+PIN     21   =  DB7;       /* MC16 i */
+
+PINNODE     85   =   n85;         /* MC9   */
+PINNODE     86   =   n86;         /* MC10   */
+PINNODE     87   =   NEqB0_4;     /* MC11   */
+PINNODE     88   =   NEqA0_4;     /* MC12   */
+PINNODE     89   =   PwmB6;       /* MC13   */
+PINNODE     90   =   PwmB7;       /* MC14   */
+PINNODE     91   =   PwCtr2;      /* MC15   */
+PINNODE     92   =   PwmA7;       /* MC16   */
+
+PIN     41       =   PwmC0;       /* MC17    */
+PIN     40       =   PwmC1;       /* MC18     */
+PIN     39       =   PwmC2;       /* MC19     */
+PIN     38       =   PwmC3;       /* MC20     */
+PIN     37       =   DB2;         /* MC21     */
+PIN     36       =   PwmC5;       /* MC22     */
+PIN     34       =   PwmC4;       /* MC23     */
+PIN     33       =   DB3;         /* MC24     */
+
+
+PINNODE     93   =   PwmA0;    /* MC17  1 */
+PINNODE     94   =   PwmA1;    /* MC18  2 */
+PINNODE     95   =   PwmA2;    /* MC19  2 */
+PINNODE     96   =   PwmA3;    /* MC20  2 */
+PINNODE     97   =   NEqC0_4;  /* MC21  2 */
+PINNODE     98   =   PwmA5;    /* MC22  2 */
+PINNODE     99   =   PwmA4;    /* MC23  2 */
+PINNODE     100  =   NEqD0_4;  /* MC24  2 */
+
+PIN     32       =       PwmD0;      /* MC25  2 com */
+PIN     31       =       PwmD1;      /* MC26  2 */
+PIN     29       =       PwmD2;      /* MC27  2 */
+PIN     28       =       PwmD3;      /* MC28  2 */
+PIN     27       =       PwmD4;      /* MC29  2 */
+PIN     26       =       PwmD5;      /* MC30  2 */
+PIN     25       =       PwmCOUT;    /* MC31  2 */
+PIN     24       =       PwmDOUT;    /* MC32  2 */
+
+PINNODE     101  =   PwmB0;        /* MC25 2.d.ce */
+PINNODE     102  =   PwmB1;        /* MC26 2 */
+PINNODE     103  =   PwmB2;        /* MC27 2 */
+PINNODE     104  =   PwmB3;        /* MC28 2 */
+PINNODE     105  =   PwmB4;        /* MC29 2 */
+PINNODE     106  =   PwmB5;        /* MC30 2 */
+PINNODE     107 =    n107;         /* MC31 2 */
+PINNODE     108 =    n108;         /* MC32 2 */
+
+/* ============  Defines for creating different JED versions ========== */
+
+ChipAdr = !Adr2;   /* Adr3.Adr2 no fit, but one Adr2 OR Adr3 fits w Fainin 40.39  */
+
+RstN  = !Reset;    /* Choose +ve or -ve reset polarity */
+
+/* ============  PWM Compare values LATCHES  ===============
+1 0 Adr   Operation
+0 0       Write PWM A 
+0 1       Write PWM B 
+1 0       Write Pwm C 
+1 1       Write PWM D 
+
+A,B use Sync registers, and require that the DB is valid on the leading
+edge of WRN. 
+C,D use Synth Latches, and require that the DB is valid on the trailing 
+edge of WRN. 
+ The 80C51 meets these requirements, and permits XTAL as a clock source.
+*/
+
+
+
+CePwmA    = !CEN & !WRN & ChipAdr & !Adr1 & !Adr0;
+CePwmB    = !CEN & !WRN & ChipAdr & !Adr1 &  Adr0; /* These for registered Outputs */
+
+PINNODE   61 =   WrPwmCN; 
+PROPERTY ATMEL {FOLD=WrPwmCN}; 
+PINNODE   62 =   WrPwmDN; 
+PROPERTY ATMEL {FOLD=WrPwmDN}; 
+
+WrPwmCN    = !(!CEN & !WRN & ChipAdr & Adr1 & !Adr0);     /* C Wr */
+WrPwmDN    = !(!CEN & !WRN & ChipAdr & Adr1 & Adr0);      /* D Wr*/
+
+
+/* ============  PWM A, Value Latch, is LE FF, buried ======= */
+[PwmA7..PwmA0].l  = [DB7..DB0];
+[PwmA7..PwmA0].le = CePwmA;
+
+
+/* ============  PWM B, Value Latch, is LE FF, buried ======= */
+[PwmB7..PwmB0].l  = [DB7..DB0];
+[PwmB7..PwmB0].le = CePwmB;
+
+
+/* ============= Custom Macro Generator ===================== */
+$MACRO Latch_LLE ComNode DataIn LEtermN fbNode NodeNumber
+PINNODE   NodeNumber =   fbNode; 
+
+PROPERTY ATMEL {FOLD=fbNode}; 
+
+fbNode  = !(LEtermN);
+
+ComNode =  fbNode & DataIn          /* Follow */
+          #  LEtermN & ComNode      /* Hold */
+          ;
+
+$MEND
+/*
+ Positive Logic
+LEterm   _____/=============\__________________  == L = HOLD
+fbNode  =======\______________/================  == L = Follow
+
+Negative Logic ( When LEterm is collected into a FoldBack )
+LEtermN ======\_____________/==================  == h = HOLD
+fbNode  _______/==============\________________  == h = Follow
+                            ^^ Critical overlap, of Follow and HOLD.
+*/
+
+/* Call as Latch_LLE (LatchField, IpField, LEPin, FoldbackName, FoldBackNumber ); */
+ 
+Field DB   = DB7..DB0;
+Field PwmC = PwmC7..PwmC0;
+Field PwmD = PwmD7..PwmD0;
+
+/* ============  PWM C, Using FoldBack Latch -  SR Latches  ======= */
+ Latch_LLE (PwmC,DB,
+            WrPwmCN,fbWrPwmC,63);
+
+/* ============  PWM D, Using FoldBack Latch -  SR Latches  ======= */
+ Latch_LLE (PwmD,DB,
+            WrPwmDN,fbWrPwmD,64);
+
+/* ============  PWM output Cells, Set/Clear on Limit.Match =============== */
+
+/* =================  Limit Values for PWM's =============== */
+
+field PwmCtr  = [PwCtr7..PwCtr0];
+field PwmValA = [PwmA7..PwmA0];
+field PwmValB = [PwmB7..PwmB0];
+field PwmValC = [PwmC7..PwmC0];
+field PwmValD = [PwmD7..PwmD0];
+
+Zero   = PwmCtr: 'b'00000000;
+ZeroA  = PwmValA:'b'00000000;
+ZeroB  = PwmValB:'b'00000000;
+ZeroC  = PwmValC:'b'00000000;
+ZeroD  = PwmValD:'b'00000000;
+
+/* Special Case traps, Set Value is 00000000 */
+
+PINNODE   45 =   fbZeroAN; 
+PROPERTY ATMEL {FOLD=fbZeroAN}; 
+fbZeroAN = !ZeroA;
+
+PINNODE   47 =   fbZeroBN; 
+PROPERTY ATMEL {FOLD=fbZeroBN}; 
+fbZeroBN = !ZeroB;
+
+PINNODE   53 =   fbZeroCN; 
+PROPERTY ATMEL {FOLD=fbZeroCN}; 
+fbZeroCN = !ZeroC;
+
+PINNODE   54 =   fbZeroDN; 
+PROPERTY ATMEL {FOLD=fbZeroDN}; 
+fbZeroDN = !ZeroD;
+
+/* =================  J-K Style PWM Syncronous =============== */
+
+PwmAOUT.ck = CLK;    /* check polarity ? */
+PwmAOUT.t  =  PwmAOUT & !(NEqA0_4 # NEqA5_7)   /* Sync Clr @ SetPt, Sticky */
+            # !PwmAOUT & fbZeroAN & Zero       /* Sync Set, unless SetPt==0 */
+            ;
+PwmAOUT.ar = !RstN;
+
+PwmBOUT.ck = CLK;
+PwmBOUT.t  = PwmBOUT & !(NEqB0_4 # NEqB5_7)  
+            # !PwmBOUT &  fbZeroBN & Zero
+            ;
+PwmBOUT.ar = !RstN;
+
+PwmCOUT.ck = CLK;
+PwmCOUT.t  =  PwmCOUT & !(NEqC0_4 # NEqC5_7)  
+            # !PwmCOUT &  fbZeroCN & Zero
+            ;
+PwmCOUT.ar = !RstN;
+
+PwmDOUT.ck = CLK;
+PwmDOUT.t  = PwmDOUT & !(NEqD0_4 # NEqD5_7) 
+            # !PwmDOUT &  fbZeroDN & Zero
+            ;
+PwmDOUT.ar = !RstN;
+
+
+/* ============  8 Bit Buried Syncronous PWM Counter =============== */
+[PwCtr0..7].ar = !RstN;
+[PwCtr0..7].ck = CLK;
+[PwCtr0..7].d = ![PwCtr0..7];
+PwCtr1.ce = PwCtr0 ;
+PwCtr2.ce = PwCtr1 & PwCtr0 ;
+PwCtr3.ce = PwCtr2 & PwCtr1 & PwCtr0 ;
+PwCtr4.ce = PwCtr3 & PwCtr2 & PwCtr1 & PwCtr0 ;
+PwCtr5.ce = PwCtr4 & PwCtr3 & PwCtr2 & PwCtr1 & PwCtr0 ;
+PwCtr6.ce = PwCtr5 & PwCtr4 & PwCtr3 & PwCtr2 & PwCtr1 & PwCtr0 ;
+PwCtr7.ce = PwCtr6 & PwCtr5 & PwCtr4 & PwCtr3 & PwCtr2 & PwCtr1 & PwCtr0 ;
+
+
+/* =============  MATCH values on PWM == Latched RefValue ============= */
+
+/* InEquality tests, rely on Binary Counter 'first match' counting */
+/* NEq?0_4 are in a placed buried PINNODE 
+   NEq?5_7 are synthesised by fitter into foldbacks 
+*/
+
+[NEqA0..7] =  (![PwCtr0..7] & [PwmA0..7]);
+
+NEqA0_4  =  NEqA0 # NEqA1 # NEqA2 # NEqA3 # NEqA4; 
+NEqA5_7  =  NEqA5 # NEqA6 # NEqA7;                
+
+[NEqB0..7] =  (![PwCtr0..7] & [PwmB0..7]);
+
+NEqB0_4   =  NEqB0 # NEqB1 # NEqB2 # NEqB3 # NEqB4;
+NEqB5_7   =  NEqB5 # NEqB6 # NEqB7;
+
+
+[NEqC0..7] =  (![PwCtr0..7] & [PwmC0..7]);
+
+NEqC0_4  =  NEqC0 # NEqC1 # NEqC2 # NEqC3 # NEqC4;
+NEqC5_7  =  NEqC5 # NEqC6 # NEqC7;
+
+[NEqD0..7] =  (![PwCtr0..7] & [PwmD0..7]);
+
+NEqD0_4  =  NEqD0 # NEqD1 # NEqD2 # NEqD3 # NEqD4;
+NEqD5_7  =  NEqD5 # NEqD6 # NEqD7;
+
+

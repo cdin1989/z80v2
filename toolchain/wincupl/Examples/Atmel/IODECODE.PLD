@@ -1,0 +1,50 @@
+Name            Iodecode;
+Partno          CA0010;
+Revision        02;
+Date            9/22/84;
+Designer        Osann/Kahl;
+Company         Assisted Technology, Inc.;
+Assembly        PC Multi-Function;
+Location        U12;
+Device          G20V8ALCC;
+
+/************************************************************************/
+/* This device generates the chip select signals for the I/O functions. */
+/* It also enables the data bus transceiver for both memory and I/O     */
+/* write cycles.                                                        */
+/************************************************************************/
+
+/** Inputs **/
+
+pin [2..7,9,10] = [a9..2] ;             /* system addresses a2 - a9     */
+pin 11     = !memw ;                    /* memory write strobe          */
+pin 12     = !iow ;                     /* i/o write strobe             */
+pin 13     = !ioacc_in ;                /* same signal as ioacc         */
+pin 16     = !memacc ;                  /* on-board memory access       */
+
+/** Outputs **/
+
+pin 18     = !ioacc ;                   /* on-board I/O being accessed  */
+pin 19     = !parport ;                 /* parallel port chip select    */
+pin 20     = !rtclk ;                   /* real-time clock chip select  */
+pin 21     = !serport2 ;                /* serial port #2 chip select   */
+pin 23     = !serport1 ;                /* serial port #1 chip select   */
+pin 24     = !wrbuff ;                  /* xceiver enable - write cycle */
+
+/** Declarations and Intermediate Variable Definitions  **/
+
+field   ioaddr    = [a9..2] ;
+serport1_eqn      = ioaddr:[2F8..2FF] ;  /*******************************/
+serport2_eqn      = ioaddr:[3F8..3FF] ;  /*          I/O Address        */
+rtclk_eqn         = ioaddr:[100..11F] ;  /*             Ranges          */
+parport_eqn       = ioaddr:[1F4..1F7] ;  /*******************************/
+
+/** Logic Equations **/
+
+wrbuff            = memacc & memw # ioacc_in & iow ;
+ioacc             = serport1_eqn # serport2_eqn # rtclk_eqn #
+                    parport_eqn ;
+serport1          = serport1_eqn ;
+serport2          = serport2_eqn ;
+rtclk             = rtclk_eqn ;
+parport           = parport_eqn ;

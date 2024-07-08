@@ -1,0 +1,38 @@
+Name        z80_joypad_psg;
+PartNo      00;
+Date        2024/4/25;
+Revision    01;
+Designer    bitrowz;
+Company     bitrowz;
+Assembly    None;
+Location    ;
+Device      g22v10;
+
+/******************************************************/
+/* Select Joypad and PSG device.                    */
+/* IO Port:                                           */
+/* 0x7E/0x7F: PSG (write)                             */
+/* 0xDC/0xC0: Joypad-1 (read)                       */
+/* 0xDD/0xC1: Joypad-2 (read)                       */
+/******************************************************/
+
+/** Inputs **/
+Pin [1..8] = [A0..7];
+Pin [9,10,11,13] = [!IORQ,!WR,!RD,M1];
+
+/** Outputs **/
+Pin 23  = !CS_PSG;
+Pin 22  = !CS_JOYPAD;
+Pin 21  = !RD_JOYPAD1;
+Pin 20  = !RD_JOYPAD2;
+
+/** Intermediate Variables */
+Field ioaddr = [A7..0];
+iowr = IORQ & M1 & WR;
+iord = IORQ & M1 & RD;
+
+/** Logical Equations **/
+CS_PSG       = iowr & ioaddr:[007E,007F];
+RD_JOYPAD1 = iord & ioaddr:[00C0,00DC];
+RD_JOYPAD2 = iord & ioaddr:[00C1,00DD];
+CS_JOYPAD  = RD_JOYPAD1 # RD_JOYPAD2;

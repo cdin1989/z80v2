@@ -1,0 +1,40 @@
+
+
+
+
+
+	INCLUDE "z80_crt0.hdr"
+
+
+	SECTION	code_compiler
+
+._do_something
+	ret
+
+
+
+._main
+	ld	hl,9	;const
+	push	hl
+	ld	l,20	
+	push	hl
+	call	_do_something
+	pop	bc
+	pop	bc
+	ret
+
+
+
+
+
+	SECTION	bss_compiler
+	SECTION	code_compiler
+
+
+
+	GLOBAL	_do_something
+	GLOBAL	_main
+
+
+
+

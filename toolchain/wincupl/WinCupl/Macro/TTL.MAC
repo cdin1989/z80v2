@@ -1,0 +1,496 @@
+$MACRO T7442 A B C D C0 C1 C2 C3 C4 C5 C6 C7 C8 C9
+/* BCD to decimal decoder */
+C9 =  D & !C & !B &  A;
+C8 =  D & !C & !B & !A;
+C7 = !D &  C &  B &  A;
+C6 = !D &  C &  B & !A;
+C5 = !D &  C & !B &  A;
+C4 = !D &  C & !B & !A;
+C3 = !D & !C &  B &  A;
+C2 = !D & !C &  B & !A;
+C1 = !D & !C & !B &  A;
+C0 = !D & !C & !B & !A;
+$MEND
+
+
+
+$MACRO T7477 DL D2 D3 D4 G Q1 Q2 Q3 Q4
+/* 4 bit latch              */
+Q1.l=DL;
+Q2.l=D2;
+Q3.l=D3;
+Q4.l=D4;
+[Q1,Q2,Q3,Q4].le=G;
+$MEND
+
+$MACRO T7482 A1 A2 B1 B2 S1 S2 C2
+/* 2-bit full adder                     */
+S1 = A1 $ B1 $ C0;
+S2 = A2 $ B2 $ (A1 & B1 # (C0 & (A1 $ B1)));
+C2 = A2 & B2 # ((A1 & B1 # (C0 & (A1 $ B1))) & (A2 $ B2));
+$MEND
+
+$MACRO T7496 SER A B C D E CLK PE CLR QA QB QC QD QE
+/* 5-bit shift register                 */
+QA.d = A & PE # !PE & SER;
+QB.d = B & PE # !PE & QA;
+QC.d = C & PE # !PE & QB;
+QD.d = D & PE # !PE & QC;
+QE.d = E & PE # !PE & QD;
+[QE,QD,QC,QB,QA].ck=CLK;
+[QE,QD,QC,QB,QA].AR=!CLR;
+$MEND
+
+
+$MACRO T74116 D1 D2 D3 D4 G CLR Q1 Q2 Q3 Q4
+/* 4-bit latch with clear               */
+Q1.l= D1 ;
+Q2.l= D2 ;
+Q3.l= D3 ;
+Q4.l= D4 ;
+[Q1,Q2,Q3,Q4].le=G;
+[Q1,Q2,Q3,Q4].ar=!CLR;
+$MEND
+
+$MACRO T74138 A B C G1 G2A G2B Y0 Y1 Y2 Y3 Y4 Y5 Y6 Y7
+/* 3-8 line decoder                     */
+Y0=  !A & !B & !C & G1 & !G2A & !G2B;
+Y1=  !A & !B &  C & G1 & !G2A & !G2B;
+Y2=  !A &  B & !C & G1 & !G2A & !G2B;
+Y3=  !A &  B &  C & G1 & !G2A & !G2B;
+Y4 =  A & !B & !C & G1 & !G2A & !G2B;
+Y5 =  A & !B &  C & G1 & !G2A & !G2B;
+Y6 =  A &  B & !C & G1 & !G2A & !G2B;
+Y7 =  A &  B &  C & G1 & !G2A & !G2B;
+$MEND
+
+
+$MACRO T74139 A B G Y0 Y1 Y2 Y3
+/* 2-4 line decoder                     */
+!Y0 = A &  B & !G;
+!Y1 =!A &  B & !G;
+!Y2 = A & !B & !G;
+!Y3 =!A & !B & !G;
+$MEND
+
+
+
+
+$MACRO T74147 D1 D2 D3 D4 D5 D6 D7 D8 D9 A B C D
+/* 10-4 priority line decoder           */
+A  = ((!D1 & D2 & D4 & D6 & !(!D8 # !D9))
+   #  (!D3 & D4 & D6 & !(!D8 # D9))
+   #  (!D5 & D6 & !(!D8 # !D9))
+   #  (!D7 & !(!D8 # !D9)) # !D9) ;
+
+B  = ((!D2 & D4 & D5 & !(!D8 # D9))
+   #  (!D3 & D4 & D5 & !(!D8 # D9))
+   #  (!D6 & !(!D8 # !D9))
+   #  (!D7 & !(!D8 # !D9))) ;
+
+C  = ((!D4 & !(!D8 # !D9))
+   #  (!D5 & !(!D8 # !D9))
+   #  (!D6 & !(!D8 # !D9))
+   #  (!D7 & !(!D8 # !D9)) );
+
+D  = (!D8 # !D9) ;
+$MEND
+
+
+$MACRO T74148 D0 D1 D2 D3 D4 D5 D6 D7 E1 A0 A1 A2 GS E0
+/* 8-3 priority line decoder           */
+A0  = (D7 & E1);
+    # (D5 & !D6 & !D7 & E1);
+    # (D3 & !D4 & !D5 & !D6 & !D7 & E1);
+    # (D1 & !D2 & !D3 & !D4 & !D5 & !D6 & !D7 & E1);
+
+A1  = (D7 & E1);
+    # (D6 & !D7 & E1);
+    # (D3 & !D4 & !D5 & !D6 & !D7 & E1);
+    # (D2 & !D3 & !D4 & !D5 & !D6 & !D7 & E1);
+
+A2  = (D7 & E1);
+    # (D6 & !D7 & E1);
+    # (D5 & !D6 & !D7 & E1);
+    # (D4 & !D5 & !D6 & !D7 & E1);
+
+E0  = (D0 & D1 & D2 & D3 & D4 & D5 & D6 & D7 & E1);
+
+GS  = (E0  # E1);
+$MEND
+
+$MACRO T74151 D0 D1 D2 D3 D4 D5 D6 D7 A B C G Y
+/* 8-1 mux with enable                  */
+Y   = (D7 & A & B & C & !G)
+    # (D6 &!A & B & C & !G)
+    # (D5 & A &!B & C & !G)
+    # (D4 &!A &!B & C & !G)
+    # (D3 & A & B &!C & !G)
+    # (D2 &!A & B &!C & !G)
+    # (D1 & A &!B &!C & !G)
+    # (D0 &!A &!B &!C & !G);
+$MEND
+
+
+$MACRO T74150 E0 E1 E2 E3 E4 E5 E6 E7 E8 E9 E10 E11 E12 E13 E14 E15 A B C D G Y
+/* 16-1 mux with enable                 */
+Y =  ((E7 & A & B & C & !D & !G)
+     #(E6 &!A & B & C & !D & !G)
+     #(E5 & A &!B & C & !D & !G)
+     #(E4 &!A &!B & C & !D & !G)
+     #(E3 & A & B &!C & !D & !G)
+     #(E2 &!A & B &!C & !D & !G)
+     #(E1 & A &!B &!C & !D & !G)
+     #(E0 &!A &!B &!C & !D & !G) )
+ #
+     ((E15 & A & B & C & D & !G)
+     #(E14 &!A & B & C & D & !G)
+     #(E13 & A &!B & C & D & !G)
+     #(E12 &!A &!B & C & D & !G)
+     #(E11 & A & B &!C & D & !G)
+     #(E10 &!A & B &!C & D & !G)
+     #(E9  & A &!B &!C & D & !G)
+     #(E8  &!A &!B &!C & D & !G) );
+$MEND
+
+$MACRO T74165  SER A B C D E F G H CLK CLKINH SHIFT Q hid0 hid1 hid2 hid3 hid4 hid5 hid6
+/* parralel load 8 bit shift register             */
+hid0.D=(A&!SHIFT)#(SHIFT&!CLKINH&SER)#(SHIFT&CLKINH&hid0);
+hid1.D=(B&!SHIFT)#(SHIFT&!CLKINH&hid0)#(SHIFT&CLKINH&hid1);
+hid2.D=(C&!SHIFT)#(SHIFT&!CLKINH&hid1)#(SHIFT&CLKINH&hid2);
+hid3.D=(D&!SHIFT)#(SHIFT&!CLKINH&hid2)#(SHIFT&CLKINH&hid3);
+hid4.D=(E&!SHIFT)#(SHIFT&!CLKINH&hid3)#(SHIFT&CLKINH&hid4);
+hid5.D=(F&!SHIFT)#(SHIFT&!CLKINH&hid4)#(SHIFT&CLKINH&hid5);
+hid6.D=(G&!SHIFT)#(SHIFT&!CLKINH&hid5)#(SHIFT&CLKINH&hid6);
+Q.D=(H&!SHIFT)#(SHIFT&!CLKINH&hid6)#(SHIFT&CLKINH&Q);
+[Q,hid0,hid1,hid2,hid3,hid4,hid5,hid6].CK=CLK;
+$MEND
+
+$MACRO T7442 A B C D G1 G2 Y0 Y1 Y2 Y3 Y4 Y5 Y6 Y7 Y8 Y9 Y10 Y11 Y12 Y13 Y14 Y15
+/* BCD to decimal decoder                       */
+!Y0=(!D & (G1&^G2) &   (!C &!B &!A);
+!Y1=(!D & (G1&^G2) &   (!C &!B & A);
+!Y2=(!D & (G1&^G2) &   (!C & B &!A);
+!Y3=(!D & (G1&^G2) &   (!C & B & A);
+!Y4=(!D & (G1&^G2) &   ( C &!B &!A);
+!Y5=(!D & (G1&^G2) &   ( C &!B & A);
+!Y6=(!D & (G1&^G2) &   ( C & B &!A);
+!Y7=(!D & (G1&^G2) &   ( C & B & A);
+!Y8=( D & (G1&^G2) &   (!C &!B &!A);
+!Y9=( D & (G1&^G2) &   (!C &!B & A);
+!Y10=( D & (G1&^G2) &   (!C & B &!A);
+!Y11=( D & (G1&^G2) &   (!C & B & A);
+!Y12=( D & (G1&^G2) &   ( C &!B &!A);
+!Y13=( D & (G1&^G2) &   ( C &!B & A);
+!Y14=( D & (G1&^G2) &   ( C & B &!A);
+!Y15=( D & (G1&^G2) &   ( C & B & A);
+$MEND
+
+
+
+$MACRO T74162 A B C D ENP ENT CLK LOAD CLR QA QB QC QD RCO
+/* 4-bit decade BCD counter with reset  */
+QA.T=(!CLR & QA)
+     #( CLR&!LOAD&!A & QA)
+     #( CLR&!LOAD&!QA & A)
+     #( CLR & ENP &  LOAD & ENT);
+QA.CK=CLK;
+QB.T=(!CLR & QB)
+     #( CLR & ENP &  LOAD & ENT & QA&!QD)
+     #( CLR&!LOAD&!B & QB)
+     #( CLR&!LOAD&!QB & B);
+QB.CK=CLK;
+QC.T= (!CLR & QC)
+     #( CLR&!LOAD&!C & QC)
+     #( CLR&!LOAD&!QC & C)
+     #( CLR & QB & QA &  CLR & ENP &  LOAD & ENT);
+QC.CK=CLK;
+QD.T=(!CLR & QD)
+     #( CLR & ENP &  LOAD & ENT & QA  & QD )
+     #( CLR & ENP &  LOAD & ENT & QC & QB & QA)
+     #( CLR&!LOAD&!D & QD)
+     #( CLR&!LOAD&!QD & D);
+QD.CK=CLK;
+RCO=QD & !QC & !QB & QA & ENT;
+$MEND
+
+$MACRO T74163 A B C D ENP ENT CLK LOAD CLR Q0 Q1 Q2 Q3 RCO
+/* 4-bit binary counter                 */
+Q0.T=(!CLR & Q0)
+     #( CLR&!LOAD&!A & Q0)
+     #( CLR&!LOAD&!Q0 & A)
+     #( CLR & ENP &  LOAD & ENT);
+Q1.T=(!CLR & Q1)
+     #( CLR&!LOAD&!B & Q1)
+     #( CLR&!LOAD&!B & Q1)
+     #( CLR&!LOAD&!Q1 & B)
+     #( CLR & Q0 & ( CLR & ENP &  LOAD & ENT));
+Q2.T=(!CLR & Q2)
+     #( CLR&!LOAD&!C & Q2)
+     #( CLR&!LOAD&!Q2 & C)
+     #( CLR & Q1 & Q0 & ( CLR & ENP &  LOAD & ENT));
+Q3.T=(!CLR & Q3)
+     #( CLR&!LOAD&!D & Q3)
+     #( CLR&!LOAD&!Q3 & D)
+     #( CLR & Q2 & Q1 & Q0 & ( CLR & ENP &  LOAD & ENT));
+RCO=Q3 & Q2 & Q1 & Q0 & ENT;
+[Q0,Q1,Q2,Q3].CK=CLK;
+$MEND
+
+$MACRO T7192 A B C D UP DN LOAD CLR CLK QA QB QC QD CO BO
+/* 4-bit up/down BCD counter            */
+BO=(!DN&!UP)&!QA&!QB&!QC&!QD;
+CO=(!DN & UP) & QA&!QB&!QC & QD;
+QD.T=((DN&!UP)&!QA & !LOAD&!QB&!QC)
+     #((!DN & UP) & QA & !LOAD & QB & QC)
+     #((!DN & UP) & !LOAD & QA &!QB&!QC & QD)
+     #( LOAD & (D $ QD));
+QC.T=((QD#QC) & !LOAD & (DN&!UP)&!QB&!QA)
+     #(!LOAD & (!DN & UP)&!QD & QB & QA)
+     #( LOAD & (C $ QC));
+QB.T=(!(!QD&!QC&!QB) & (DN&!UP) & !LOAD&!QA)
+     #( LOAD & (B $ QB));
+QA.T=(!LOAD & (DN&!UP))
+     #(!LOAD & (!DN & UP))
+     #( LOAD & (A $ QA));
+[QD,QC,QB,QA].CK=CLK;
+[QD,QC,QB,QA].AR=CLR;
+$MEND
+
+$MACRO T74298 A1 A2 B1 B2 C1 C2 D1 D2 WS CLK QA QB QC QD
+/* quad 2-1 multiplexer with storage    */
+QA.D=(A1&!WS)#(A2 & WS);
+QB.D=(B1&!WS)#(B2 & WS);
+QC.D=(C1&!WS)#(C2 & WS);
+QD.D=(D1&!WS)#(D2 & WS);
+[QA,QB,QC,QD].CK=CLK;
+$MEND
+
+$MACRO T74280  A B C D E F G H I EVEN
+/* 9-bit parity generator/checker       */
+__10out=(A $ B $ C);
+__11out=(D $ E $ F);
+__12out=(G $ H $ I);
+EVEN =!((A $ B $ C) $ (D $ E $ F) $ (G $ H $ I));
+$MEND
+
+$MACRO T7448 D1 D2 D4 D8 BIN RBI LT A B C D E F G RBON
+/* BCD to 7-segment decoder             */
+ A  =
+   !BIN & !RBI & !LT & RBON & !D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 &  D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 &  D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 & !D2 &  D1
+;
+
+ B =
+   !BIN & !RBI & !LT & RBON & !D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 &  D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 &  D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 & !D2 & !D1
+;
+
+ C =
+   !BIN & !RBI & !LT & RBON & !D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 &  D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 &  D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 &  D2 &  D1
+;
+
+D=
+   !BIN & !RBI & !LT & RBON & !D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 &  D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 &  D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 &  D2 & !D1
+;
+
+ E=
+   !BIN & !RBI & !LT & RBON & !D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 &  D2 & !D1
+;
+
+ F=
+   !BIN & !RBI & !LT & RBON & !D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 &  D2 & !D1
+;
+
+ G=
+   !BIN & !RBI & !LT & RBON & !D8 & !D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 & !D4 &  D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON & !D8 &  D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 &  D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 & !D4 &  D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 & !D2 & !D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 & !D2 &  D1
+ # !BIN & !RBI & !LT & RBON &  D8 &  D4 &  D2 & !D1
+;
+
+!RBON =  RBI & !LT & !D8 & !(D4 & !RBI) & !(D2 & !RBI) & !(D1 & !RBI) ;
+$MEND
+$MACRO T7483 A1 A2 A3 A4 B1 B2 B3 B4 CO S1 S2 S3 S4 C4 NC
+/* 4-bit full adder                  */
+S1 = A1 $ B1 $ CO;
+S2 = A2 $ B2 $ ((A1 & B1) # (CO & (A1 $ B1)));
+NC = ((((A1 & B1)
+    # (CO & (A1 $ B1))) & (A2 $ B2))
+    # (A2 & B2));
+S3 = NC $ A3 $ B3;
+S4 = A4 $ B4 $ (( NC & (A3 $ B3))
+    # (A3 & B3));
+C4 =((((NC & (A3 $ B3))
+    # (A3 & B3)) & (A4 $ B4)) # (A4 & B4));
+$MEND
+
+$MACRO T7485 A0 A1 A2 A3 B0 B1 B2 B3 ALB AEB AGB ALBO AEBO AGBO
+/* 4-bit magnitude comparitor           */
+NC0=(A3 $ !B3) & (A2 $ !B2);
+AEBO=AEB & NC0 & NC3;
+NC1=(AGB # (A3 & !ALB & !B3))
+     # (A2 & !(ALB # (B3 & !AGB & !A3)) & !B2);
+NC2=ALB # (B3 & !AGB & !A3)
+     # (B2 & !(AGB # (A3 & !ALB & !B3)) & !A2);
+NC3=(A1  $ !B1) & (A0  $  !B0);
+AGBO=(NC1 # (A1 & !NC2 & !B1))
+     #(A0 & !(NC2 # (B1 & !NC1 & !A1)) & !B0);
+ALBO=(NC2 # (B1 & !NC1 & !A1))
+     # (B0 & !(NC1 # (A1 & !NC2 & !B1)) & !A0);
+$MEND
+
+$MACRO T74153 Y0 Y1 A B G1 G2 D0 D1 D2 D3 D4 D5 D6 D7
+/* dual 4-1 mux with enable             */
+Y0 = (C0 &!B &!A &!G1)
+   # (C1 &!B & A &!G1)
+   # (C2 & B &!A &!G1)
+   # (C3 & B & A &!G1);
+Y1 = (D0 &!B &!A &!G2)
+   # (D1 &!B & A &!G2)
+   # (D2 & B &!A &!G2)
+   # (D3 & B & A &!G2);
+$MEND
+
+$MACRO T74646 cka sra ckb srb dir ena a b areg breg
+a{0} = !b{0} & !sra
+   # breg{0} & sra;
+a{0}.oe = !dir & !ena;
+areg{0}.d = a{0};
+areg{0}.ck = cka;
+b{0} = !a{0} & !srb
+   # areg{0} & srb;
+b{0}.oe = dir & !ena;
+breg{0}.d = b{0};
+breg{0}.ck = ckb;
+
+a{1} = !b{1} & !sra
+   # breg{1} & sra;
+a{1}.oe = !dir & !ena;
+areg{1}.d = a{1};
+areg{1}.ck = cka;
+b{1} = !a{1} & !srb
+   # areg{0} & srb;
+b{1}.oe = dir & !ena;
+breg{1}.d = b{1};
+breg{1}.ck = ckb;
+
+a{2} = !b{2} & !sra
+   # breg{2} & sra;
+a{2}.oe = !dir & !ena;
+areg{2}.d = a{2};
+areg{2}.ck = cka;
+b{2} = !a{2} & !srb
+   # areg{2} & srb;
+b{2}.oe = dir & !ena;
+breg{2}.d = b{2};
+breg{2}.ck = ckb;
+
+a{3} = !b{3} & !sra
+   # breg{3} & sra;
+a{3}.oe = !dir & !ena;
+areg{3}.d = a{3};
+areg{3}.ck = cka;
+b{3} = !a{3} & !srb
+   # areg{3} & srb;
+b{3}.oe = dir & !ena;
+breg{3}.d = b{3};
+breg{3}.ck = ckb;
+
+a{4} = !b{4} & !sra
+   # breg{4} & sra;
+a{4}.oe = !dir & !ena;
+areg{4}.d = a{4};
+areg{4}.ck = cka;
+b{4} = !a{4} & !srb
+   # areg{4} & srb;
+b{4}.oe = dir & !ena;
+breg{4}.d = b{4};
+breg{4}.ck = ckb;
+
+a{5} = !b{5} & !sra
+   # breg{5} & sra;
+a{5}.oe = !dir & !ena;
+areg{5}.d = a{5};
+areg{5}.ck = cka;
+b{5} = !a{5} & !srb
+   # areg{5} & srb;
+b{5}.oe = dir & !ena;
+breg{5}.d = b{5};
+breg{5}.ck = ckb;
+
+a{6} = !b{6} & !sra
+   # breg{6} & sra;
+a{6}.oe = !dir & !ena;
+areg{6}.d = a{6};
+areg{6}.ck = cka;
+b{6} = !a{6} & !srb
+   # areg{6} & srb;
+b{6}.oe = dir & !ena;
+breg{6}.d = b{6};
+breg{6}.ck = ckb;
+
+a{7} = !b{7} & !sra
+   # breg{7} & sra;
+a{7}.oe = !dir & !ena;
+areg{7}.d = a{7};
+areg{7}.ck = cka;
+b{7} = !a{7} & !srb
+   # areg{7} & srb;
+b{7}.oe = dir & !ena;
+breg{7}.d = b{7};
+breg{7}.ck = ckb;
+$MEND

@@ -1,0 +1,40 @@
+Name            Convert;
+Partno          ;
+Revision        01;
+Date            8/11/95;
+Designer        PLD Expert;
+Company         Atmel Corp.;
+Location        None;
+Assembly        None;
+Device          F1500A;
+
+/* Example showing clock usage and D/T type FF conversion*/
+/* Using the REGISTER_SELECT keyword */
+PROPERTY ATMEL {preassign TRY};
+pin 43 = clk;
+pin [4,5,6]= [a, b, c];
+pin 7 = clken;
+
+pin [41,14,24] = [y0..2];
+
+Register_select [y0..y2] = 2;
+
+/* This statement will convert the FF flop equation to  */
+/* Equivalant T-type flip-flop equation. For Atmel devices */
+/* Options 0,1,2,5 are supported. More information is available */
+/* on this option in the CUPL help menu */
+
+/* EQUATIONS */
+
+y0.d   = b;
+y0.ck  = clk;      /* Use global synchronous clock */
+
+y1.d   = !b;
+y1.ck  = !a & c;   /* Use local asynchronous
+                      clock product term */
+
+y2.d   = b;
+y2.ce  = clken;    /* Gated Clock Enable */
+y2.ck  = clk;
+y2.ar  = a;
+

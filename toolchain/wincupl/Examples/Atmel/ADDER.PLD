@@ -1,0 +1,58 @@
+Name      Adder;
+Partno    CA0016;
+Date      08/10/1999;
+Rev       01;
+Designer  Woolhiser;
+Company   Assisted Technology;
+Assembly  None;
+Location  None;
+Device    G16V8;
+
+/****************************************************************/
+/*                                                              */
+/* Four bit adder using the CUPL function statement.            */
+/*                                                              */
+/* 4-bit asynchronous adder implemented as a ripple-carry       */
+/* through four adder-slice circuits.  Each adder-slice         */
+/* takes a pair of 1-bit numbers (Xi, Yi) and the carry from    */
+/* a previous slice (Cin) and produces their 1-bit sum (Zi)     */
+/* and carry (Cout).  Each adder-slice circuit is defined       */
+/* using the CUPL function adder_slice(), which returns         */
+/* the product directly and the carry as Cout.                  */
+/****************************************************************/
+
+/** Inputs **/
+
+Pin [1..4] = [X1..4];           /* First 4-bit number   */
+Pin [5..8] = [Y1..4];           /* Second 4-bit number  */
+
+/** Outputs **/
+
+Pin [12..15] = [Z1..4];         /* 4-bit sum                    */
+Pin [16..18] = [C1..3];         /* Intermediate carry vaules    */
+Pin 19 = Carry;                 /* Carry for 4-bit sum          */
+
+/* Adder-slice circuit - add 2, 1-bit, numbers with carry */
+
+function adder_slice(X, Y, Cin, Cout) {
+        Cout    = Cin & X               /* Compute carry */
+                # Cin & Y
+                # X & Y;
+        adder_slice = Cin $ (X $ Y);    /* Compute sum */
+}
+
+/* Perform 4, 1-bit, additions and keep the final carry */
+
+Z1 = adder_slice(X1, Y1, 'h'0, C1);     /* Initial carry = 'h'0         */
+Z2 = adder_slice(X2, Y2,   C1, C2);
+Z3 = adder_slice(X3, Y3,   C2, C3);
+Z4 = adder_slice(X4, Y4,   C3, Carry);  /* Get final carry value        */
+
+
+
+
+
+
+
+
+

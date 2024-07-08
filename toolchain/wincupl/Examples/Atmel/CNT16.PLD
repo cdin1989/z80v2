@@ -1,0 +1,94 @@
+Name            Cnt16;
+Partno          CPLD;
+Date            07/21/00;
+Revision        01;
+Designer        YAD PLD;
+Company         Atmel Corp.;
+Location        San Jose;
+Assembly        U00;
+Device          f1500a;
+
+/* 16-bit Loadable Counter with Clock Enable and Reset */
+ 
+/* Control inputs */
+pin 43 = CLK;
+pin [2,44,1] = [LD,CE,RST];
+
+/* Counter data inputs */
+pin [4..9,11..14,16..21] = [DIN0..15];
+
+/* Counter external outputs */
+pin [24..29,31..34,36..41] = [Q0..15];
+
+Property Atmel {preassign ignore};
+
+/* 16-Bit Counter macro that uses the T-type registers */
+Q15.t =  LD & !DIN15 & Q15
+       # LD & DIN15 & !Q15
+       # !LD & Q14 & Q13 & Q12 & Q11 & Q10 & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q14.t =  LD & !DIN14 & Q14
+       # LD & DIN14 & !Q14
+       # !LD & Q13 & Q12 & Q11 & Q10 & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q13.t =  LD & !DIN13 & Q13
+       # LD & DIN13 & !Q13
+       # !LD & Q12 & Q11 & Q10 & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q12.t =  LD & !DIN12 & Q12
+       # LD & DIN12 & !Q12
+       # !LD & Q11 & Q10 & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q11.t =  LD & !DIN11 & Q11
+       # LD & DIN11 & !Q11
+       # !LD & Q10 & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q10.t =  LD & !DIN10 & Q10
+       # LD & DIN10 & !Q10
+       # !LD & Q9 & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q9.t =  LD & !DIN9 & Q9
+       # LD & DIN9 & !Q9
+       # !LD & Q8 & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q8.t =  LD & !DIN8 & Q8
+       # LD & DIN8 & !Q8
+       # !LD & Q7 & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q7.t =  LD & !DIN7 & Q7
+       # LD & DIN7 & !Q7
+       # !LD & Q6 & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q6.t =  LD & !DIN6 & Q6
+       # LD & DIN6 & !Q6
+       # !LD & Q5 & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q5.t =  LD & !DIN5 & Q5
+       # LD & DIN5 & !Q5
+       # !LD & Q4 & Q3 & Q2 & Q1 & Q0 ;
+
+Q4.t =  LD & !DIN4 & Q4
+       # LD & DIN4 & !Q4
+       # !LD & Q3 & Q2 & Q1 & Q0 ;
+
+Q3.t =  LD & !DIN3 & Q3
+       # LD & DIN3 & !Q3
+       # !LD & Q2 & Q1 & Q0 ;
+
+Q2.t =  LD & !DIN2 & Q2
+       # LD & DIN2 & !Q2
+       # !LD & Q1 & Q0 ;
+
+Q1.t =  LD & !DIN1 & Q1
+       # LD & DIN1 & !Q1
+       # !LD & Q0 ;
+
+Q0.t =  !LD
+       # LD & !DIN0 & Q0
+       # LD & DIN0 & !Q0 ;
+
+[Q15..0].ce =  'h'FFFF ;
+[Q15..0].ck =  CLK;
+[Q15..0].ar =  RST ;
+
+

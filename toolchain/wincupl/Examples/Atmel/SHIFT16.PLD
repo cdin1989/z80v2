@@ -1,0 +1,58 @@
+Name            Shift16;
+Partno          ;
+Revision        01;
+Date            8/10/99;
+Designer        PLD Expert;
+Company         Atmel Corp.;
+Location        None;
+Assembly        None;
+Device          F1500a;
+
+/* 16-Bit Loadable Shift Register */
+
+/*
+Block Diagram
+                ---------
+               |         |
+   Load ------>|         |-----> Ser_out
+               |         |
+   D0..D15 --->|         |
+               |         |
+   CLK ------->|>        |
+               |         |
+                ---------
+
+When Load is TRUE, D0..D15 data is loaded into the shift register.
+Once Load is FALSE, the data is shifted to the right (D15 -> D0).
+A '0' is loaded into the D15 during the shifting process.  The
+last bit of the shift register, Ser_out shifts the data out.
+*/
+
+/* Inputs */ 
+pin 43 = CLK;
+pin 1 = Load;
+pin 2 = RES;
+
+pin [41..36,34..31,29..24] = [D0..15];
+
+/* Outputs */
+pin 21 = Ser_out;
+
+/* Q Nodes */
+pinnode = [Q1..15];
+
+Field Qnodes = [Q15..1,Ser_out];    /* Q nodes */
+Field Qshift = ['b'0,Q15..1];  /* Shifting input */
+Field Din    = [D15..0];    /* Data input */
+
+/* EQUATIONS */
+Qnodes.ck = CLK;  
+Qnodes.ar = RES;
+
+Qnodes.d =   Load & Din            /*Load in the data*/
+          # !Load & Qshift;        /*Shifts the data*/
+
+ 
+
+
+

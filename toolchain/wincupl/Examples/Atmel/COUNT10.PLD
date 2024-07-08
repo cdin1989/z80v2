@@ -1,0 +1,92 @@
+Name      Count10;
+Partno    CA0018;
+Date      12/19/99;
+Revision  02;
+Designer  Kahl;
+Company   Logical Devices, Inc.;
+Assembly  None;
+Location  None;
+Device    g16v8a;
+
+/****************************************************************/
+/* Compiling Note: For this Design , it will compile without any*/
+/* Errors if you Click on Options from the Main WInCUPL tool window */
+/* and Select Compiler option and set Minimization button to QUICK*/   
+/*                                                              */
+/* Decade Counter                                               */
+/*                                                              */
+/* This is a 4-bit up/down decade counter with synchronous      */
+/* clear capability.  An asynchronous ripple carry output is    */
+/* provided for cascading multiple devices.  CUPL state machine */
+/* syntax is used.                                              */
+/****************************************************************/
+
+/**  Inputs  **/
+
+Pin 1        = clk;             /* Counter clock                */
+Pin 2        = clr;             /* Counter clear input          */
+Pin 3        = dir;             /* Counter direction input      */
+Pin 11       = !oe;             /* Register output enable       */
+
+/**  Outputs  **/
+
+Pin [14..17] = [Q3..0];         /* Counter outputs              */
+Pin 18 = carry;                 /* Ripple carry out             */
+
+/** Declarations and Intermediate Variable Definitions **/
+
+field count = [Q3..0];          /* declare counter bit field */
+$define S0 'b'0000              /* define counter states */
+$define S1 'b'0001
+$define S2 'b'0010
+$define S3 'b'0011
+$define S4 'b'0100
+$define S5 'b'0101
+$define S6 'b'0110
+$define S7 'b'0111
+$define S8 'b'1000
+$define S9 'b'1001
+
+field mode = [clr,dir];         /* declare mode control field */
+up = mode:0;                    /* define count up mode */
+down = mode:1;                  /* define count down mode */
+clear = mode:[2..3];            /* define count clear mode */
+
+/** Logic Equations **/
+
+Sequenced count {                       /* free running counter */
+
+present S0      if up           next S1;
+                if down         next S9;
+                if clear        next S0;
+                if down         out carry;
+present S1      if up           next S2;
+                if down         next S0;
+                if clear        next S0;
+present S2      if up           next S3;
+                if down         next S1;
+                if clear        next S0;
+present S3      if up           next S4;
+                if down         next S2;
+                if clear        next S0;
+present S4      if up           next S5;
+                if down         next S3;
+                if clear        next S0;
+present S5      if up           next S6;
+                if down         next S4;
+                if clear        next S0;
+present S6      if up           next S7;
+                if down         next S5;
+                if clear        next S0;
+present S7      if up           next S8;
+                if down         next S6;
+                if clear        next S0;
+present S8      if up           next S9;
+                if down         next S7;
+                if clear        next S0;
+present S9      if up           next S0;
+                if down         next S8;
+                if clear        next S0;
+                if up           out carry;        /* assert carry output */
+}
+

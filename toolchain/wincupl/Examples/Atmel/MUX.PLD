@@ -1,0 +1,20 @@
+Name            MUX;
+Partno          ;
+Revision        01;
+Date            8/10/99;
+Designer        PLD Expert;
+Company         Atmel Corp.;
+Location        None;
+Assembly        None;
+Device          F1500a;
+
+/* Simple combinatorial logic: 2-to-1 MUX */
+
+pin [2,44] = [a, b];
+pin 5 = s;               
+pin 6 = y;
+
+y =  (a & (s:0))
+   # (b & (s:1));
+
+

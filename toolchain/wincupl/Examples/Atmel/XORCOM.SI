@@ -1,0 +1,23 @@
+Name     xorcom;
+PartNo   ;
+Date     12/06/99;
+Revision ;
+Designer Atmel-Yad;
+Company  ;
+Assembly ;
+Location ;
+Device   	 f1504plcc44;
+
+
+ORDER: prodclk, prodrst, %1, mc2, mc3, mc6, %1,   /*Inputs*/
+       mc1;   /*Outputs*/
+       
+
+
+VECTORS:
+X1000L
+C0001H
+C0000L
+X0100H
+X0010H
+C0101L

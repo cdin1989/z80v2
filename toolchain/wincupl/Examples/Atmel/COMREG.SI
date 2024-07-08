@@ -1,0 +1,27 @@
+Name     comreg;
+PartNo   AtmelCPLD;
+Date     12/20/99;
+Revision 01;
+Designer Atmel_D;
+Company  Atmel;
+Assembly None;
+Location None;
+Device   f1508plcc84;
+
+
+ORDER: CLK, %2, Q, %1, O0, %1, O1; 
+
+
+VECTORS:
+0LLHL
+CLHLL
+CHLLH
+CHHLL
+CLLHL
+CLHLL
+CHLLH
+CHHLL
+CLLHL
+CLHLL
+CHLLH
+CHHLL

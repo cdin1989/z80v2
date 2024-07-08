@@ -1,0 +1,520 @@
+Name      ATF8255N;
+Partno    ATF1502;
+Date      Mar 2001;
+Revision  1.4 Nibble Mode Version of ATF8255, for 1502 FIT;
+Designer  jmg;
+Company   c Mandeno Granville, 2001;
+Assembly  Enhanced 82C55 Parallel BUS - 24IO port expander, with Data Dir Register Control;
+Location  Auckland;
+Device    virtual;
+
+/*
+ Status : Compiled     = YES
+          Fit1502      = YES
+Revisions:
+ 1.4  Added controls for CEN0, and page select, to support 8 PLDs on bus.
+ 1.2  Used the enhanced features of ATF1502 - Dual Polarity CEN0, and
+      Global Output enable
+ 1.1  Ported to ATF1502
+
+*/
+
+
+
+/* START
+ Purpose :
+PCB designs that use Parallel IO expanders, are coming for revision, and the
+price / delivery of these parts is not improving with time.
+Often they are not available in QFP, and have low drive capabilities.
+
+ Serial Interface options are often not available in a mix of IO - there are
+serial LCD/LED drivers, for example, but large pin count serial IO are uncommon.
+ ( See LED32ser and LCD32ser designs for simpler serial versions ).
+
+Serial also has extra SW overhead, and is much slower to interface to than
+parallel ports.
+
+Typical legacy Parallel Expanders are 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ Supplier   Part            Ports       Features       Icc
+---------+-----------+--------------+--------------+-------------------
+Intel      82C55            3 x 8       Some DDR       CMOS, Low Drive
+Harris     CDP6823,         3 x 8       DDR control    CMOS, Low Drive
+Motorola   MC146823,        3 x 8       DDR control    CMOS, Low Drive
+Motorola   MC68230,         3 x 8       DDR control    CMOS, Low Drive
+Motorola   MC6821           2 x 8       DDR control    CMOS, Low Drive
+Zilog      Z8x36            2 x 8+4     Some DDR       NMOS, Low Drive
+
+Enhancements:
+~~~~~~~~~~~~~
+This design merges the best features of 82C55, and 68230, in that it
+provides 24 IO pins, and also individual DDR control on each PIN.
+Relative to the 146823, the CPLD has much higher pin drive, and is
+MUCH faster.
+To keep the pin count down, a MULTIPLEX BUS memory inteface is used.
+
+The DDR design allows SW control of Pin Types, and suits fully SOFT system designs,
+where the system SW configures the In/out mix, and reprogram of the IO devices 
+is not needed.
+
+Some applications areas :-
+
+KEYPAD Scan :-
+ A single ATF1502 could scan 144 keys, needing just 12 pullup resistors, or
+132 Keys + 12 Status LED's multiplexed with the KeyScan, etc.
+
+CABLE LOOM TESTERS // PCB bed of nails testers :-
+Looking for OPEN, and Illegal Shorts, and Valid connections.
+High speed parallel interface is needed for this, as you get an 'N Squared'
+effect in node testing. For each Node Write, typically ALL others are READ.
+
+ A smart combination of Short pulse drive, and pinkeeper could allow one
+pin per loom node, and the FAST parallel DDR would then pulse one pin, and
+check that no other held pin states were affected.
+ With the regen pinlatch feature, a Hi-Lo short would result in both
+pins reading LOW, and the fault current would be very short lived ( WRN wide ).
+
+Fast Parallel Memory Interface:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ALE.WRN.RDN.CEN0  Std C51 Multiplex BUS Memory interface
+ DB0..DB7          Has Address when ALE is high, controlled by RDN,WRN otherwise.
+
+Adr    MEMORY MAP
+0.WRN.CEN0  = Reserved, common page term on non page selected PLD's
+1.WRN.CEN0  = Write to PortA Latch
+2.WRN.CEN0  = Write to PortB Latch
+3.WRN.CEN0  = Write to PortC Latch
+4.WRN.CEN0  = Unused - no action from PLD
+5.WRN.CEN0  = Write to PortA Direction
+6.WRN.CEN0  = Write to PortB Direction
+7.WRN.CEN0  = Write to PortC Direction
+
+1.RDN  = Read From PortA Pins
+2.RDN  = Read From PortB Pins
+3.RDN  = Read From PortC Pins
+
+PortLATCH action is done on the PINS, so you must enable the DDR, then
+write the data value, when exiting from TriState situations.
+
+WriteR2_at_R0:
+        MOV     A,r2
+        MOVX    @R0,A   ; Writes Byte, R0 is 0,1,2
+        RET
+
+ReadAcc_at_R0:
+        MOVX    A,@R0   ; Read from that Address
+        RET
+
+ALE Strobe latches Mux Address into bAD0..2, and then that is used, with
+CEN0.RDN.WRN to determine the destination for the data Byte following.
+
+/END
+*/
+
+/*
+
+ By using the Ptr mapping, you can also parallel a number of PLD's 
+on the same uC BUS, with a different 8 byte window for access. 
+ Up to 8 ATF8255N's ( different JED's ) can be shared, for 192 High speed IO
+
+*/
+
+/* Input only pins - Address Map */
+                              /* ATF1500   ATF1502      */ 
+PIN     2       =       ALE;  /* OEN      GCLK2/OEN2 /\ */
+PIN     1       =       CEN0; /* CLRN     GCLR  /\      */
+PIN     44      =       RDN;  /* OEN      OE1.ForceJTAGVpp */
+PIN     43      =       WRN;  /* CLK      GCLK1 /\      */
+
+/* IO Blocks  - group in 8's, for simplicity  */
+
+/* Structure Table, for Floor Plan, ATF1500 / ATF1502 
+
+PinNo    4   5   6   7   8   9  11  12  13  14  16  17  18  19  20  21
+MCell    1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16 
+BNode  601 602 603 604 605 606 607 608 609 610 611 612 613 614 615 616 1502
+FoldB  301 302 303 304 305 306 307 308 309 310 311 312 313 314 315 316 1502
+
+PinNo   41  40  39  38  37  36  34  33  32  31  29  28  27  26  25  24
+MCell   17  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32
+BNode  617 618 619 620 621 622 623 624 625 626 627 628 629 630 631 632 1502
+FoldB  317 318 319 320 321 322 323 324 325 326 327 328 329 330 331 332 1502
+*/
+/* JTAG Pins PLCC44 package
+ TDI  Pin7   MC4
+ TDO  Pin38  MC20
+ TMS  Pin13  MC9
+ TCK  Pin32  MC25
+*/
+
+PROPERTY ATMEL {JTAG=OFF};   /* We are using all the pins */
+PIN         5  =   Pa2;     /* MC2  2C 1.oe */
+PIN         6  =   Pa1;     /* MC3  2C 1.oe */
+PIN         7  =   Pa0;     /* MC4  2C 1.oe */
+
+PINNODE   602  =   oePa2;   /* MC2  2 */
+PINNODE   603  =   oePa1;   /* MC3  2 */
+PINNODE   604  =   oePa0;   /* MC4  2 */
+
+PIN         8  =   Pb3;     /* MC5  3 */
+PIN         9  =   Pb2;     /* MC6  3 */
+PIN        11  =   Pb1;     /* MC7  3 */
+PIN        12  =   Pb0;     /* MC8  3 */
+
+PINNODE   605  =   oePb3;   /* MC5  2 */ 
+PINNODE   606  =   oePb2;   /* MC6  2 */
+PINNODE   607  =   oePb1;   /* MC7  2 */
+PINNODE   608  =   oePb0;   /* MC8  2 */
+
+PIN        13  =   Pc3;     /* MC9  2C 1.oe */
+PIN        14  =   Pc2;     /* MC10 2C 1.oe */
+PIN        16  =   Pc1;     /* MC11 2C 1.oe */
+PIN        17  =   Pc0;     /* MC12 2C 1.oe */
+
+PINNODE   609  =   oePc3;   /* MC9  2 */ 
+PINNODE   610  =   oePc2;   /* MC10 2 */
+PINNODE   611  =   oePc1;   /* MC11 2 */
+PINNODE   612  =   oePc0;   /* MC12 2 */
+
+PIN        19  =   DB1;     /* MC14 fb58 pn90 3C 1.goe */
+PIN        20  =   DB2;     /* MC15 fb59 pn91 3C 1.goe */
+PIN        21  =   DB3;     /* MC16 fb60 pn92 3C 1.goe */
+
+PINNODE   614  =   GlOE;     /* GlOE -> G.Foldback */
+PINNODE   615  =   bAD1;     /* MC15 1.d 1.ck */
+
+
+PIN        26  =   DB6;     /* MC30  fb74 pn106 3+goe */
+PIN        25  =   DB5;     /* MC31  fb75 pn107 3+goe */
+
+PINNODE   616  =   FbFWrPaL;  /*16  1PT, Global Eq G.Foldback */
+PINNODE   630  =   HnWrPa;    /*30  1PT, Global Eq G.Foldback */
+PINNODE   631  =   HnWrPb;    /*31  1PT, Global Eq G.Foldback */
+
+PINNODE   315  =   FbFWrPbL;  /*  Foldback */
+PINNODE   316  =   FbFWrPcL;  /*  Foldback */
+PINNODE   328  =   FbFWrPbU;  /*  Foldback */
+PINNODE   330  =   FbFWrPaU;  /*  Foldback */
+
+/*  3,15,23,35 = Vcc   10,22,30,42 = GND  */
+
+PIN        29  =   Pc6;     /* MC27 2C 1.oe */
+PIN        31  =   Pc5;     /* MC26 2C 1.oe */
+PIN        32  =   Pc4;     /* MC25 2C 1.oe */
+
+PINNODE   627  =   oePc6;   /* MC27 2 */
+PINNODE   626  =   oePc5;   /* MC26 2 */
+PINNODE   625  =   oePc4;   /* MC25 2 */
+
+PIN        33  =   Pb7;     /* MC24 2C 1.oe */
+PIN        34  =   Pb6;     /* MC23 2C 1.oe */
+PIN        37  =   Pb4;     /* MC21 2C 1.oe */
+
+PINNODE   624  =   oePb7;   /* MC24 2 */ 
+PINNODE   623  =   oePb6;   /* MC23 2 */
+PINNODE   621  =   oePb4;   /* MC21 2 */
+
+PIN        38  =   Pa7;     /* MC20 2C 1.oe */
+PIN        39  =   Pa6;     /* MC19 2C 1.oe */
+PIN        40  =   Pa5;     /* MC18 2C 1.oe */
+PIN        41  =   Pa4;     /* MC17 2C 1.oe */
+
+PINNODE   620  =   oePa7;   /* MC20 2 */ 
+PINNODE   619  =   oePa6;   /* MC19 2 */
+PINNODE   618  =   oePa5;   /* MC18 2 */
+PINNODE   617  =   oePa4;   /* MC17 2 */
+
+PIN        28  =   DB7;     /* MC28  fb73 pn105 3+goe */
+PINNODE   628  =   bAD2;    /* MC28 1.d 1.ck */
+PIN        27  =   Pc7;     /* MC29 2C 1.oe */
+PINNODE   629  =   oePc7;   /* MC29 2 */ 
+
+PIN         4  =   DB0;     /* MC1  fb57 pn89 3C 1.goe */
+PINNODE   601  =   bAD0;    /* MC1  1.d 1.ck */
+PIN        18  =   Pa3;     /* MC13 2C 1.oe */
+PINNODE   613  =   oePa3;   /* MC13 2 */
+
+PIN        24  =   Pb5;     /* MC32 2C 1.oe */
+PINNODE   632  =   oePb5;   /* MC32 2 */
+PIN          =   DB4;     /* MC22  fb76 pn108 3+goe */
+PINNODE   622  =   HnWrPc;    /*22  1PT, Global Eq G.Foldback */
+PINNODE   331  =   FbFWrPcU;  /*22  Foldback */
+
+PINNODE   301  =   fbIsMe;
+
+/* Tell fitter to Keep&Place -> FBnodes */
+PROPERTY ATMEL {FOLD=FbFWrPaL,FbFWrPbL,FbFWrPcL,FbFWrPaU,FbFWrPbU,FbFWrPcU}; 
+
+
+/*
+BUS timing details
+~~~~~~~~~~~~~~~~~~
+
+ALE  ________/=========\____________________________
+RDN  ===========================\__________/==========
+ or
+WRN  ===========================\__________/==========
+DBx  ------------AAAAAAAAAAA----DDDDDDDDDDDD----------
+CEN0  ===========\____________________________/=======
+bAD0..2________________/===========================\__
+                       | !ALE   | !WRN     | WRN
+*/
+
+/* ----  Address Page option - pushing the logic  ------ */
+
+/* 
+ There is some spare room, so can use ADDRESS bits within the 8 Bit Adr range, to 
+support multiple PLDs (different JED files ) on one MUX Bus 256 Byte Page, 
+without neding extra ChipSelects (CEN0)'s 
+ 
+ This will be Fan-In limited, test show DB7 and DB3 are usable,
+and can also Flip the Level of CEN0, because the ATF1502 has DualPolarity
+on Global.RESET
+
+ This gives to total of 8 devices glueless sharing one DataBUS, for 
+a total of 192 io.
+
+*/
+
+$DEFINE AddPage
+
+/* Allows Rd/Write Select to 4 ATF8255's per CEN0 polarity in parallel */
+
+
+$IFDEF AddPage
+ Select  = !CEN0;              /* can define Two Select Polarities  */
+ SelPage = !DB7.io & !DB3.io;  /* and TWO bits as ThisPLD's address Bits TESTED during ALE */
+/* This default coding has CEN0 LOW, and Lowest Address as Valid */
+
+
+/* fbIsMe = HI if Page is OK at ALE */
+ GlOE =  !RDN & Select & fbIsMe;    
+$ELSE
+ Select = !CEN0;   /* Can define Two Select Polarities, and connect to Addr */
+ SelPage = 'b'1;   /* no Page Address Qualifiers used, */
+
+ GlOE =  !RDN & !CEN0;   
+$ENDIF
+
+/* Tell the fitter which bus needs GlobalOE node usage.
+Note the field here is not the OE control term (GlOE), but one or more pins of 
+the BUS being controlled */
+PROPERTY ATMEL {Global_OE=DB0};
+
+/* ------------ Address Latch, and Special -> 000 on NOT ME ------------ */
+
+$DEFINE _CEN0pt
+
+/* There are 2 ways to qualify CEN0 (Select), one is via eqn, the other is to 
+use as a RESET on the Address latch, as Adr==0 is NoThisPLD.
+ The reset method reduces FanIn.
+
+ This requires that CEN0 is valid from just prior to ALE falling, and 
+until After RISING edge of WRN - check your uC info for this, but 
+the 80C51 meets this requirement.
+*/
+
+$IFDEF CEN0pt
+[bAD0..2].LE  = ALE;
+[bAD0..2].L   = [DB0..2].io & Select & SelPage; /* 000 is == off */
+$ELSE
+[bAD0..2].LE  = ALE;
+[bAD0..2].L   = [DB0..2].io & SelPage;    /* 000 is == off */
+[bAD0..2].ar  = !Select;                  /* de-select is 000 */
+$ENDIF
+
+Ptr0  = ([bAD0..2] : 'b'000);   /* And also all NOT MY PAGE accesses */
+PtrRa = ([bAD0..2] : 'b'001);
+PtrRb = ([bAD0..2] : 'b'010);
+PtrRc = ([bAD0..2] : 'b'011);
+Ptr5  = ([bAD0..2] : 'b'100);
+PtrDa = ([bAD0..2] : 'b'101);
+PtrDb = ([bAD0..2] : 'b'110);
+PtrDc = ([bAD0..2] : 'b'111);
+
+fbIsMe = !(!bAD2 & !bAD1 & !bAD0 ); /* Hi for all Addr <> 000 */
+
+/* ------------  BUS read Terms - Source MUXd by BYTE --------------------- */
+
+/* BUS Read Back */
+
+[DB7..DB0] =   PtrRa & [Pa7..Pa0].io
+             # PtrRb & [Pb7..Pb0].io
+             # PtrRc & [Pc7..Pc0].io
+             ;
+
+[DB7..DB4].oe = GlOE;  /* other block */
+[DB3..DB0].oe = GlOE;  /* Same Block, needs GlobalOE to fit  */
+
+/*  ----------------  Data Direction Registers ---------------  */
+/* Data Direction = Output Enable terms - 100% BURY and take 2 terms from Cell */
+
+[oePa0..oePa7].ck = WRN;  /* Latch info on the trailing edge of WRN ___/=== */
+[oePb0..oePb7].ck = WRN;
+[oePc0..oePc7].ck = WRN;
+
+[oePa0..oePa7].d  = [DB0..DB7].io;
+[oePa0..oePa7].ce = PtrDa;        /* Ptr is already CEN0 qualified */
+[oePb0..oePb7].d  = [DB0..DB7].io;
+[oePb0..oePb7].ce = PtrDb;
+[oePc0..oePc7].d  = [DB0..DB7].io;
+[oePc0..oePc7].ce = PtrDc;
+
+
+/* ------------  Port LATCH Terms - need to fit in 3 terms.... ------------ */
+/* foldback terms are section locked, so cannot place freely */
+
+
+HnWrPa.LE = 'b'1;    /* Zero PT cost, allows PT2 buried AND.NAND eqn == Buried COM */
+HnWrPb.LE = 'b'1; 
+HnWrPc.LE = 'b'1; 
+
+WrPa = (PtrRa & !WRN );     /* Ptr is already CEN0 qualified */
+WrPb = (PtrRb & !WRN );
+WrPc = (PtrRc & !WRN );
+
+HnWrPa.L = WrPa;  /* Hold NOT term, use with ! in eqn */
+HnWrPb.L = WrPb;
+HnWrPc.L = WrPc;
+
+FbFWrPaL.LE = 'b'1;        /* Cha is not in FB, but in Enabled Latch == Buried COM */
+FbFWrPaL.L  = !(!HnWrPa);  /* Second Inverter in Latch */
+
+FbFWrPaU  = !(!HnWrPa);    /* Other 5 are all FoldBack */
+
+FbFWrPbL = !(!HnWrPb);     /* Foldback are local to 16 NC block, no need two */
+FbFWrPbU = !(!HnWrPb);
+
+FbFWrPcL = !(!HnWrPc);
+FbFWrPcU = !(!HnWrPc);
+
+
+/* Eqn Check :-         ----  New Data ---  |<--- Hold -------
+ WrPc _____________/=======================\____________________________
+FbWrPc_________________/=======================\____________________________
+                       |<-- follow ----------->|
+ Key feature is HOLD overlaps Follow, on trailng edge. ( make before break )
+
+To synthesise a latch, need TWO series Inverters - the first can
+be a wide AND gate, with multiple AND terms.
+
+                               +----------------- HOLD
+                               |
+                               |
+-- LATCH ENABLE ------|>o -----+-------|>o------- FOLLOW
+
+With .LE=1 as Global Foldback, can use 
+ PT5 for OE
+ PT2 for GlobalFoldBack ( 1 PT Wide AND.NAND) term (LE is wired HI)
+ PT1 for Local FoldBack (1 PT Wide NAND) term
+ PT3,PT4 PT for PIN latch
+ 
+In a 1502, have room for 5+5 foldbacks, need 2/2/2 or 6, but nibble
+splits to 
+
+ =======Block A ======
+ 3 split = 6 Nodes, 3 Local Foldback, 3 Global - net fanin is 3. 
+         Global  Local
+  LEa -> GLEaN + FbLEaNU
+  LEb -> GLEbN + FbLEaNU
+  LEc -> GLEcN + FbLEaNU
+ =======Block B ======
+ 2 split. - fanin the 3 Globals from BlockA, and generate 3 Locals, as 2 LFb 
+   and one of the GLobals, used locally - net fanin is 4. 
+         Global  Local
+  LEa -> FbLEaNL
+  LEb -> FbLEaNL
+  LEc -> FbLEaNL
+
+*/
+
+/* ------------  Port LATCH Terms Nibble Structured ------------ */
+
+
+[Pa0..Pa3] =  FbFWrPaL & [DB0..DB3].io   /* update latch */
+            # !HnWrPa & [Pa0..Pa3].io    /* hold, */
+            ;
+[Pa4..Pa7] =  FbFWrPaU & [DB4..DB7].io   /* update latch */
+            # !HnWrPa & [Pa4..Pa7].io    /* hold, */
+            ;
+[Pa0..Pa7].oe = [oePa0..oePa7];  /* DDR terms - Takes 1 term from macroCell */
+
+[Pc0..Pc3] =  FbFWrPcL & [DB0..DB3].io   /* update latch */
+            # !HnWrPc & [Pc0..Pc3].io    /* hold, */
+            ;
+[Pc4..Pc7] =  FbFWrPcU & [DB4..DB7].io   /* update latch */
+            # !HnWrPc & [Pc4..Pc7].io    /* hold, */
+            ;
+[Pc0..Pc7].oe = [oePc0..oePc7];  /* DDR terms */
+
+
+[Pb0..Pb3] =  FbFWrPbL & [DB0..DB3].io   /* update latch */
+            # !HnWrPb & [Pb0..Pb3].io    /* hold, */
+            ;
+[Pb4..Pb7] =  FbFWrPbU & [DB4..DB7].io   /* update latch */
+            # !HnWrPb & [Pb4..Pb7].io    /* hold, */
+            ;
+
+[Pb0..Pb7].oe = [oePb0..oePb7];          /* DDR terms */
+
+
+/* =================== END OF DESIGN INFO - NOTES FOLLOW =================  
+ATF8255N.cmd
+-i ATF8255N.PLA
+-dev P1502C44
+-JTAG OFF  
+-Optimize OFF 
+-strategy Foldback_Logic = FbFWrPaL FbFWrPbL FbFWrPcL FbFWrPaU FbFWrPbU FbFWrPcU 
+-strategy Soft_Buffer = FbFWrPaL FbFWrPbL FbFWrPcL FbFWrPaU FbFWrPbU FbFWrPcU HnWrPa HnWrPb HnWrPc
+-strategy Global_OE DB0
+-strategy OE_node 614
+
+ATF8255N.fit
+fit1502 -i ATF8255N.PLA -dev P1502C44 -JTAG OFF -Optimize OFF -Foldback_Logic 
+         FbFWrPaL,FbFWrPbL,FbFWrPcL,FbFWrPaU,FbFWrPbU,FbFWrPcU 
+         -Soft_Buffer FbFWrPaL,FbFWrPbL,FbFWrPcL,FbFWrPaU,FbFWrPbU,FbFWrPcU,HnWrPa,
+         HnWrPb,HnWrPc -Global_OE DB0 -OE_node 614
+
+FanIn assignment for block A [38]
+FanIn assignment for block B [37]
+
+    pin_num pin_name output_type feedback    foldback   ca
+MC1    4     DB0         reg        bAD0         --       
+MC2    5     Pa2         reg        oePa2        NA       
+MC3    6     Pa1         reg        oePa1        NA       
+MC4    7     Pa0         reg        oePa0        NA       
+MC5    8     Pb3         reg        oePb3        NA       
+MC6    9     Pb2         reg        oePb2        NA       
+MC7    11    Pb1         reg        oePb1        NA       
+MC8    12    Pb0         reg        oePb0        NA       
+MC9    13    Pc3         reg        oePc3        NA       
+MC10   14    Pc2         reg        oePc2        NA       
+MC11   16    Pc1         reg        oePc1        NA       
+MC12   17    Pc0         reg        oePc0        NA       
+MC13   18    Pa3         reg        oePa3        NA       
+MC14   19    DB1         reg        Com_Ctrl_298 fbIsMe   
+MC15   20    DB2         reg        bAD1         FbFWrPbL 
+MC16   21    DB3         reg        FbFWrPaL     FbFWrPcL 
+MC17   41    Pa4         reg        oePa4        NA       
+MC18   40    Pa5         reg        oePa5        NA       
+MC19   39    Pa6         reg        oePa6        NA       
+MC20   38    Pa7         reg        oePa7        NA       
+MC21   37    Pb4         reg        oePb4        NA       
+MC22   36    DB4         reg        HnWrPc       --       
+MC23   34    Pb6         reg        oePb6        NA       
+MC24   33    Pb7         reg        oePb7        NA       
+MC25   32    Pc4         reg        oePc4        NA       
+MC26   31    Pc5         reg        oePc5        NA       
+MC27   29    Pc6         reg        oePc6        NA       
+MC28   28    DB7         reg        bAD2         FbFWrPaU 
+MC29   27    Pc7         reg        oePc7        NA       
+MC30   26    DB6         reg        HnWrPa       FbFWrPbU 
+MC31   25    DB5         reg        HnWrPb       FbFWrPcU 
+MC32   24    Pb5         reg        oePb5        NA       
+MC0    2     ALE         --         --           --       
+MC0    1     CEN0        --         --           --       
+MC0    44    RDN         --         --           --       
+MC0    43    WRN         --         --           --       
+
+*/
+
