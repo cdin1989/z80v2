@@ -25,3 +25,9 @@ Date: 2024/05/01
 Follow me:
 [bilibili] https://space.bilibili.com/252130017
 [oshw]     https://oshwhub.com/ayssn
+
+Screenshot:
+![img1](screenshot/IMG_20241210_222619.jpg)
+![img2](screenshot/IMG_20250226_105219.jpg)
+![img4](screenshot/IMG_20240608_234351.jpg)
+![img3](screenshot/IMG_20250526_225047.jpg)
